@@ -108,7 +108,7 @@ claude   # Open Claude Code in this directory
 # Paste a job URL or run /career-ops
 ```
 
-> **The system is designed to be customized by Claude itself.** Modes, archetypes, scoring weights, negotiation scripts -- just ask Claude to change them. It reads the same files it uses, so it knows exactly what to edit.
+> **The system is designed to be customized by Claude itself.** Put personal changes in `config/profile.yml`, `modes/_profile.md`, `article-digest.md`, or `portals.yml` so updates do not overwrite them.
 
 See [docs/SETUP.md](docs/SETUP.md) for the full setup guide.
 
@@ -157,6 +157,16 @@ npm run gemini:eval -- "JD text here"
 ```
 
 > **Free tier:** Both options work without billing. Native CLI uses Google OAuth; the API script uses `gemini-2.0-flash` (15 RPM, 1M tokens/day free).
+
+## Verification
+
+```bash
+npm test
+npm run verify
+
+# optional dashboard checks
+cd dashboard && go test ./... && go build ./...
+```
 
 ## Usage
 
@@ -216,6 +226,8 @@ The scanner comes with **45+ companies** ready to scan and **19 search queries**
 
 **Job boards searched:** Ashby, Greenhouse, Lever, Wellfound, Workable, RemoteFront
 
+Standalone `node scan.mjs` currently covers the API-detectable subset of those boards. The broader agentic `/career-ops scan` workflow can still use Playwright and WebSearch guidance from the mode files.
+
 ## Dashboard TUI
 
 The built-in terminal dashboard lets you browse your pipeline visually:
@@ -238,7 +250,8 @@ career-ops/
 ├── config/
 │   └── profile.example.yml      # Template for your profile
 ├── modes/                       # 14 skill modes
-│   ├── _shared.md               # Shared context (customize this)
+│   ├── _shared.md               # Shared system context (do not personalize)
+│   ├── _profile.md              # Your custom archetypes, framing, negotiation
 │   ├── oferta.md                # Single evaluation
 │   ├── pdf.md                   # PDF generation
 │   ├── scan.md                  # Portal scanner
@@ -252,6 +265,8 @@ career-ops/
 │   ├── batch-prompt.md          # Self-contained worker prompt
 │   └── batch-runner.sh          # Orchestrator script
 ├── dashboard/                   # Go TUI pipeline viewer
+├── lib/                         # Shared script helpers
+├── tests/                       # Fixture-backed regression tests
 ├── data/                        # Your tracking data (gitignored)
 ├── reports/                     # Evaluation reports (gitignored)
 ├── output/                      # Generated PDFs (gitignored)
@@ -273,6 +288,8 @@ career-ops/
 - **Scanner**: Playwright + Greenhouse API + WebSearch
 - **Dashboard**: Go + Bubble Tea + Lipgloss (Catppuccin Mocha theme)
 - **Data**: Markdown tables + YAML config + TSV batch files
+
+GitHub Actions runs the fixture-backed Node tests, pipeline verification, and dashboard Go tests/build on pushes and pull requests.
 
 ## Also Open Source
 

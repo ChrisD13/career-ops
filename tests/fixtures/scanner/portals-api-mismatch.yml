@@ -1,0 +1,14 @@
+title_filter:
+  positive:
+    - "AI"
+  negative: []
+
+search_queries:
+  - name: Ashby Search
+    query: 'site:jobs.ashbyhq.com "AI Engineer" remote'
+    enabled: true
+
+tracked_companies:
+  - name: OpenAI
+    careers_url: https://openai.com/careers
+    enabled: true

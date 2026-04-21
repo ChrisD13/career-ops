@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 
 /**
- * scan.mjs — Zero-token portal scanner
+ * scan.mjs — Zero-token API portal scanner
  *
  * Fetches Greenhouse, Ashby, and Lever APIs directly, applies title
  * filters from portals.yml, deduplicates against existing history,
  * and appends new offers to pipeline.md + scan-history.tsv.
+ *
+ * This standalone script intentionally covers the API-detectable subset
+ * of the broader agentic `/career-ops scan` workflow.
  *
  * Zero Claude API tokens — pure HTTP + JSON.
  *
@@ -16,6 +19,8 @@
  */
 
 import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync } from 'fs';
+import { dirname } from 'path';
+import { pathToFileURL } from 'url';
 import yaml from 'js-yaml';
 const parseYaml = yaml.load;
 
@@ -34,7 +39,7 @@ const FETCH_TIMEOUT_MS = 10_000;
 
 // ── API detection ───────────────────────────────────────────────────
 
-function detectApi(company) {
+export function detectApi(company) {
   // Greenhouse: explicit api field
   if (company.api && company.api.includes('greenhouse')) {
     return { type: 'greenhouse', url: company.api };
@@ -122,7 +127,7 @@ async function fetchJson(url) {
 
 // ── Title filter ────────────────────────────────────────────────────
 
-function buildTitleFilter(titleFilter) {
+export function buildTitleFilter(titleFilter) {
   const positive = (titleFilter?.positive || []).map(k => k.toLowerCase());
   const negative = (titleFilter?.negative || []).map(k => k.toLowerCase());
 
@@ -134,14 +139,54 @@ function buildTitleFilter(titleFilter) {
   };
 }
 
+export function resolveScanTargets(config, { filterCompany = null } = {}) {
+  const companies = config.tracked_companies || [];
+  const enabledQueries = (config.search_queries || []).filter(q => q.enabled !== false);
+  const enabledCompanies = companies
+    .filter(c => c.enabled !== false)
+    .filter(c => !filterCompany || c.name.toLowerCase().includes(filterCompany));
+  const resolvedCompanies = enabledCompanies.map(c => ({ ...c, _api: detectApi(c) }));
+  const targets = resolvedCompanies.filter(c => c._api !== null);
+  const nonApiCompanies = resolvedCompanies.filter(c => c._api === null);
+
+  return {
+    companies,
+    enabledQueries,
+    enabledCompanies,
+    resolvedCompanies,
+    targets,
+    nonApiCompanies,
+  };
+}
+
+export function getStandaloneScopeWarnings(scope) {
+  const warnings = [];
+
+  if (scope.nonApiCompanies.length > 0 || scope.enabledQueries.length > 0) {
+    warnings.push('Note: `node scan.mjs` only covers API-detectable boards.');
+    if (scope.nonApiCompanies.length > 0) {
+      warnings.push(`      ${scope.nonApiCompanies.length} tracked companies need the agentic \`/career-ops scan\` flow for page-level discovery.`);
+    }
+    if (scope.enabledQueries.length > 0) {
+      warnings.push(`      ${scope.enabledQueries.length} enabled search_queries are ignored here; use \`/career-ops scan\` for Playwright/WebSearch discovery.`);
+    }
+  }
+
+  return warnings;
+}
+
 // ── Dedup ───────────────────────────────────────────────────────────
 
-function loadSeenUrls() {
+export function loadSeenUrls({
+  scanHistoryPath = SCAN_HISTORY_PATH,
+  pipelinePath = PIPELINE_PATH,
+  applicationsPath = APPLICATIONS_PATH,
+} = {}) {
   const seen = new Set();
 
   // scan-history.tsv
-  if (existsSync(SCAN_HISTORY_PATH)) {
-    const lines = readFileSync(SCAN_HISTORY_PATH, 'utf-8').split('\n');
+  if (existsSync(scanHistoryPath)) {
+    const lines = readFileSync(scanHistoryPath, 'utf-8').split('\n');
     for (const line of lines.slice(1)) { // skip header
       const url = line.split('\t')[0];
       if (url) seen.add(url);
@@ -149,16 +194,16 @@ function loadSeenUrls() {
   }
 
   // pipeline.md — extract URLs from checkbox lines
-  if (existsSync(PIPELINE_PATH)) {
-    const text = readFileSync(PIPELINE_PATH, 'utf-8');
+  if (existsSync(pipelinePath)) {
+    const text = readFileSync(pipelinePath, 'utf-8');
     for (const match of text.matchAll(/- \[[ x]\] (https?:\/\/\S+)/g)) {
       seen.add(match[1]);
     }
   }
 
   // applications.md — extract URLs from report links and any inline URLs
-  if (existsSync(APPLICATIONS_PATH)) {
-    const text = readFileSync(APPLICATIONS_PATH, 'utf-8');
+  if (existsSync(applicationsPath)) {
+    const text = readFileSync(applicationsPath, 'utf-8');
     for (const match of text.matchAll(/https?:\/\/[^\s|)]+/g)) {
       seen.add(match[0]);
     }
@@ -167,10 +212,10 @@ function loadSeenUrls() {
   return seen;
 }
 
-function loadSeenCompanyRoles() {
+export function loadSeenCompanyRoles({ applicationsPath = APPLICATIONS_PATH } = {}) {
   const seen = new Set();
-  if (existsSync(APPLICATIONS_PATH)) {
-    const text = readFileSync(APPLICATIONS_PATH, 'utf-8');
+  if (existsSync(applicationsPath)) {
+    const text = readFileSync(applicationsPath, 'utf-8');
     // Parse markdown table rows: | # | Date | Company | Role | ...
     for (const match of text.matchAll(/\|[^|]+\|[^|]+\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|/g)) {
       const company = match[1].trim().toLowerCase();
@@ -185,10 +230,11 @@ function loadSeenCompanyRoles() {
 
 // ── Pipeline writer ─────────────────────────────────────────────────
 
-function appendToPipeline(offers) {
+export function appendToPipeline(offers, { pipelinePath = PIPELINE_PATH } = {}) {
   if (offers.length === 0) return;
 
-  let text = readFileSync(PIPELINE_PATH, 'utf-8');
+  ensurePipelineFile({ pipelinePath });
+  let text = readFileSync(pipelinePath, 'utf-8');
 
   // Find "## Pendientes" section and append after it
   const marker = '## Pendientes';
@@ -213,20 +259,35 @@ function appendToPipeline(offers) {
     text = text.slice(0, insertAt) + block + text.slice(insertAt);
   }
 
-  writeFileSync(PIPELINE_PATH, text, 'utf-8');
+  writeFileSync(pipelinePath, text, 'utf-8');
 }
 
-function appendToScanHistory(offers, date) {
+export function appendToScanHistory(offers, date, { scanHistoryPath = SCAN_HISTORY_PATH } = {}) {
   // Ensure file + header exist
-  if (!existsSync(SCAN_HISTORY_PATH)) {
-    writeFileSync(SCAN_HISTORY_PATH, 'url\tfirst_seen\tportal\ttitle\tcompany\tstatus\n', 'utf-8');
+  if (!existsSync(scanHistoryPath)) {
+    ensureParentDir(scanHistoryPath);
+    writeFileSync(scanHistoryPath, 'url\tfirst_seen\tportal\ttitle\tcompany\tstatus\n', 'utf-8');
   }
 
   const lines = offers.map(o =>
     `${o.url}\t${date}\t${o.source}\t${o.title}\t${o.company}\tadded`
   ).join('\n') + '\n';
 
-  appendFileSync(SCAN_HISTORY_PATH, lines, 'utf-8');
+  appendFileSync(scanHistoryPath, lines, 'utf-8');
+}
+
+export function ensurePipelineFile({ pipelinePath = PIPELINE_PATH } = {}) {
+  if (existsSync(pipelinePath)) return;
+  ensureParentDir(pipelinePath);
+  writeFileSync(
+    pipelinePath,
+    '# Pipeline Inbox\n\n## Pendientes\n\n## Procesadas\n',
+    'utf-8',
+  );
+}
+
+function ensureParentDir(filePath) {
+  mkdirSync(dirname(filePath), { recursive: true });
 }
 
 // ── Parallel fetch with concurrency limit ───────────────────────────
@@ -262,19 +323,17 @@ async function main() {
   }
 
   const config = parseYaml(readFileSync(PORTALS_PATH, 'utf-8'));
-  const companies = config.tracked_companies || [];
   const titleFilter = buildTitleFilter(config.title_filter);
+  const scope = resolveScanTargets(config, { filterCompany });
 
   // 2. Filter to enabled companies with detectable APIs
-  const targets = companies
-    .filter(c => c.enabled !== false)
-    .filter(c => !filterCompany || c.name.toLowerCase().includes(filterCompany))
-    .map(c => ({ ...c, _api: detectApi(c) }))
-    .filter(c => c._api !== null);
-
-  const skippedCount = companies.filter(c => c.enabled !== false).length - targets.length;
+  const targets = scope.targets;
+  const skippedCount = scope.enabledCompanies.length - targets.length;
 
   console.log(`Scanning ${targets.length} companies via API (${skippedCount} skipped — no API detected)`);
+  for (const line of getStandaloneScopeWarnings(scope)) {
+    console.log(line);
+  }
   if (dryRun) console.log('(dry run — no files will be written)\n');
 
   // 3. Load dedup sets
@@ -361,7 +420,11 @@ async function main() {
   console.log('→ Share results and get help: https://discord.gg/8pRpHETxa4');
 }
 
-main().catch(err => {
-  console.error('Fatal:', err.message);
-  process.exit(1);
-});
+const isDirectRun = process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url;
+
+if (isDirectRun) {
+  main().catch(err => {
+    console.error('Fatal:', err.message);
+    process.exit(1);
+  });
+}

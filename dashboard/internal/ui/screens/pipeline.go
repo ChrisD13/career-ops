@@ -133,7 +133,7 @@ func NewPipelineModel(t theme.Theme, apps []model.CareerApplication, metrics mod
 
 // Init implements tea.Model.
 func (m PipelineModel) Init() tea.Cmd {
-	return nil
+	return m.loadCurrentReport()
 }
 
 // Resize updates dimensions.
@@ -272,6 +272,7 @@ func (m PipelineModel) handleKey(msg tea.KeyMsg) (PipelineModel, tea.Cmd) {
 		m.applyFilterAndSort()
 		m.cursor = 0
 		m.scrollOffset = 0
+		return m, m.loadCurrentReport()
 
 	case "f", "right", "l":
 		m.activeTab++
@@ -281,6 +282,7 @@ func (m PipelineModel) handleKey(msg tea.KeyMsg) (PipelineModel, tea.Cmd) {
 		m.applyFilterAndSort()
 		m.cursor = 0
 		m.scrollOffset = 0
+		return m, m.loadCurrentReport()
 
 	case "left", "h":
 		m.activeTab--
@@ -290,6 +292,7 @@ func (m PipelineModel) handleKey(msg tea.KeyMsg) (PipelineModel, tea.Cmd) {
 		m.applyFilterAndSort()
 		m.cursor = 0
 		m.scrollOffset = 0
+		return m, m.loadCurrentReport()
 
 	case "v":
 		if m.viewMode == "grouped" {
