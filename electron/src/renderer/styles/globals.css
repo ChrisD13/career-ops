@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --ctp-base:    30 30 46;     /* #1e1e2e */
+    --ctp-surface: 49 50 68;     /* #313244 */
+    --ctp-overlay: 69 71 90;     /* #45475a */
+    --ctp-text:    205 214 244;  /* #cdd6f4 */
+    --ctp-subtext: 166 173 200;  /* #a6adc8 */
+    --ctp-blue:    137 180 250;  /* #89b4fa */
+    --ctp-green:   166 227 161;  /* #a6e3a1 */
+    --ctp-yellow:  249 226 175;  /* #f9e2af */
+    --ctp-red:     243 139 168;  /* #f38ba8 */
+    --ctp-peach:   250 179 135;  /* #fab387 */
+    --ctp-mauve:   203 166 247;  /* #cba6f7 */
+    --ctp-sky:     137 220 235;  /* #89dceb */
+  }
+
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: rgb(var(--ctp-base));
+    color: rgb(var(--ctp-text));
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
