@@ -26,7 +26,7 @@ Surface the right startup opportunities from leading VC portfolios before they a
 
 - [ ] VC portfolio scraper — periodically scrape portfolio pages from 10 firms (a16z, Sequoia, Benchmark, Accel, General Catalyst, Coatue, Founders Fund, Khosla, Index, Lightspeed) and store discovered companies
 - [ ] Company filtering pipeline — surface companies with funding announced in last 12 months AND active job listings matching target roles from `config/profile.yml`
-- [ ] Electron desktop app — full GUI replacement for CLI; calls Claude Anthropic API directly (not CLI wrapping); reads the same file-backed state (cv.md, data/, reports/)
+- [x] Electron desktop app — read-only shell complete (Phase 01): tracker, reports, pipeline panels; react-window virtualization; react-markdown renderer; chokidar watcher; ELEC-01–05 all verified. Write safety + Claude API integration in Phase 02.
 - [ ] Claude prompt caching — cache CV, profile, and shared mode context using `cache_control` to cut repeated evaluation cost ~90%
 - [ ] Smarter file reads — track file modification timestamps so unchanged context (cv.md, _profile.md, _shared.md) is not re-read on repeated evaluations
 
@@ -83,4 +83,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-21 after initialization*
+*Last updated: 2026-04-22 after Phase 01 completion*
