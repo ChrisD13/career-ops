@@ -3,6 +3,7 @@ import { join, resolve } from 'path'
 import { is } from '@electron-toolkit/utils'
 import { registerIpcHandlers } from './ipc-handlers'
 import { startFileWatcher } from './watcher'
+import { MtimeCache } from './services/mtime-cache'
 
 function resolveProjectRoot(): string {
   if (!app.isPackaged) {
@@ -50,15 +51,21 @@ function installCspHeader(): void {
   })
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   const projectRoot = resolveProjectRoot()
   console.log('[main] project root:', projectRoot)
 
   installCspHeader()
-  registerIpcHandlers(projectRoot)
+
+  // Shared state across windows + services
+  const pendingGuiWrites = new Set<string>()
+  const mtimeCache = new MtimeCache(projectRoot)
+  await mtimeCache.init()
 
   const mainWindow = createWindow(projectRoot)
-  const stopWatcher = startFileWatcher(projectRoot, mainWindow)
+
+  registerIpcHandlers({ projectRoot, pendingGuiWrites, mtimeCache, win: mainWindow })
+  const stopWatcher = startFileWatcher(projectRoot, mainWindow, pendingGuiWrites)
 
   mainWindow.on('closed', () => {
     stopWatcher()
@@ -67,8 +74,16 @@ app.whenReady().then(() => {
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       const win = createWindow(projectRoot)
-      startFileWatcher(projectRoot, win)
+      startFileWatcher(projectRoot, win, pendingGuiWrites)
+      // NOTE: registerIpcHandlers is idempotent-unsafe (would double-register); we do NOT
+      // re-call it. The new window reuses the handlers registered on the first ready.
+      // If cross-window IPC is needed later, move to a per-window handler registry.
     }
+  })
+
+  // Persist mtime sidecar on app shutdown (best-effort)
+  app.on('before-quit', () => {
+    void mtimeCache.persist().catch(() => { /* non-fatal */ })
   })
 })
 
