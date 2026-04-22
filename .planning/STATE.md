@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-02-PLAN.md — main process + preload bridge complete
-last_updated: "2026-04-22T16:12:52.712Z"
+stopped_at: Completed 01-04-PLAN.md — TrackerPanel, SplitPaneLayout, App.tsx wiring complete
+last_updated: "2026-04-22T17:00:43.715Z"
 last_activity: 2026-04-22
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 5
-  completed_plans: 2
-  percent: 40
+  completed_plans: 4
+  percent: 80
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-21)
 ## Current Position
 
 Phase: 01 (electron-shell-read-only-views) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Ready to execute
 Last activity: 2026-04-22
 
-Progress: [████░░░░░░] 40%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
@@ -55,6 +55,7 @@ Progress: [████░░░░░░] 40%
 
 *Updated after each plan completion*
 | Phase 01-electron-shell-read-only-views P02 | 15 | 4 tasks | 8 files |
+| Phase 01-electron-shell-read-only-views P04 | 145 | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,8 @@ Recent decisions affecting current work:
 - Prompt cache hierarchy: `_shared.md` → `oferta.md` → `cv.md` + `article-digest.md` → `config/profile.yml` + `_profile.md` (stable → volatile), JD in user turn
 - Shared types live in preload/types.ts — single source of truth imported by both main parsers and renderer
 - Zod validation runs in main process before fs.readFile in readReport — renderer-supplied paths are untrusted
+- StatusSelect mounted once above the list (not per-row) for Phase 1 ELEC-03 plumbing proof — Phase 2 moves it inline
+- openReportPath state lives in App.tsx, not TrackerPanel — SplitPaneLayout wraps the panel from outside
 
 ### Pending Todos
 
@@ -94,6 +97,6 @@ Items carried forward (from v2 scope decisions):
 
 ## Session Continuity
 
-Last session: 2026-04-22T16:12:52.700Z
-Stopped at: Completed 01-02-PLAN.md — main process + preload bridge complete
+Last session: 2026-04-22T17:00:43.692Z
+Stopped at: Completed 01-04-PLAN.md — TrackerPanel, SplitPaneLayout, App.tsx wiring complete
 Resume file: None
