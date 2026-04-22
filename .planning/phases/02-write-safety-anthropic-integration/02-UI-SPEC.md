@@ -47,11 +47,11 @@ Palette: **Catppuccin Mocha** — identical token set to Phase 1. No new colors 
 | Accent — Blue | `ctp-blue` | `#89b4fa` | "Evaluate" primary CTA (active), Verify API key button, "Regenerate PDF" button, drawer tab active underline, Settings slide-over header icon |
 | Accent — Green | `ctp-green` | `#a6e3a1` | Cache-hit indicator in token stats row ("Cache: 87% hit"), operations log clean-exit checkmark in sidebar footer |
 | Accent — Yellow | `ctp-yellow` | `#f9e2af` | First-run "add API key" nudge banner (reuses FileChangeBanner pattern), in-flight spinner tint on sidebar Evaluate item |
-| Accent — Red | `ctp-red` | `#f38ba8` | Streaming error banner text/border, operations log non-zero exit badge and drawer tab dot, "File locked by another process" inline error, Cancel-in-flight button hover state |
+| Accent — Red | `ctp-red` | `#f38ba8` | Streaming error banner text/border, operations log non-zero exit badge and drawer tab dot, "File locked by another process" inline error, Stop Evaluation button hover state |
 | Accent — Peach | `ctp-peach` | `#fab387` | Unchanged from Phase 1 (Interview / Offer status badges). No new Phase 2 usage. |
 | Accent — Mauve | `ctp-mauve` | `#cba6f7` | Unchanged from Phase 1 (Evaluated status badge). No new Phase 2 usage. |
 | Accent — Sky | `ctp-sky` | `#89dceb` | Unchanged from Phase 1 (Applied / Responded status badges). No new Phase 2 usage. |
-| Destructive | `ctp-red` | `#f38ba8` | Cancel button (destructive-of-in-flight-request) + 429/500/auth error surfaces |
+| Destructive | `ctp-red` | `#f38ba8` | Stop Evaluation button (destructive-of-in-flight-request) + 429/500/auth error surfaces |
 
 **60/30/10 split breakdown (Phase 2):**
 - 60% `#1e1e2e` — all new panel backgrounds (Evaluate, CV), slide-over dim backdrop
@@ -59,10 +59,10 @@ Palette: **Catppuccin Mocha** — identical token set to Phase 1. No new colors 
 - 10% accent — see "Accent reserved for" list below
 
 **Accent reserved for (Phase 2 — explicit list, never global):**
-- Blue (`#89b4fa`): **Primary CTA color for all net-new Phase 2 buttons** — "Evaluate" submit, "Verify" (Settings), "Save" (Settings), "Regenerate PDF", "Scan portals", "Run batch". Also: Settings gear icon hover, drawer tab active underline, streaming token cursor (if rendered).
+- Blue (`#89b4fa`): **Primary CTA color for all net-new Phase 2 buttons** — "Evaluate" submit, "Verify API Key" (Settings), "Save API Key" (Settings), "Regenerate PDF", "Scan portals", "Run batch". Also: Settings gear icon hover, drawer tab active underline, streaming token cursor (if rendered).
 - Green (`#a6e3a1`): cache-hit percentage display in token stats; clean-exit checkmark in sidebar footer operations indicator.
 - Yellow (`#f9e2af`): first-run API-key-missing banner tint (15% opacity over surface — same treatment as Phase 1 `FileChangeBanner`), in-flight indicator on sidebar Evaluate item.
-- Red (`#f38ba8`): evaluation error states (429/500/auth), non-zero-exit drawer tab badge dot, "file locked" status-write inline error, destructive-intent Cancel button background hover.
+- Red (`#f38ba8`): evaluation error states (429/500/auth), non-zero-exit drawer tab badge dot, "file locked" status-write inline error, destructive-intent Stop Evaluation button background hover.
 
 **No new Peach, Mauve, or Sky usages** — those remain exclusively reserved for the Phase 1 StatusBadge vocabulary.
 
@@ -75,7 +75,7 @@ Inherits Phase 1 token scale. All multiples of 4. No new tokens.
 | Token | Value | Phase 2 usage |
 |-------|-------|---------------|
 | xs | 4px | Token stats row element gap, drawer tab dot margin |
-| sm | 8px | Settings form label-to-input gap, operations log line padding, Cancel/Retry button gap from Evaluate input |
+| sm | 8px | Settings form label-to-input gap, operations log line padding, Stop Evaluation / Retry Evaluation button gap from Evaluate input |
 | md | 16px | Settings slide-over internal padding, CV panel section padding, Evaluate URL input horizontal padding |
 | lg | 24px | Evaluate panel outer padding (top/left), CV panel outer padding, Settings slide-over header padding |
 | xl | 32px | — (unused, inherited) |
@@ -98,11 +98,11 @@ Inherits Phase 1 token scale. All multiples of 4. No new tokens.
 
 ## Typography
 
-Inherits Phase 1 scale. Four roles, two weights (400 and 600). No new roles added.
+Inherits Phase 1 scale. **Exactly four roles, two weights (400 and 600). No new roles added, and no size exceptions below the declared scale.**
 
 | Role | Size | Weight | Line Height | Phase 2 additional usage |
 |------|------|--------|-------------|--------------------------|
-| Body | 13px | 400 | 1.5 | Streaming report body (via react-markdown pipeline), CV body, Settings inputs, inline error text, drawer tab labels |
+| Body | 13px | 400 | 1.5 | Streaming report body (via react-markdown pipeline), CV body, Settings inputs, inline error text, drawer tab labels, operations log drawer monospace text |
 | Label | 11px | 600 | 1.4 | Token stats row labels ("Input", "Cache hit", "Cost", "Model"), Settings field labels, drawer tab badges, operation timestamps |
 | Heading | 16px | 600 | 1.3 | Evaluate panel title, CV panel title, Settings slide-over title, drawer tab active label |
 | Display | 20px | 600 | 1.2 | Unchanged — only used for markdown H1 inside streaming report and inside CV viewer |
@@ -110,7 +110,7 @@ Inherits Phase 1 scale. Four roles, two weights (400 and 600). No new roles adde
 **Font stack (unchanged):** `'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif`
 
 **Monospace usage (Phase 2 additions):**
-- Operations log drawer text: `ui-monospace, SFMono-Regular, Menlo, Monaco, monospace`, 12px, line-height 1.45 (approaches `ui-monospace`'s native rhythm without going below Phase 1 body readability). Note: 12px is **below** the declared Body 13px — this is a deliberate exception for log density, consistent with VS Code terminal, and only applies to the log drawer content. Line numbers hidden; timestamps are 11px Label tone in `ctp-subtext`.
+- Operations log drawer text: `ui-monospace, SFMono-Regular, Menlo, Monaco, monospace`, **13px** (Body size), line-height 1.45. **Note:** Monospace fonts render visually smaller and denser than Inter at the same point size — the log drawer achieves VS-Code-style line density without introducing a 5th font size. Timestamps are 11px Label tone in `ctp-subtext`; line numbers are hidden.
 - Evaluate URL input: `font-mono` 13px (URLs benefit from monospace alignment, matches the Phase 1 Pipeline panel URL rendering pattern).
 - Token stats row numeric values: `font-mono` 13px for alignment when values update (Input/Cache numbers). Labels remain Inter 11px.
 - Streaming report code blocks: reuse Phase 1 `ReportViewer` code block styling verbatim.
@@ -174,7 +174,7 @@ New primary panel. Dedicated full-viewport view for URL → streaming evaluation
    - URL field pre-fills when user navigates here from a Pipeline entry (selected Pipeline entry URL is passed via App-level state).
 3. **Action button row** (8px below input):
    - Primary: `"Evaluate"` button, height 32px, horizontal padding 16px, bg `ctp-blue`, text `ctp-base`, font-weight 600, border-radius 4px. Left-aligned under the input.
-   - While stream in-flight: button label changes to `"Evaluating..."`, button disables, and a second button `"Cancel"` appears 8px to its right — text `ctp-red`, border `ctp-red`, transparent background, same dimensions.
+   - While stream in-flight: button label changes to `"Evaluating..."`, button disables, and a second button `"Stop Evaluation"` appears 8px to its right — text `ctp-red`, border `ctp-red`, transparent background, same dimensions.
    - After successful stream: button label returns to `"Evaluate"`. If URL is unchanged, button remains enabled — user can re-run to test cache hits.
 4. **Inline error banner** (D-03) — appears directly below the action button row when a stream fails:
    - 44px height, full-width of panel minus 24px left/right padding
@@ -182,7 +182,7 @@ New primary panel. Dedicated full-viewport view for URL → streaming evaluation
    - Left icon: lucide `AlertCircle` size 14, `ctp-red`
    - Copy format: see Copywriting Contract below
    - For auth errors, copy includes an inline link `"Open Settings"` (Blue text, underline on hover) that opens the Settings slide-over
-   - Right-aligned `"Retry"` button inside the banner — height 28px, text `ctp-blue`, transparent background, border `ctp-overlay`
+   - Right-aligned `"Retry Evaluation"` button inside the banner — height 28px, text `ctp-blue`, transparent background, border `ctp-overlay`
 5. **Streaming output area** — takes remaining viewport height:
    - Reuses the `ReportViewer` markdown-rendering pipeline (react-markdown + remark-gfm + rehype-sanitize) with the same typography component map from Phase 1
    - Live re-renders as tokens accumulate from the `evaluation:token` IPC event
@@ -257,19 +257,19 @@ Triggered by the gear icon in the sidebar footer, or by clicking the `"Open Sett
 
 1. **Header** — 40px height, flex row:
    - Left: `"Settings"` (Heading 16px/600 `ctp-text`) + `Settings` icon lucide size 14 in `ctp-blue`
-   - Right: close button — lucide `X` size 14, `ctp-subtext` → `ctp-text` on hover, 32px square touch target
+   - Right: close button — lucide `X` size 14, `ctp-subtext` → `ctp-text` on hover, 32px square touch target. `aria-label="Close Settings"`.
 2. **API key field** (grouped block, 24px bottom margin):
    - Label `"Anthropic API Key"` (Label 11px/600 `ctp-subtext`, uppercase `tracking-wider`)
    - Input row: `<input type="password">` (40px height, full width, same styling as Evaluate URL input) + an `<button>` icon button at the right end inside the input wrapper (lucide `Eye` / `EyeOff` toggle, 14px, `ctp-subtext` → `ctp-text`). Clicking toggles `type="password"` ↔ `type="text"` for the duration of the session; never persists as visible.
    - Helper text below input (Body 13px `ctp-subtext`): `"Stored via OS keychain (safeStorage). Never logged."`
    - Masked display mode (when a key is already saved): input shows `"••••••••••••••••"` as the value, but typing replaces it. A small Label-tone text `"Key saved"` appears right-aligned next to the label.
-3. **Verify button**:
+3. **Verify API Key button**:
    - 32px height, full width of field group, bg `ctp-blue`, text `ctp-base`, border-radius 4px
-   - Default label: `"Verify"` (icon lucide `ShieldCheck` size 14, left)
+   - Default label: `"Verify API Key"` (icon lucide `ShieldCheck` size 14, left)
    - While verifying: `"Verifying..."` + `Loader2` spinner; button disabled
    - Success: label flashes to `"Verified ✓"` with checkmark (lucide `Check`) in `ctp-green` for 2 seconds, then reverts
    - Failure: inline error message below button in `ctp-red` Body 13px: `"Could not verify key. Check that the value is correct and you have internet access."`
-4. **Save button** (below Verify, 8px gap): same dimensions, same bg. Label: `"Save"`. Persists the key via `safeStorage` IPC. On success, closes the slide-over and dismisses the first-run banner (if showing).
+4. **Save API Key button** (below Verify, 8px gap): same dimensions, same bg. Label: `"Save API Key"`. Persists the key via `safeStorage` IPC. On success, closes the slide-over and dismisses the first-run banner (if showing).
 5. **Model selector** (grouped block, 32px top margin):
    - Label `"Model"` (Label 11px/600 `ctp-subtext`, uppercase `tracking-wider`)
    - `<select>` element, 40px height, full width, same chrome as the API key input
@@ -285,7 +285,7 @@ Triggered by the gear icon in the sidebar footer, or by clicking the `"Open Sett
 
 **Behavior:**
 - Click anywhere on the banner → opens the Settings slide-over
-- Small `X` close button at the right end (lucide `X` size 14): dismisses for the session (not persistently — reappears on next launch if still no key)
+- Small `X` close button at the right end (lucide `X` size 14) with `aria-label="Dismiss banner"`: dismisses for the session (not persistently — reappears on next launch if still no key)
 - Once a key is saved via Settings, the banner auto-dismisses
 
 ### Operations log drawer (D-18)
@@ -311,7 +311,7 @@ VS Code-style bottom drawer. Collapsible, resizable, tabbed.
   - Max simultaneous tabs: 4 (Scan, Batch, PDF, Evaluate). If a 5th process starts, the oldest inactive tab is closed.
   - Right-aligned close button: lucide `ChevronDown` size 14 — collapses drawer
 - Body (fills remaining drawer height):
-  - Monospace 12px `ctp-text` text, line-height 1.45
+  - **Monospace 13px `ctp-text` text, line-height 1.45** (same Body size as the typography contract; monospace glyph width keeps it visually dense without going below the declared scale)
   - Each line: timestamp `[HH:MM:SS]` in Label 11px `ctp-subtext`, 8px gap, then line content in `ctp-text`
   - stderr lines rendered in `ctp-red`
   - Auto-scroll to bottom unless user manually scrolls up
@@ -348,12 +348,12 @@ Components to build/extend in Phase 2:
 |-----------|--------|-------------|
 | `Sidebar` | **extend** | Add Evaluate + CV nav items; add footer strip (gear + operations indicator) above existing collapse toggle |
 | `NavItem` | reuse as-is | No changes |
-| `EvaluatePanel` | **new** | URL input + primary Evaluate button + Cancel button + inline error banner + streaming output + token stats row |
+| `EvaluatePanel` | **new** | URL input + primary Evaluate button + Stop Evaluation button + inline error banner + streaming output + token stats row |
 | `StreamingReportView` | **new** | Thin wrapper around existing `ReportViewer` markdown component map that re-renders as tokens arrive; preserves scroll position when user scrolls up |
 | `TokenStatsRow` | **new** | 36px bottom-pinned row: Input / Cache hit / Cost / Model groups |
 | `CvPanel` | **new** | Reuses `ReportViewer` for `cv.md` + "Regenerate PDF" button in header |
 | `StatusSelect` | **rewrite** | Remove Phase 1 disabled stub; new per-row click-to-activate behavior; auto-save on change; inline error on lock timeout |
-| `SettingsSlideOver` | **new** | Right-side slide-over: API key field with reveal toggle + Verify button + Save button + model selector |
+| `SettingsSlideOver` | **new** | Right-side slide-over: API key field with reveal toggle + Verify API Key button + Save API Key button + model selector |
 | `ApiKeyField` | **new** | Password input + eye/eye-off reveal toggle + masked-display when key already saved |
 | `VerifyButton` | **new** | Button with loading / success / error states |
 | `OperationsLogDrawer` | **new** | VS Code-style bottom drawer: collapsed 24px handle, expanded 120-480px resizable, tab bar, monospace log body |
@@ -375,14 +375,16 @@ Components to build/extend in Phase 2:
 | Element | Copy |
 |---------|------|
 | Primary CTA (Phase 2) | **"Evaluate"** — the submit button for URL → streaming report. Primary phase verb + object. |
-| Secondary CTAs | `"Cancel"`, `"Retry"`, `"Verify"`, `"Save"`, `"Regenerate PDF"`, `"Scan portals"`, `"Run batch evaluation"` |
+| Secondary CTAs | `"Stop Evaluation"`, `"Retry Evaluation"`, `"Verify API Key"`, `"Save API Key"`, `"Regenerate PDF"`, `"Scan portals"`, `"Run batch evaluation"` |
 | Evaluate panel — empty state heading | `"Paste a URL to evaluate"` |
 | Evaluate panel — empty state body | `"The streaming report will appear here. You'll see tokens arrive as Claude generates them."` |
 | Evaluate panel — disabled input placeholder (no API key) | `"Add your Anthropic API key in Settings to evaluate offers"` |
 | Evaluate panel — disabled input tooltip | `"Configure API key in Settings first"` |
 | Evaluate panel — input placeholder (normal) | `"Paste a job URL..."` |
 | Evaluate panel — in-flight button label | `"Evaluating..."` |
+| Evaluate panel — in-flight secondary button | `"Stop Evaluation"` |
 | Evaluate panel — cancelled trailer line | `"— Evaluation cancelled —"` |
+| Evaluate panel — error banner action button | `"Retry Evaluation"` |
 | Evaluate error: 429 (rate limited) | `"Rate limit hit. Anthropic asked us to wait {retry_after}s. Try again in a moment."` (omit retry-after fragment if header missing: `"Rate limit hit. Try again in a moment."`) |
 | Evaluate error: 500 (server error) | `"Anthropic returned a server error. This usually clears up — try again."` |
 | Evaluate error: auth failure | `"Your Anthropic API key was rejected. Open Settings to check it."` — the "Open Settings" text is a blue link inside the banner. |
@@ -399,10 +401,11 @@ Components to build/extend in Phase 2:
 | Settings — API key label | `"Anthropic API Key"` |
 | Settings — API key helper | `"Stored via OS keychain (safeStorage). Never logged."` |
 | Settings — API key saved badge | `"Key saved"` |
-| Settings — Verify button (idle) | `"Verify"` |
+| Settings — Verify button (idle) | `"Verify API Key"` |
 | Settings — Verify button (in-flight) | `"Verifying..."` |
 | Settings — Verify success (transient) | `"Verified ✓"` |
 | Settings — Verify error | `"Could not verify key. Check that the value is correct and you have internet access."` |
+| Settings — Save button (idle) | `"Save API Key"` |
 | Settings — model label | `"Model"` |
 | Settings — model helper | `"Sonnet: higher quality, higher cost. Haiku: faster, cheaper."` |
 | First-run banner | `"Add your Anthropic API key to evaluate offers — click here to open Settings."` |
@@ -413,7 +416,7 @@ Components to build/extend in Phase 2:
 | Operations drawer — tab names | `"Scan"`, `"Batch"`, `"PDF"`, `"Evaluate"` (matches the launching action) |
 | StatusSelect — lock timeout error | `"File locked by another process — try again."` |
 | StatusSelect — generic write error | `"Could not save status change. Try again."` |
-| Destructive actions | **Cancel in-flight stream** (D-02): no confirmation dialog — single click aborts and shows whatever was generated so far. This is non-destructive *of data* (no file written) and the partial output remains visible, so a confirmation would be friction without value. |
+| Destructive actions | **Stop Evaluation in-flight stream** (D-02): no confirmation dialog — single click aborts and shows whatever was generated so far. This is non-destructive *of data* (no file written) and the partial output remains visible, so a confirmation would be friction without value. |
 | Destructive actions | **Status change via StatusSelect**: no confirmation — auto-save on selection (D-13). Git history is the undo (per CONTEXT.md Deferred). |
 | Destructive actions | **Running batch evaluation / portal scan**: no confirmation — these are idempotent-safe operations (scan dedups via scan-history.tsv; batch respects its own lock files). Starting one while another is running shows a transient inline warning `"{operation} is already running — see the log drawer."` |
 
@@ -422,6 +425,7 @@ Components to build/extend in Phase 2:
 - Errors describe the problem + next step in one sentence. No blame, no jargon.
 - Ellipsis (`...`) is three ASCII dots for in-flight labels (matches Phase 1 loading copy).
 - No exclamation marks.
+- **No generic button labels.** All buttons name their specific action (verb + object), never bare `"Cancel"` / `"Save"` / `"Verify"` / `"Retry"`. This prevents identical-looking buttons from competing for attention across panels.
 
 ---
 
@@ -429,14 +433,14 @@ Components to build/extend in Phase 2:
 
 | Interaction | Trigger | Result |
 |-------------|---------|--------|
-| Evaluate a URL | Paste URL + click `"Evaluate"` (or press Enter in the URL input) | Button → `"Evaluating..."`; Cancel button appears; sidebar Evaluate item shows in-flight spinner; streaming output area starts rendering tokens as they arrive |
-| Cancel in-flight evaluation | Click `"Cancel"` during stream | `AbortController` aborts via IPC; button state returns to idle; partial output stays visible with `"— Evaluation cancelled —"` trailer |
-| Retry after error | Click `"Retry"` in inline error banner | Same as Evaluate, with the same URL |
+| Evaluate a URL | Paste URL + click `"Evaluate"` (or press Enter in the URL input) | Button → `"Evaluating..."`; Stop Evaluation button appears; sidebar Evaluate item shows in-flight spinner; streaming output area starts rendering tokens as they arrive |
+| Cancel in-flight evaluation | Click `"Stop Evaluation"` during stream | `AbortController` aborts via IPC; button state returns to idle; partial output stays visible with `"— Evaluation cancelled —"` trailer |
+| Retry after error | Click `"Retry Evaluation"` in inline error banner | Same as Evaluate, with the same URL |
 | Navigate from Pipeline to Evaluate | Click any Pipeline entry URL | Active panel switches to Evaluate; URL pre-filled; focus on the Evaluate button |
 | Open Settings | Click gear icon in sidebar footer | Slide-over slides in from right; focus trap activates; Escape or click-outside dismisses |
 | Open Settings from auth error | Click `"Open Settings"` link inside the Evaluate error banner | Same as above |
-| Verify API key | Click Verify in Settings (requires non-empty key field) | IPC calls `/models` with the entered key; button label cycles Verifying → Verified ✓ or shows inline error |
-| Save API key | Click Save in Settings | IPC stores via `safeStorage`; slide-over closes; first-run banner dismisses if visible |
+| Verify API key | Click `"Verify API Key"` in Settings (requires non-empty key field) | IPC calls `/models` with the entered key; button label cycles Verifying → Verified ✓ or shows inline error |
+| Save API key | Click `"Save API Key"` in Settings | IPC stores via `safeStorage`; slide-over closes; first-run banner dismisses if visible |
 | Change model | Pick from the model `<select>` | Persisted immediately; no button click needed |
 | Dismiss first-run banner | Click X on banner | Dismisses for session only (returns on next launch if still no key) |
 | Edit a row's status | Click the Status cell on any tracker row | Badge → inline `<select>`; dropdown opens with current value selected; focus moves to the select |
@@ -462,9 +466,11 @@ Components to build/extend in Phase 2:
 
 Extends Phase 1 accessibility rules. All rules from `01-UI-SPEC.md` apply; Phase 2 additions below.
 
-- **Focus order on the Evaluate panel:** URL input → Evaluate button → (if in-flight) Cancel button → streaming output region (as `role="region"` with `aria-label="Evaluation report"`; scrollable focus target)
+- **Focus order on the Evaluate panel:** URL input → Evaluate button → (if in-flight) Stop Evaluation button → streaming output region (as `role="region"` with `aria-label="Evaluation report"`; scrollable focus target)
 - **Streaming output live region:** The streaming output container has `aria-live="polite"` and `aria-busy="true"` while streaming. On completion, `aria-busy="false"`. Screen readers announce periodic progress without interrupting.
 - **Settings slide-over focus trap:** On open, focus moves to the API key input. Tab cycles within the panel. Escape dismisses.
+- **Settings slide-over close button:** `aria-label="Close Settings"` on the lucide `X` button in the header.
+- **First-run banner dismiss button:** `aria-label="Dismiss banner"` on the lucide `X` button at the right end of the banner.
 - **API key reveal toggle:** Button has `aria-pressed={revealed}` and `aria-label="Show API key"` / `"Hide API key"`.
 - **Model `<select>`:** Native HTML select — inherits full platform a11y. No custom ARIA needed.
 - **StatusSelect per-row dropdown:** When activated, the `<select>` receives `aria-label="Edit status for application {num} — {company}, {role}"` so screen readers identify which row is being edited.
@@ -496,7 +502,7 @@ No third-party component registries are introduced in Phase 2. All Phase 2 compo
 | Discretion Area (from CONTEXT.md) | Choice Made | Rationale |
 |---------|---|----|
 | Extended cache `"1h"` TTL vs. standard 5-min | Standard 5-min cache (no Beta header) | Acceptance criterion is `cache_read_input_tokens > 0` on a repeat run; standard TTL covers the success criteria for repeat runs within the session. Extended cache deferred to a future phase if usage data justifies the complexity. |
-| Log drawer height / font / resize | 240px default, 120-480px range; 12px monospace line-height 1.45; 2px top-edge drag handle cursor row-resize | 240px fits ~18 log lines at default; matches VS Code Problems panel height feel; 12px is the smallest readable monospace size while still denser than Body. |
+| Log drawer height / font / resize | 240px default, 120-480px range; **13px monospace** line-height 1.45; 2px top-edge drag handle cursor row-resize | 240px fits ~16 log lines at default; matches VS Code Problems panel height feel. 13px Body size keeps the log within the declared typography scale — monospace glyph width delivers the density without a 5th font size. |
 | "Run batch evaluation" button placement | Pipeline panel header action bar | Both triggers for the batch system (the pipeline URLs feed the batch) live together; Evaluate panel stays focused on the single-URL-at-a-time flow. Reduces clutter in Evaluate. |
 | Model selector options | `claude-sonnet-4-6` (default) + `claude-haiku-4-5` | CONTEXT.md D-07 explicitly scopes the selector to those two values. |
 | Sidebar item count (4 vs 5) | 5 items: Tracker, Reports, Pipeline, Evaluate, CV | The sidebar already scales to 48px collapsed; 5 nav items + 2 footer strip items (gear, ops indicator) + collapse toggle = still under the Phase 1 sidebar length budget. Merging CV into a "Tools" panel would bury the one-click PDF regen behind a click. |
@@ -510,13 +516,13 @@ No third-party component registries are introduced in Phase 2. All Phase 2 compo
 | Evaluate panel as 4th sidebar nav item | CONTEXT.md D-01 |
 | URL pre-fill from Pipeline navigation | CONTEXT.md D-01 |
 | Streaming re-renders through react-markdown pipeline | CONTEXT.md D-01 + Phase 1 `ReportViewer` reuse |
-| Cancel always visible in-flight, shows partial report | CONTEXT.md D-02 |
-| 429/500/auth errors inline (not modal), Retry re-submits | CONTEXT.md D-03 |
+| Stop Evaluation always visible in-flight, shows partial report | CONTEXT.md D-02 |
+| 429/500/auth errors inline (not modal), Retry Evaluation re-submits | CONTEXT.md D-03 |
 | IPC-based streaming via `evaluation:token` / `evaluation:done` / `evaluation:error` | CONTEXT.md D-04 |
 | Token stats row layout + cache-warming copy | CONTEXT.md D-05 |
 | In-flight spinner on sidebar Evaluate item | CONTEXT.md D-06 |
 | Settings slide-over from gear icon in sidebar footer | CONTEXT.md D-07 |
-| API key password + reveal toggle + Verify button + model selector | CONTEXT.md D-07 |
+| API key password + reveal toggle + Verify API Key button + model selector | CONTEXT.md D-07 |
 | First-run dismissible banner copy + disabled URL input | CONTEXT.md D-08 |
 | `safeStorage` (main-process only, `{hasKey: boolean}` to renderer) | CONTEXT.md D-09 |
 | `data/.mtime-cache.json` sidecar (transparent to UI — no visual surface) | CONTEXT.md D-10 |
