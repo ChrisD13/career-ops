@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: executing
+stopped_at: Completed 01-02-PLAN.md — main process + preload bridge complete
+last_updated: "2026-04-22T16:12:52.712Z"
+last_activity: 2026-04-22
+progress:
+  total_phases: 3
+  completed_phases: 0
+  total_plans: 5
+  completed_plans: 2
+  percent: 40
+---
+
 # Project State
 
 ## Project Reference
@@ -5,20 +21,21 @@
 See: .planning/PROJECT.md (updated 2026-04-21)
 
 **Core value:** Surface the right startup opportunities from leading VC portfolios before they appear on job boards, and manage the entire pipeline from discovery through offer — without opening a terminal.
-**Current focus:** Phase 1 — Electron Shell + Read-Only Views
+**Current focus:** Phase 01 — electron-shell-read-only-views
 
 ## Current Position
 
-Phase: 1 of 3 (Electron Shell + Read-Only Views)
-Plan: 0 of 5 in current phase
+Phase: 01 (electron-shell-read-only-views) — EXECUTING
+Plan: 2 of 5
 Status: Ready to execute
-Last activity: 2026-04-21 — Roadmap created (3 phases, 19 requirements mapped)
+Last activity: 2026-04-22
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 0
 - Average duration: -
 - Total execution time: 0 hours
@@ -32,10 +49,12 @@ Progress: [░░░░░░░░░░] 0%
 | 3. VC Portfolio Discovery | 0/TBD | - | - |
 
 **Recent Trend:**
+
 - Last 5 plans: none yet
 - Trend: n/a (not started)
 
 *Updated after each plan completion*
+| Phase 01-electron-shell-read-only-views P02 | 15 | 4 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -49,6 +68,8 @@ Recent decisions affecting current work:
 - VC scraper as standalone `scrape-vcs.mjs` — child_process.fork from Electron, runnable via CLI/cron
 - TSV-addition pattern is mandatory for GUI tracker writes — never direct writes to `applications.md`
 - Prompt cache hierarchy: `_shared.md` → `oferta.md` → `cv.md` + `article-digest.md` → `config/profile.yml` + `_profile.md` (stable → volatile), JD in user turn
+- Shared types live in preload/types.ts — single source of truth imported by both main parsers and renderer
+- Zod validation runs in main process before fs.readFile in readReport — renderer-supplied paths are untrusted
 
 ### Pending Todos
 
@@ -73,6 +94,6 @@ Items carried forward (from v2 scope decisions):
 
 ## Session Continuity
 
-Last session: 2026-04-22
-Stopped at: Phase 1 plans complete (5 plans, 16 tasks) — ready to execute
-Resume file: .planning/phases/01-electron-shell-read-only-views/01-01-PLAN.md
+Last session: 2026-04-22T16:12:52.700Z
+Stopped at: Completed 01-02-PLAN.md — main process + preload bridge complete
+Resume file: None

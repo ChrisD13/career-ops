@@ -29,7 +29,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. User can see the pipeline inbox from `data/pipeline.md` with pending URLs listed
   5. User can pick a canonical status from a dropdown whose options are loaded from `templates/states.yml` (selection UI exists; persistence hardens in Phase 2)
 **Plans**: 5 plans
-  - [ ] 01-01-PLAN.md — Electron workspace scaffold: package.json, electron-vite config, Tailwind + Catppuccin tokens, TypeScript, renderer entry HTML
+  - [x] 01-01-PLAN.md — Electron workspace scaffold: package.json, electron-vite config, Tailwind + Catppuccin tokens, TypeScript, renderer entry HTML
   - [ ] 01-02-PLAN.md — Main process, preload bridge, Zod-validated IPC handlers, chokidar watcher, parsers ported from career.go + statuses.mjs
   - [ ] 01-03-PLAN.md — Renderer shell: AppShell, Sidebar, shared components (ScoreBadge, StatusBadge, FileChangeBanner, EmptyState, ErrorState) + human-verify checkpoint
   - [ ] 01-04-PLAN.md — Tracker panel (react-window virtualization, 9-column row), disabled StatusSelect (ELEC-03 plumbing proof), SplitPaneLayout

@@ -4,11 +4,16 @@
 
 ### ELEC — Electron App
 
-- [ ] **ELEC-01**: User can launch a local Electron desktop app that opens the job search pipeline (secure baseline: `contextIsolation: true`, `sandbox: true`, `nodeIntegration: false`, CSP, narrow `contextBridge`)
-- [ ] **ELEC-02**: User can view the full application tracker — all rows from `data/applications.md` — with virtualized rendering for 740+ entries
-- [ ] **ELEC-03**: User can edit the canonical status of any tracker row using a dropdown constrained to `templates/states.yml` values
-- [ ] **ELEC-04**: User can open and read any evaluation report from `reports/*.md` rendered as formatted markdown
-- [ ] **ELEC-05**: User can view and manage the pipeline inbox (`data/pipeline.md`) — see pending URLs and remove processed entries
+- [x] **ELEC-01
+**: User can launch a local Electron desktop app that opens the job search pipeline (secure baseline: `contextIsolation: true`, `sandbox: true`, `nodeIntegration: false`, CSP, narrow `contextBridge`)
+- [x] **ELEC-02
+**: User can view the full application tracker — all rows from `data/applications.md` — with virtualized rendering for 740+ entries
+- [x] **ELEC-03
+**: User can edit the canonical status of any tracker row using a dropdown constrained to `templates/states.yml` values
+- [x] **ELEC-04
+**: User can open and read any evaluation report from `reports/*.md` rendered as formatted markdown
+- [x] **ELEC-05
+**: User can view and manage the pipeline inbox (`data/pipeline.md`) — see pending URLs and remove processed entries
 - [ ] **ELEC-06**: User can view their CV (`cv.md`) and regenerate the PDF in one click (invokes `generate-pdf.mjs`)
 - [ ] **ELEC-07**: User can trigger a portal scan from the GUI (invokes `scan.mjs`) and trigger batch evaluation runs
 - [ ] **ELEC-08**: All GUI write operations use concurrent-write safety — `proper-lockfile` + `write-file-atomic`; new tracker entries always go through the TSV-addition pattern (`batch/tracker-additions/` + `merge-tracker.mjs`), never direct writes to `applications.md`
