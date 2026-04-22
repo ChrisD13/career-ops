@@ -28,6 +28,7 @@
 - [ ] **VC-03**: System can filter discovered companies to those with funding announced within the last 12 months AND active job listings matching the user's target roles from `config/profile.yml`
 - [ ] **VC-04**: User can browse filtered VC companies in a discovery view in the Electron GUI — company name, firm, funding signal, and a "Promote to pipeline" button that adds the company's careers URL to `data/pipeline.md`
 - [ ] **VC-05**: User can see scraper health in the GUI — per-firm last-run timestamp, company count, and an alert when a firm's count drops >20% (DOM drift signal)
+- [ ] **VC-06**: User can add a new VC firm to the target list from the GUI — providing the firm name and portfolio page URL; the new entry is persisted to `portals.yml` (or a dedicated `config/vc-firms.yml`) and included in the next scrape run
 
 ---
 
@@ -66,7 +67,7 @@
 | API-05 | Phase 4 — Smart File Reads |
 | VC-01, VC-02 | Phase 5 — VC Scraper |
 | VC-03 | Phase 6 — Company Filtering |
-| VC-04, VC-05 | Phase 6 — VC Discovery UI |
+| VC-04, VC-05, VC-06 | Phase 6 — VC Discovery UI |
 
 ---
 
