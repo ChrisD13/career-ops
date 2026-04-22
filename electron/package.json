@@ -1,0 +1,50 @@
+{
+  "name": "jobengine-electron",
+  "version": "0.1.0",
+  "private": true,
+  "main": "out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
+    "pack": "electron-vite build && electron-builder --dir",
+    "dist": "electron-vite build && electron-builder"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-window": "1.8.10",
+    "react-markdown": "10.1.0",
+    "remark-gfm": "4.0.1",
+    "rehype-sanitize": "6.0.0",
+    "chokidar": "^5.0.0",
+    "zod": "3.24.3",
+    "js-yaml": "^4.1.1",
+    "lucide-react": "^0.511.0",
+    "@electron-toolkit/preload": "^3.0.1",
+    "@electron-toolkit/utils": "^3.0.0"
+  },
+  "devDependencies": {
+    "electron": "41.2.2",
+    "electron-vite": "^5.0.0",
+    "electron-builder": "^26.8.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "5.8.3",
+    "tailwindcss": "^3.4.19",
+    "postcss": "^8.4.49",
+    "autoprefixer": "^10.4.20",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/react-window": "^1.8.8",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.10.1"
+  },
+  "build": {
+    "appId": "io.jobengine.desktop",
+    "productName": "JobEngine",
+    "directories": { "output": "dist" },
+    "linux": { "target": ["AppImage"], "category": "Utility" },
+    "files": ["out/**/*"]
+  }
+}

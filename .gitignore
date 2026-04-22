@@ -42,3 +42,9 @@ bun.lock
 .claude/memory/
 career-dashboard
 package-lock.json
+
+# Electron sub-project build outputs
+electron/node_modules/
+electron/out/
+electron/dist/
+electron/.vite-cache/
