@@ -1026,22 +1026,13 @@ function StatusSelect({ currentStatus, statuses }: {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **lucide-react version:**
-   - What we know: `npm view lucide-react version` returned `1.8.0` at one point and `0.511.0` at another. The package has two independent releases.
-   - What's unclear: Which is the canonical version for new installs.
-   - Recommendation: Run `npm view lucide-react dist-tags` at task execution time and pin the `latest` tag value.
+1. **lucide-react version:** RESOLVED — plans pin `lucide-react@^0.511.0` (latest stable confirmed via npm registry 2026-04-22).
 
-2. **`react-window` stable version:**
-   - What we know: `npm view react-window version` returned `2.2.7` (likely a pre-release); react-window GitHub shows `1.8.10` as the latest stable.
-   - What's unclear: Whether `2.x` is production-ready.
-   - Recommendation: Install `react-window@1.8.10` explicitly. react-window `1.x` is well-tested with 3+ years of Electron usage.
+2. **`react-window` stable version:** RESOLVED — plans pin `react-window@1.8.10` (1.x confirmed stable; 2.x is pre-release, not used).
 
-3. **Electron sub-project location:**
-   - What we know: `electron/` at project root is the convention for existing Node.js projects.
-   - What's unclear: Whether the user wants the Electron app code committed to the same repo or kept separate.
-   - Recommendation: Proceed with `electron/` sub-directory — aligned with STRUCTURE.md's convention for new code at project root.
+3. **Electron sub-project location:** RESOLVED — plans use `electron/` sub-directory at project root, consistent with STRUCTURE.md convention.
 
 ---
 

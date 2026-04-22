@@ -28,7 +28,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User can open any report file from `reports/*.md` and read it rendered as formatted markdown inside the app
   4. User can see the pipeline inbox from `data/pipeline.md` with pending URLs listed
   5. User can pick a canonical status from a dropdown whose options are loaded from `templates/states.yml` (selection UI exists; persistence hardens in Phase 2)
-**Plans**: TBD
+**Plans**: 5 plans
+  - [ ] 01-01-PLAN.md — Electron workspace scaffold: package.json, electron-vite config, Tailwind + Catppuccin tokens, TypeScript, renderer entry HTML
+  - [ ] 01-02-PLAN.md — Main process, preload bridge, Zod-validated IPC handlers, chokidar watcher, parsers ported from career.go + statuses.mjs
+  - [ ] 01-03-PLAN.md — Renderer shell: AppShell, Sidebar, shared components (ScoreBadge, StatusBadge, FileChangeBanner, EmptyState, ErrorState) + human-verify checkpoint
+  - [ ] 01-04-PLAN.md — Tracker panel (react-window virtualization, 9-column row), disabled StatusSelect (ELEC-03 plumbing proof), SplitPaneLayout
+  - [ ] 01-05-PLAN.md — ReportViewer (react-markdown + GFM + sanitize), ReportsPanel, PipelinePanel, final App wiring + phase-exit human verification
 **UI hint**: yes
 
 ### Phase 2: Write Safety + Anthropic Integration
@@ -65,6 +70,6 @@ Phases execute in numeric order: 1 → 2 → 3 (Phase 3 may begin any time after
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Electron Shell + Read-Only Views | 0/TBD | Not started | - |
+| 1. Electron Shell + Read-Only Views | 0/5 | Not started | - |
 | 2. Write Safety + Anthropic Integration | 0/TBD | Not started | - |
 | 3. VC Portfolio Discovery | 0/TBD | Not started | - |
