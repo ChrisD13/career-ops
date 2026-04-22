@@ -5,7 +5,10 @@ function isWSL(): boolean {
   return !!process.env.WSL_DISTRO_NAME || !!process.env.WSLENV
 }
 
-export function startFileWatcher(projectRoot: string, win: BrowserWindow): () => void {
+// pendingGuiWrites is accepted here for forward-compatibility with Plan 01 which adds
+// write-suppression logic. The stub watcher ignores the parameter — Plan 01 will use it.
+export function startFileWatcher(projectRoot: string, win: BrowserWindow, pendingGuiWrites?: Set<string>): () => void {
+  void pendingGuiWrites // used by Plan 01 full implementation
   const paths = [
     `${projectRoot}/data/applications.md`,
     `${projectRoot}/data/pipeline.md`,
