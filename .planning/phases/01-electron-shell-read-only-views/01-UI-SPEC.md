@@ -90,11 +90,11 @@ Exceptions:
 | Role | Size | Weight | Line Height | Usage |
 |------|------|--------|-------------|-------|
 | Body | 13px | 400 (regular) | 1.5 | Table cell values, report body text, pipeline URLs |
-| Label | 11px | 500 (medium) | 1.4 | Table column headers, nav item labels, badge text, metadata |
+| Label | 11px | 600 (semibold) | 1.4 | Table column headers, nav item labels, badge text, metadata |
 | Heading | 16px | 600 (semibold) | 1.3 | Panel titles (e.g. "Reports"), report H2 headings, section headers |
 | Display | 20px | 600 (semibold) | 1.2 | Report H1 headings (rendered from react-markdown), app title in sidebar header |
 
-**Weights used:** 400 and 600 only. Weight 500 is used for labels as a middle ground but must be confirmed as a distinct weight in Inter — if not available, fall back to 600.
+**Weights used:** 400 and 600 only. No intermediate weights.
 
 **Font stack:** `'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif`
 
@@ -103,7 +103,7 @@ Exceptions:
 - `## H2` → Heading (16px / 600)
 - `### H3` → Label (11px / 600, uppercase letter-spacing 0.05em)
 - Body paragraphs → Body (13px / 400)
-- Code blocks → `font-mono` 12px / 400, background `#313244`, border `#45475a`
+- Code blocks → `font-mono` 13px / 400, background `#313244`, border `#45475a`
 - Tables → Body (13px / 400), header row Label (11px / 600)
 
 ---
@@ -111,6 +111,8 @@ Exceptions:
 ## Layout Contract
 
 Source: CONTEXT.md decisions D-06, D-07; Claude's Discretion (navigation structure, split pane sizing).
+
+**Primary visual anchor:** the Score badge column — the colored pill system draws the eye first and signals match quality at a glance.
 
 ### Navigation structure
 
@@ -173,7 +175,7 @@ Active item: Blue accent (`#89b4fa`) left border (3px) + text color change to bl
 
 **PDF column:** Checkmark icon (lucide `Check`, green) if PDF exists; dash `—` in subtext if absent.
 
-**Report column (D-06):** Clickable link text "view" in blue (`#89b4fa`), underline on hover. Click opens the split-pane layout.
+**Report column (D-06):** Clickable link text "Open report" in blue (`#89b4fa`), underline on hover. Click opens the split-pane layout.
 
 ### Status dropdown (D-09)
 
@@ -187,7 +189,7 @@ Active item: Blue accent (`#89b4fa`) left border (3px) + text color change to bl
 
 ### Split pane layout (D-06)
 
-Triggered when user clicks a "view" report link from the Tracker panel.
+Triggered when user clicks an "Open report" link from the Tracker panel.
 
 | Pane | Width | Content |
 |------|-------|---------|
@@ -269,6 +271,7 @@ Components to build in Phase 1 (no library — manual Tailwind):
 | Pipeline empty state body | "Add job URLs to data/pipeline.md to see them here." |
 | File-change banner | "Files changed — click to refresh" |
 | Status dropdown tooltip | "Status editing available in Phase 2" |
+| Report column link text | "Open report" |
 | Error: file read failure | "Could not read {filename}. Check that the file exists and is readable." |
 | Error: markdown parse failure | "Could not render this report. The file may be empty or malformed." |
 | Error: watcher failure | "File watching stopped unexpectedly. Restart the app to resume auto-refresh." |
@@ -280,7 +283,7 @@ Components to build in Phase 1 (no library — manual Tailwind):
 
 | Interaction | Trigger | Result |
 |-------------|---------|--------|
-| Open report from tracker | Click "view" link in Report column | Split pane opens: tracker left (45%), report right (55%) |
+| Open report from tracker | Click "Open report" link in Report column | Split pane opens: tracker left (45%), report right (55%) |
 | Close report split pane | Click "×" in report pane header | Returns to full-width tracker |
 | Open report from Reports panel | Click any filename in report list | Report renders in right side of Reports panel |
 | Navigate between panels | Click sidebar nav item | Content area switches panel; active item highlighted |
