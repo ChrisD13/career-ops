@@ -282,10 +282,14 @@ func loadJobURLs(careerOpsPath string) map[string]string {
 
 // enrichFromScanHistory fills JobURL from scan-history.tsv by matching company name.
 func enrichFromScanHistory(careerOpsPath string, apps []model.CareerApplication) {
-	scanPath := filepath.Join(careerOpsPath, "scan-history.tsv")
+	scanPath := filepath.Join(careerOpsPath, "data", "scan-history.tsv")
 	scanData, err := os.ReadFile(scanPath)
 	if err != nil {
-		return
+		scanPath = filepath.Join(careerOpsPath, "scan-history.tsv")
+		scanData, err = os.ReadFile(scanPath)
+		if err != nil {
+			return
+		}
 	}
 
 	// Build company -> URL index from scan-history
@@ -559,7 +563,7 @@ func UpdateApplicationStatus(careerOpsPath string, app model.CareerApplication, 
 		// Match by report number
 		if app.ReportNumber != "" && strings.Contains(line, fmt.Sprintf("[%s]", app.ReportNumber)) {
 			// Replace the status field
-			lines[i] = replaceStatusInLine(line, app.Status, newStatus)
+			lines[i] = replaceStatusInLine(line, newStatus)
 			found = true
 			break
 		}
@@ -572,10 +576,23 @@ func UpdateApplicationStatus(careerOpsPath string, app model.CareerApplication, 
 	return os.WriteFile(filePath, []byte(strings.Join(lines, "\n")), 0644)
 }
 
-// replaceStatusInLine replaces the old status with new status in a table line.
-func replaceStatusInLine(line, oldStatus, newStatus string) string {
-	// Case-insensitive replacement of the status field
-	return strings.Replace(line, oldStatus, newStatus, 1)
+// replaceStatusInLine replaces only the status column in a tracker row.
+func replaceStatusInLine(line, newStatus string) string {
+	if !strings.Contains(line, "|") {
+		return line
+	}
+
+	parts := strings.Split(strings.Trim(line, "|"), "|")
+	if len(parts) < 8 {
+		return line
+	}
+
+	for i := range parts {
+		parts[i] = strings.TrimSpace(parts[i])
+	}
+	parts[5] = newStatus
+
+	return "| " + strings.Join(parts, " | ") + " |"
 }
 
 // cleanTableCell removes trailing pipes and whitespace from a table cell value.

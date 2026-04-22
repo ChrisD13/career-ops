@@ -57,6 +57,7 @@ const SYSTEM_PATHS = [
   'batch/batch-prompt.md',
   'batch/batch-runner.sh',
   'dashboard/',
+  'lib/',
   'templates/',
   'fonts/',
   '.claude/skills/',

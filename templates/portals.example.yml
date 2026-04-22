@@ -6,6 +6,9 @@
 #   2. Greenhouse API → structured JSON (fast, Greenhouse-only)
 #   3. WebSearch with site: filters (broad discovery, may be stale)
 #
+# Note: the standalone `node scan.mjs` helper currently runs only the
+# API-detectable subset of this broader strategy.
+#
 # IMPORTANT: Each company in tracked_companies MUST have careers_url.
 #   Prefer the BRANDED company careers URL whenever available; use ATS-hosted URL only as fallback.
 #   ✅ https://careers.mastercard.com   ⚠️ https://mastercard.wd1.myworkdayjobs.com (fallback only)

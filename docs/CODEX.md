@@ -58,8 +58,9 @@ layer.
 ## Verification
 
 ```bash
+npm test
 npm run verify
 
 # optional dashboard build
-cd dashboard && go build ./...
+cd dashboard && go test ./... && go build ./...
 ```

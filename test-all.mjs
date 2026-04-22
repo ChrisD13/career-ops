@@ -41,6 +41,26 @@ function run(cmd, args = [], opts = {}) {
 
 function fileExists(path) { return existsSync(join(ROOT, path)); }
 function readFile(path) { return readFileSync(join(ROOT, path), 'utf-8'); }
+function hasCommand(cmd) { return run(`command -v ${cmd}`) !== null; }
+function collectFiles(dir, predicate, baseDir = dir) {
+  const entries = readdirSync(dir, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    if (entry.name === '.git' || entry.name === 'node_modules') continue;
+
+    const fullPath = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...collectFiles(fullPath, predicate, baseDir));
+      continue;
+    }
+    if (predicate(fullPath)) {
+      files.push(fullPath.slice(baseDir.length + 1));
+    }
+  }
+
+  return files.sort();
+}
 
 console.log('\n🧪 career-ops test suite\n');
 
@@ -48,7 +68,7 @@ console.log('\n🧪 career-ops test suite\n');
 
 console.log('1. Syntax checks');
 
-const mjsFiles = readdirSync(ROOT).filter(f => f.endsWith('.mjs'));
+const mjsFiles = collectFiles(ROOT, file => file.endsWith('.mjs'));
 for (const f of mjsFiles) {
   const result = run('node', ['--check', f]);
   if (result !== null) {
@@ -68,6 +88,7 @@ const scripts = [
   { name: 'normalize-statuses.mjs', expectExit: 0 },
   { name: 'dedup-tracker.mjs', expectExit: 0 },
   { name: 'merge-tracker.mjs', expectExit: 0 },
+  { name: 'scan.mjs --dry-run --company __no_match__', expectExit: 0 },
   { name: 'update-system.mjs check', expectExit: 0 },
 ];
 
@@ -82,9 +103,20 @@ for (const { name, allowFail } of scripts) {
   }
 }
 
-// ── 3. LIVENESS CLASSIFICATION ──────────────────────────────────
+// ── 3. FIXTURE TESTS ────────────────────────────────────────────
 
-console.log('\n3. Liveness classification');
+console.log('\n3. Fixture-backed tests');
+
+const nodeTests = run('npm test 2>&1');
+if (nodeTests !== null) {
+  pass('npm test runs OK');
+} else {
+  fail('npm test failed');
+}
+
+// ── 4. LIVENESS CLASSIFICATION ──────────────────────────────────
+
+console.log('\n4. Liveness classification');
 
 try {
   const { classifyLiveness } = await import(pathToFileURL(join(ROOT, 'liveness-core.mjs')).href);
@@ -118,30 +150,43 @@ try {
   fail(`Liveness classification tests crashed: ${e.message}`);
 }
 
-// ── 4. DASHBOARD BUILD ──────────────────────────────────────────
+// ── 5. DASHBOARD BUILD ──────────────────────────────────────────
 
 if (!QUICK) {
-  console.log('\n4. Dashboard build');
-  const goBuild = run('cd dashboard && go build -o /tmp/career-dashboard-test . 2>&1');
-  if (goBuild !== null) {
-    pass('Dashboard compiles');
+  console.log('\n5. Dashboard build');
+  if (!hasCommand('go')) {
+    warn('Go not installed — skipping dashboard build');
   } else {
-    fail('Dashboard build failed');
+    const goTest = run('cd dashboard && go test ./... 2>&1');
+    if (goTest !== null) {
+      pass('Dashboard tests pass');
+    } else {
+      fail('Dashboard tests failed');
+    }
+
+    const goBuild = run('cd dashboard && go build -o /tmp/career-dashboard-test . 2>&1');
+    if (goBuild !== null) {
+      pass('Dashboard compiles');
+    } else {
+      fail('Dashboard build failed');
+    }
   }
 } else {
-  console.log('\n4. Dashboard build (skipped --quick)');
+  console.log('\n5. Dashboard build (skipped --quick)');
 }
 
-// ── 5. DATA CONTRACT ────────────────────────────────────────────
+// ── 6. DATA CONTRACT ────────────────────────────────────────────
 
-console.log('\n5. Data contract validation');
+console.log('\n6. Data contract validation');
 
 // Check system files exist
 const systemFiles = [
   'CLAUDE.md', 'VERSION', 'DATA_CONTRACT.md',
+  'lib/statuses.mjs',
   'modes/_shared.md', 'modes/_profile.template.md',
   'modes/oferta.md', 'modes/pdf.md', 'modes/scan.md',
   'templates/states.yml', 'templates/cv-template.html',
+  '.github/workflows/ci.yml',
   '.claude/skills/career-ops/SKILL.md',
 ];
 
@@ -168,9 +213,9 @@ for (const f of userFiles) {
   }
 }
 
-// ── 6. PERSONAL DATA LEAK CHECK ─────────────────────────────────
+// ── 7. PERSONAL DATA LEAK CHECK ─────────────────────────────────
 
-console.log('\n6. Personal data leak check');
+console.log('\n7. Personal data leak check');
 
 const leakPatterns = [
   'Santiago', 'santifer.io', 'Santifer iRepair', 'Zinkee', 'ALMAS',
@@ -218,9 +263,9 @@ if (!leakFound) {
   pass('No personal data leaks outside allowed files');
 }
 
-// ── 7. ABSOLUTE PATH CHECK ──────────────────────────────────────
+// ── 8. ABSOLUTE PATH CHECK ──────────────────────────────────────
 
-console.log('\n7. Absolute path check');
+console.log('\n8. Absolute path check');
 
 // Same git grep approach: only scans tracked files. Untracked AI tool
 // outputs, local debate artifacts, etc. can't false-positive here.
@@ -235,9 +280,9 @@ if (!absPathResult) {
   }
 }
 
-// ── 8. MODE FILE INTEGRITY ──────────────────────────────────────
+// ── 9. MODE FILE INTEGRITY ──────────────────────────────────────
 
-console.log('\n8. Mode file integrity');
+console.log('\n9. Mode file integrity');
 
 const expectedModes = [
   '_shared.md', '_profile.template.md', 'oferta.md', 'pdf.md', 'scan.md',
@@ -261,9 +306,9 @@ if (shared.includes('_profile.md')) {
   fail('_shared.md does NOT reference _profile.md');
 }
 
-// ── 9. CLAUDE.md INTEGRITY ──────────────────────────────────────
+// ── 10. CLAUDE.md INTEGRITY ──────────────────────────────────────
 
-console.log('\n9. CLAUDE.md integrity');
+console.log('\n10. CLAUDE.md integrity');
 
 const claude = readFile('CLAUDE.md');
 const requiredSections = [
@@ -280,9 +325,9 @@ for (const section of requiredSections) {
   }
 }
 
-// ── 10. VERSION FILE ─────────────────────────────────────────────
+// ── 11. VERSION FILE ─────────────────────────────────────────────
 
-console.log('\n10. Version file');
+console.log('\n11. Version file');
 
 if (fileExists('VERSION')) {
   const version = readFile('VERSION').trim();
