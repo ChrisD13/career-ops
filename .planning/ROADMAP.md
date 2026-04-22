@@ -47,8 +47,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. User can trigger batch evaluation runs and portal scans (`scan.mjs`) from the GUI, and can regenerate their CV PDF in one click from a CV viewer
   5. All GUI writes to `applications.md` go through the TSV-addition pattern (`batch/tracker-additions/` + `merge-tracker.mjs`) with `proper-lockfile` + `write-file-atomic`; zero corruption across 100+ interleaved GUI+batch operations
   6. Repeat evaluations with unchanged context files (`cv.md`, `_profile.md`, `_shared.md`, `profile.yml`) skip re-reading via `data/.mtime-cache.json` sidecar — verifiable by mtime inspection
-**Plans**: TBD
 **UI hint**: yes
+**Plans**: 6 plans
+  - [ ] 02-01-PLAN.md — Write safety foundation: proper-lockfile wrapping merge-tracker.mjs, status-writer service, pendingGuiWrites watcher extension, mtime-cache (Node + TS)
+  - [ ] 02-02-PLAN.md — Anthropic integration + full IPC surface: key-store, evaluation-service (streaming + caching), process-runner, preferences, preload + ipc-handlers expansion, main/index.ts wiring
+  - [ ] 02-03-PLAN.md — Evaluate panel + Settings slide-over: StreamingReportView, TokenStatsRow, InlineErrorBanner, EvaluatePanel, SettingsSlideOver with ApiKeyField / VerifyButton / ModelSelect
+  - [ ] 02-04-PLAN.md — Per-row status editing: rewrite StatusSelect as inline control, extend TrackerRow with edit state, refactor TrackerPanel coordinator, add StatusUpdateToast
+  - [ ] 02-05-PLAN.md — CV panel + Operations drawer + 5-panel app wiring: CvPanel, PdfToast, OperationsLogDrawer, DrawerTab, OpBadge, GearIcon, Sidebar extension, PipelinePanel actions, App.tsx composition
+  - [ ] 02-06-PLAN.md — Phase verification: automated structural + stress test runner, human-verify UI checklist, 02-VERIFICATION.md ledger
 
 ### Phase 3: VC Portfolio Discovery
 **Goal**: Users can discover startup opportunities from 10 leading VC portfolios — filtered to firms with recent funding AND active listings matching their target roles — and promote promising companies into the pipeline without editing any config file
