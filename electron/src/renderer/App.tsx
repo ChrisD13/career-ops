@@ -1,9 +1,11 @@
 import { useEffect, useState, useCallback } from 'react'
 import { Sidebar, PanelId } from './components/Sidebar'
 import { FileChangeBanner } from './components/FileChangeBanner'
-import { EmptyState } from './components/EmptyState'
 import { TrackerPanel } from './components/TrackerPanel'
 import { SplitPaneLayout } from './components/SplitPaneLayout'
+import { ReportViewer } from './components/ReportViewer'
+import { ReportsPanel } from './components/ReportsPanel'
+import { PipelinePanel } from './components/PipelinePanel'
 
 function basename(p: string): string {
   const idx = p.lastIndexOf('/')
@@ -39,7 +41,7 @@ export function App() {
     ? (
       <SplitPaneLayout
         left={<TrackerPanel refreshKey={refreshKey} onOpenReport={handleOpenReport} />}
-        right={<EmptyState heading="Report viewer coming in Plan 05" body={`Will render: ${openReportPath}`} />}
+        right={<ReportViewer path={openReportPath} refreshKey={refreshKey} />}
         rightTitle={basename(openReportPath)}
         onClose={handleCloseReport}
       />
@@ -58,12 +60,8 @@ export function App() {
         <FileChangeBanner visible={filesChanged} onRefresh={handleRefresh} />
         <div className="flex-1 min-h-0 overflow-hidden">
           {activePanel === 'tracker' && trackerView}
-          {activePanel === 'reports' && (
-            <EmptyState heading="Reports panel coming in Plan 05" body="This placeholder will be replaced with the reports browse list in Plan 05." />
-          )}
-          {activePanel === 'pipeline' && (
-            <EmptyState heading="Pipeline panel coming in Plan 05" body="This placeholder will be replaced with the pipeline inbox in Plan 05." />
-          )}
+          {activePanel === 'reports' && <ReportsPanel refreshKey={refreshKey} />}
+          {activePanel === 'pipeline' && <PipelinePanel refreshKey={refreshKey} />}
         </div>
       </main>
     </div>
