@@ -57,17 +57,29 @@
 
 ## Traceability
 
-| Requirement | Phase |
-|-------------|-------|
-| ELEC-01 | Phase 1 — Electron Shell |
-| ELEC-02, ELEC-03, ELEC-04, ELEC-05 | Phase 1 — Electron Shell |
-| ELEC-08 | Phase 2 — Write Safety |
-| ELEC-06, ELEC-07 | Phase 3 — CLI Parity |
-| API-01, API-02, API-03, API-04 | Phase 3 — Anthropic Integration |
-| API-05 | Phase 4 — Smart File Reads |
-| VC-01, VC-02 | Phase 5 — VC Scraper |
-| VC-03 | Phase 6 — Company Filtering |
-| VC-04, VC-05, VC-06 | Phase 6 — VC Discovery UI |
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| ELEC-01 | Phase 1 — Electron Shell + Read-Only Views | Pending |
+| ELEC-02 | Phase 1 — Electron Shell + Read-Only Views | Pending |
+| ELEC-03 | Phase 1 — Electron Shell + Read-Only Views | Pending |
+| ELEC-04 | Phase 1 — Electron Shell + Read-Only Views | Pending |
+| ELEC-05 | Phase 1 — Electron Shell + Read-Only Views | Pending |
+| ELEC-06 | Phase 2 — Write Safety + Anthropic Integration | Pending |
+| ELEC-07 | Phase 2 — Write Safety + Anthropic Integration | Pending |
+| ELEC-08 | Phase 2 — Write Safety + Anthropic Integration | Pending |
+| API-01 | Phase 2 — Write Safety + Anthropic Integration | Pending |
+| API-02 | Phase 2 — Write Safety + Anthropic Integration | Pending |
+| API-03 | Phase 2 — Write Safety + Anthropic Integration | Pending |
+| API-04 | Phase 2 — Write Safety + Anthropic Integration | Pending |
+| API-05 | Phase 2 — Write Safety + Anthropic Integration | Pending |
+| VC-01 | Phase 3 — VC Portfolio Discovery | Pending |
+| VC-02 | Phase 3 — VC Portfolio Discovery | Pending |
+| VC-03 | Phase 3 — VC Portfolio Discovery | Pending |
+| VC-04 | Phase 3 — VC Portfolio Discovery | Pending |
+| VC-05 | Phase 3 — VC Portfolio Discovery | Pending |
+| VC-06 | Phase 3 — VC Portfolio Discovery | Pending |
+
+**Coverage:** 19/19 v2 requirements mapped (ELEC: 8, API: 5, VC: 6). No orphans.
 
 ---
 
