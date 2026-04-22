@@ -5,7 +5,11 @@ function isWSL(): boolean {
   return !!process.env.WSL_DISTRO_NAME || !!process.env.WSLENV
 }
 
-export function startFileWatcher(projectRoot: string, win: BrowserWindow): () => void {
+export function startFileWatcher(
+  projectRoot: string,
+  win: BrowserWindow,
+  pendingGuiWrites: Set<string>,
+): () => void {
   const paths = [
     `${projectRoot}/data/applications.md`,
     `${projectRoot}/data/pipeline.md`,
@@ -23,9 +27,11 @@ export function startFileWatcher(projectRoot: string, win: BrowserWindow): () =>
   const watcher = chokidar.watch(paths, watchOpts)
   let debounceTimer: NodeJS.Timeout | null = null
 
-  watcher.on('all', () => {
+  watcher.on('all', (_event, filePath) => {
     if (debounceTimer) clearTimeout(debounceTimer)
     debounceTimer = setTimeout(() => {
+      // D-15: suppress banner for writes initiated by the GUI itself
+      if (filePath && pendingGuiWrites.has(filePath)) return
       if (!win.isDestroyed()) {
         win.webContents.send('files-changed')
       }
