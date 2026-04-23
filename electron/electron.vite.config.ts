@@ -8,7 +8,9 @@ export default defineConfig({
     build: {
       outDir: 'out/main',
       rollupOptions: {
-        input: { index: resolve(__dirname, 'src/main/index.ts') }
+        input: { index: resolve(__dirname, 'src/main/index.ts') },
+        external: ['electron'],
+        output: { format: 'cjs', entryFileNames: '[name].js', chunkFileNames: '[name].js' }
       }
     }
   },
@@ -17,7 +19,9 @@ export default defineConfig({
     build: {
       outDir: 'out/preload',
       rollupOptions: {
-        input: { index: resolve(__dirname, 'src/preload/index.ts') }
+        input: { index: resolve(__dirname, 'src/preload/index.ts') },
+        external: ['electron'],
+        output: { format: 'cjs', entryFileNames: '[name].js', chunkFileNames: '[name].js' }
       }
     }
   },
