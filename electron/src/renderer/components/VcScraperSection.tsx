@@ -64,6 +64,7 @@ export function VcScraperSection() {
           <span className="text-label text-ctp-subtext uppercase tracking-wider">Cron expression</span>
           <input
             type="text"
+            key={`custom-cron-${interval}`}
             defaultValue={interval}
             onBlur={(e) => void save(e.currentTarget.value)}
             className="w-full mt-1 px-2 py-1 bg-ctp-base border border-ctp-overlay rounded text-body font-mono"
