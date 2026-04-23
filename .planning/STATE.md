@@ -104,3 +104,12 @@ Stopped at: context exhaustion at 96% (2026-04-23)
 Resume file: None
 
 **Planned Phase:** 03 (VC Portfolio Discovery) — 3 plans — 2026-04-23T02:18:36.132Z
+
+## Deferred Items
+
+Items acknowledged and deferred at milestone close on 2026-04-23:
+
+| Category | Item | Status |
+|----------|------|--------|
+| uat | Phase 03: 03-HUMAN-UAT.md | partial — 8 pending scenarios |
+| verification | Phase 03: 03-VERIFICATION.md | human_needed |
