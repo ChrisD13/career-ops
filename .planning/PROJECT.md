@@ -10,13 +10,12 @@ Discover and evaluate the right startup opportunities before they reach job boar
 
 ## Current Milestone: v1.1 — Live Validation + New Panels
 
-**Goal:** Validate the VC scraper against live firm pages, add auto-update infrastructure, and ship two new Electron panels (response-rate analytics, interview prep with Claude).
+**Goal:** Validate the VC scraper against live firm pages, add auto-update infrastructure, and ship a response-rate analytics panel — keeping scope focused on job discovery and application automation.
 
 **Target features:**
 - VC adapter validation — run real scrapes against all 10 firms, fix drifted selectors, add regression harness
 - Electron auto-update — `electron-updater` wired to GitHub Releases with in-app install prompt
 - Response-rate analytics dashboard — new panel showing score-to-outcome correlation and funnel stats
-- Interview prep panel — per-company Claude-generated prep reports, stored in `interview-prep/`, surfaced in GUI
 
 ## Current State (v1.0 — Shipped 2026-04-23)
 
@@ -54,10 +53,6 @@ Discover and evaluate the right startup opportunities before they reach job boar
 - [ ] ANAL-01: Response-rate analytics panel shows score-to-outcome correlation
 - [ ] ANAL-02: Funnel stats visible (applied → responded → interview → offer)
 - [ ] ANAL-03: Panel auto-refreshes when applications.md changes
-- [ ] PREP-01: User can generate a Claude-powered interview prep report from any tracker row
-- [ ] PREP-02: Prep report streams in-app and is saved to interview-prep/ directory
-- [ ] PREP-03: User can browse and view existing prep reports from the panel
-- [ ] PREP-04: Prep generation uses prompt caching for CV and profile context
 
 ### Out of Scope
 
@@ -67,6 +62,7 @@ Discover and evaluate the right startup opportunities before they reach job boar
 - Replacing existing mode files or language translations — Electron consumes them, doesn't replace them
 - Crunchbase API for funding signals — heuristics (RSS, press, Google News) in v1.0; API optional in v2
 - SQLite or any database — file-backed state preserved
+- Interview prep panel — project scope is discovery and application automation only; no prep/coaching features
 
 ## Context
 

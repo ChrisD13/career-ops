@@ -1,4 +1,4 @@
-# Requirements — v1.1 Live Validation + New Panels
+# Requirements — v1.1 Live Validation + Analytics
 
 ## VC Adapter Validation
 
@@ -18,13 +18,6 @@
 - [ ] **ANAL-02** — Funnel visualization shows counts at each stage: applied → responded → interview → offer
 - [ ] **ANAL-03** — Panel refreshes automatically when `applications.md` changes on disk
 
-## Interview Prep Panel
-
-- [ ] **PREP-01** — User can request a Claude-generated interview prep report for any company in the tracker
-- [ ] **PREP-02** — Prep report streams live in the panel and is saved to `interview-prep/{company}-{role}.md`
-- [ ] **PREP-03** — User can browse, search, and open existing prep reports without re-generating
-- [ ] **PREP-04** — Prep generation uses `cache_control` on CV and profile context to minimize token cost
-
 ## Future Requirements (deferred)
 
 - Human UAT for v1.0 Phases 2 + 3 — deferred until project feature-complete
@@ -38,6 +31,7 @@
 - Cloud sync / remote state — local-only
 - SQLite or any database — file-backed state preserved
 - Multi-language modes changes — modes layer is user-configured, not Electron's concern
+- Interview prep panel — project scope is discovery and application automation only
 
 ## Traceability
 
@@ -46,4 +40,3 @@
 | ADPT-01, ADPT-02, ADPT-03 | Phase 4 |
 | UPD-01, UPD-02, UPD-03 | Phase 5 |
 | ANAL-01, ANAL-02, ANAL-03 | Phase 6 |
-| PREP-01, PREP-02, PREP-03, PREP-04 | Phase 7 |
