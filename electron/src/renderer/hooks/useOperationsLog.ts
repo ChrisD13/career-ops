@@ -4,7 +4,7 @@ import type { OpOutputPayload, OpDonePayload } from '../../preload/types'
 export interface OpLine extends OpOutputPayload {}
 export interface OpRun {
   runId: string
-  kind: 'scan' | 'batch' | 'pdf'
+  kind: 'scan' | 'batch' | 'pdf' | 'scrape'
   startedAt: number
   endedAt: number | null
   code: number | null

@@ -14,6 +14,8 @@ export function startFileWatcher(
     `${projectRoot}/data/applications.md`,
     `${projectRoot}/data/pipeline.md`,
     `${projectRoot}/reports`,
+    `${projectRoot}/data/vc-companies.tsv`,
+    `${projectRoot}/data/vc-health.json`,
   ]
 
   const watchOpts: ChokidarOptions = {

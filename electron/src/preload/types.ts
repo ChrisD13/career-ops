@@ -48,7 +48,7 @@ export interface EvaluationErrorPayload {
 
 export interface OpOutputPayload {
   runId: string
-  kind: 'scan' | 'batch' | 'pdf'
+  kind: 'scan' | 'batch' | 'pdf' | 'scrape'
   stream: 'stdout' | 'stderr'
   line: string
   ts: number
@@ -56,7 +56,7 @@ export interface OpOutputPayload {
 
 export interface OpDonePayload {
   runId: string
-  kind: 'scan' | 'batch' | 'pdf'
+  kind: 'scan' | 'batch' | 'pdf' | 'scrape'
   code: number | null
   signal: string | null
 }
@@ -86,6 +86,50 @@ export interface SaveApiKeyResult {
 export interface VerifyApiKeyResult {
   ok: boolean
   error?: string
+}
+
+// Phase 3 — VC Portfolio Discovery types
+export interface VcCompany {
+  firm: string
+  company: string
+  careers_url: string
+  funding_signal: string
+  funding_date: string
+  role_matches: string
+  discovered_at: string
+  promoted: boolean
+}
+
+export interface VcFirmHealth {
+  name: string
+  last_run: string
+  company_count: number
+  baseline_count: number
+  status: 'OK' | 'Stale' | 'Error'
+  reason?: string
+}
+
+export interface VcFirmConfig {
+  name: string
+  portfolio_url: string
+  keywords: string[]
+  enabled?: boolean
+}
+
+export interface PromoteResult { success: boolean; error?: string }
+
+export interface AddFirmResult {
+  success: boolean
+  probeStatus?: number
+  error?: string
+  warning?: string
+}
+
+export interface AddFirmPayload {
+  name: string
+  portfolio_url: string
+  keywords?: string[]
+  bypassProbe?: boolean   // set true when user clicks "Save anyway" after failed probe
 }
 
 export interface ElectronAPI {
@@ -122,6 +166,16 @@ export interface ElectronAPI {
   runBatch: () => Promise<{ runId: string; error?: string }>
   onOperationOutput: (cb: (payload: OpOutputPayload) => void) => () => void
   onOperationDone: (cb: (payload: OpDonePayload) => void) => () => void
+
+  // Phase 3 — VC Portfolio Discovery
+  runVcScrape: () => Promise<{ runId: string }>
+  readVcCompanies: () => Promise<VcCompany[]>
+  readVcHealth: () => Promise<{ firms: VcFirmHealth[] }>
+  promoteToPipeline: (payload: { firm: string; company: string; careersUrl: string }) => Promise<PromoteResult>
+  listVcFirms: () => Promise<VcFirmConfig[]>
+  addVcFirm: (payload: AddFirmPayload) => Promise<AddFirmResult>
+  getVcScrapeInterval: () => Promise<{ interval: string }>
+  setVcScrapeInterval: (interval: string) => Promise<void>
 }
 
 declare global {
