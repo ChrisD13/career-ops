@@ -25,6 +25,7 @@
     --ctp-peach:   250 179 135;  /* #fab387 */
     --ctp-mauve:   203 166 247;  /* #cba6f7 */
     --ctp-sky:     137 220 235;  /* #89dceb */
+    --ctp-teal:    148 226 213;  /* #94e2d5 */
   }
 
   html, body, #root {
@@ -452,6 +453,7 @@
 .op-badge--scan { background: rgb(var(--ctp-blue)); }
 .op-badge--batch { background: rgb(var(--ctp-mauve)); }
 .op-badge--pdf { background: rgb(var(--ctp-peach)); }
+.op-badge--scrape { background: rgb(var(--ctp-teal)); color: rgb(var(--ctp-base)); }
 .op-badge--idle { opacity: 0.5; }
 .op-badge--active { animation: op-badge-pulse 1.2s ease-in-out infinite; }
 .op-badge--fail { background: rgb(var(--ctp-red)); }
