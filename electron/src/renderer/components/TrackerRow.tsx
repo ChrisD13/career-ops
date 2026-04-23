@@ -3,10 +3,16 @@ import { Check } from 'lucide-react'
 import type { TrackerRow as TrackerRowData } from '../../preload/types'
 import { ScoreBadge } from './ScoreBadge'
 import { StatusBadge } from './StatusBadge'
+import { StatusSelect, type StatusOption } from './StatusSelect'
 
 export interface TrackerRowItemData {
   rows: TrackerRowData[]
+  statusOptions: StatusOption[]
+  activeEditRow: number | null
   onOpenReport: (reportPath: string) => void
+  onStartEdit: (num: number) => void
+  onSave: (num: number, newStatus: string) => Promise<void>
+  onCancelEdit: () => void
 }
 
 // Pixel widths from UI-SPEC. Notes is flex via flex-1.
@@ -25,9 +31,13 @@ const CELL = {
 export function TrackerRow({ index, style, data }: ListChildComponentProps<TrackerRowItemData>) {
   const row = data.rows[index]
   if (!row) return null
+
+  const isEditing = data.activeEditRow === row.num
+
   const handleOpenReport = () => {
     if (row.reportPath) data.onOpenReport(row.reportPath)
   }
+
   return (
     <div
       style={style}
@@ -42,7 +52,25 @@ export function TrackerRow({ index, style, data }: ListChildComponentProps<Track
         <ScoreBadge score={row.score} raw={row.scoreRaw} />
       </div>
       <div role="gridcell" className={CELL.status}>
-        <StatusBadge status={row.status} />
+        {isEditing ? (
+          <StatusSelect
+            currentStatus={row.status}
+            options={data.statusOptions}
+            onSave={(newStatus) => data.onSave(row.num, newStatus)}
+            onCancel={data.onCancelEdit}
+            autoFocus
+          />
+        ) : (
+          <button
+            type="button"
+            className="tracker-row__status-btn bg-transparent border border-dashed border-transparent px-1 py-0.5 rounded cursor-pointer hover:border-ctp-overlay hover:bg-ctp-surface focus:outline-none focus:ring-2 focus:ring-ctp-mauve focus:ring-offset-0"
+            onClick={() => data.onStartEdit(row.num)}
+            title="Click to edit status"
+            aria-label={`Change status (currently ${row.status})`}
+          >
+            <StatusBadge status={row.status} />
+          </button>
+        )}
       </div>
       <div role="gridcell" className={CELL.pdf}>
         {row.hasPDF
