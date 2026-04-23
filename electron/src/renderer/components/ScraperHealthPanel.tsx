@@ -58,6 +58,11 @@ export function ScraperHealthPanel({ firms }: Props) {
                       <span className="inline-flex items-center gap-2">
                         <HealthStatusDot status={f.status} reason={f.reason} />
                         <span>{f.status}</span>
+                        {f.status === 'Error' && f.reason && (
+                          <span className="text-ctp-subtext text-label" data-testid="health-reason-text">
+                            — {f.reason}
+                          </span>
+                        )}
                       </span>
                     </td>
                     <td className="px-3 py-1 text-ctp-subtext">{formatDate(f.last_run)}</td>
