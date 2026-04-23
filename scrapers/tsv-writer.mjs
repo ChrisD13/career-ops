@@ -33,9 +33,9 @@ export async function writeCompaniesTsv(tsvPath, companies) {
 // Merge helper: dedupe by (firm, company), preserve promoted flag from existing rows
 export function mergeCompanies(existing, fresh) {
   const byKey = new Map();
-  for (const row of existing) byKey.set(`${row.firm} ${row.company}`, row);
+  for (const row of existing) byKey.set(`${row.firm}\t${row.company}`, row);
   for (const row of fresh) {
-    const key = `${row.firm} ${row.company}`;
+    const key = `${row.firm}\t${row.company}`;
     const prev = byKey.get(key);
     byKey.set(key, {
       ...row,
