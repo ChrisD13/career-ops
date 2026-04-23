@@ -2,6 +2,20 @@ import { existsSync, mkdirSync, readFileSync } from 'fs';
 import { dirname } from 'path';
 import writeFileAtomic from 'write-file-atomic';
 
+/**
+ * Classify a raw error or condition into a canonical reason code.
+ * @param {Error|null|undefined} err — thrown error, or null/undefined if adapter returned 0 companies
+ * @returns {'selector_miss'|'timeout'|'robots_block'|'network_error'}
+ */
+export function normalizeReason(err) {
+  if (!err) return 'selector_miss';
+  if (err.name === 'TimeoutError') return 'timeout';
+  const msg = err.message ?? '';
+  if (/timeout/i.test(msg)) return 'timeout';
+  if (/robots/i.test(msg)) return 'robots_block';
+  return 'network_error';
+}
+
 export function readHealth(path) {
   if (!existsSync(path)) return { firms: [] };
   try {
