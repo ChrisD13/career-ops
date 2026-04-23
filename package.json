@@ -17,6 +17,7 @@
     "rollback": "node update-system.mjs rollback",
     "liveness": "node check-liveness.mjs",
     "scan": "node scan.mjs",
+    "validate:adapters": "node validate-adapters.mjs",
     "gemini:eval": "node gemini-eval.mjs"
   },
   "keywords": [
