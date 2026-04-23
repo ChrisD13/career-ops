@@ -468,17 +468,19 @@ Naming function: `firm.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9
 
 **If this table is empty:** All claims in this research were verified or cited — no user confirmation needed. (A1-A4 are low-risk implementation details, not user-facing decisions.)
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Benchmark in `validate-adapters.mjs`**
    - What we know: `benchmark.mjs` always returns `[]` with no network call; config marks it `enabled: false`
    - What's unclear: Should `validate-adapters.mjs` skip Benchmark (it's disabled in config), or run it explicitly to verify the no-op contract?
    - Recommendation: Skip it in `validate-adapters.mjs` (it filters `f.enabled !== false && f.portfolio_url`); include the no-op test in `tests/adapters.test.mjs` for contract coverage
+   - RESOLVED: Plans 02 + 03 implement this split — skipped in live validation, tested in harness
 
 2. **validate-adapters.mjs --capture for pagination adapters**
    - What we know: general-catalyst and accel have "Load More" / pagination loops in their adapters
    - What's unclear: After adapter completes, the page is closed. The `--capture` path opens a fresh page and calls `page.goto()` without the pagination loop — it captures page 1 only
    - Recommendation: Accept page-1-only capture; document in comments; the fixture test for GC/Accel covers the "can parse at least one page" contract
+   - RESOLVED: Plan 02 Task 2 documents page-1-only limitation in capture step comments
 
 ## Environment Availability
 
