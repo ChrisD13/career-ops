@@ -19,6 +19,7 @@ export interface StartOpOpts {
   cwd: string
   win: BrowserWindow
   envOverrides?: Record<string, string>
+  onExit?: (code: number | null, signal: string | null) => void
 }
 
 export function startOp(opts: StartOpOpts): string {
@@ -57,6 +58,7 @@ export function startOp(opts: StartOpOpts): string {
     if (!opts.win.isDestroyed()) {
       opts.win.webContents.send('op:done', { runId, kind: opts.kind, code, signal })
     }
+    opts.onExit?.(code, signal)
   })
 
   child.on('error', (err) => {
@@ -67,6 +69,7 @@ export function startOp(opts: StartOpOpts): string {
       })
       opts.win.webContents.send('op:done', { runId, kind: opts.kind, code: -1, signal: null })
     }
+    opts.onExit?.(-1, null)
   })
 
   activeOps.set(runId, { kind: opts.kind, runId, child })
