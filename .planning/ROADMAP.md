@@ -32,7 +32,11 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
   1. User can run a full scrape and see at least one company record returned from each of the 10 VC firms
   2. User can open the Discover panel health view and see per-firm status including any errors (selector miss, timeout, robots block)
   3. A test run against saved fixtures catches a deliberately broken selector and reports failure without hitting live pages
-**Plans**: TBD
+**Plans:** 3 plans
+Plans:
+- [ ] 04-01-PLAN.md — Canonical reason codes: normalizeReason() + 3 scrape-vcs callsites + inline reason text in ScraperHealthPanel (ADPT-02)
+- [ ] 04-02-PLAN.md — validate-adapters.mjs + selector drift fixes + 10 captured HTML fixtures (ADPT-01)
+- [ ] 04-03-PLAN.md — Offline Playwright regression harness at tests/adapters.test.mjs via context.route() (ADPT-03)
 
 ### Phase 5: Electron Auto-Update
 **Goal**: The app silently checks GitHub Releases on startup and lets the user install a new version with one click
