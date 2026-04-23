@@ -120,6 +120,7 @@ export interface PromoteResult { success: boolean; error?: string }
 
 export interface AddFirmResult {
   success: boolean
+  kind?: 'probe' | 'save'
   probeStatus?: number
   error?: string
   warning?: string

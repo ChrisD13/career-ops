@@ -39,7 +39,7 @@ export function AddFirmModal({ onClose, onSuccess }: Props) {
       bypassProbe,
     })
     if (result.success) { await onSuccess(); return }
-    if (typeof result.probeStatus !== 'undefined' || (result.error ?? '').toLowerCase().includes('probe') || (result.error ?? '').toLowerCase().includes('url')) {
+    if (result.kind === 'probe') {
       setSubmit({ kind: 'probe-failed', error: result.error ?? 'URL verification failed', probeStatus: result.probeStatus })
     } else {
       setSubmit({ kind: 'save-error', error: result.error ?? 'Failed to save' })

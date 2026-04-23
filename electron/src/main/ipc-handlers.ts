@@ -190,6 +190,7 @@ export function registerIpcHandlers(deps: HandlerDeps): void {
       if (!probe.ok) {
         return {
           success: false,
+          kind: 'probe' as const,
           probeStatus: probe.status,
           error: probe.error ?? `URL unreachable (${probe.status ?? 'no response'})`,
         }
@@ -211,7 +212,7 @@ export function registerIpcHandlers(deps: HandlerDeps): void {
         warning: parsed.bypassProbe ? 'Saved without URL verification' : undefined,
       }
     } catch (err: any) {
-      return { success: false, error: err?.message ?? 'save failed' }
+      return { success: false, kind: 'save' as const, error: err?.message ?? 'save failed' }
     }
   })
 
