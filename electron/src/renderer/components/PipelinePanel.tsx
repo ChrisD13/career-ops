@@ -7,8 +7,16 @@ interface Props {
   refreshKey: number
   onRunScan: () => void
   onRunBatch: () => void
+  onRunMergeTracker: () => void
+  onRunCheckLiveness: () => void
+  onRunAnalyzePatterns: () => void
+  onRunFollowupCadence: () => void
   scanActive: boolean
   batchActive: boolean
+  mergeTrackerActive: boolean
+  checkLivenessActive: boolean
+  patternsActive: boolean
+  followupActive: boolean
   hasApiKey: boolean
 }
 
@@ -17,7 +25,10 @@ type LoadState =
   | { kind: 'error'; message: string }
   | { kind: 'ready'; entries: PipelineEntry[] }
 
-export function PipelinePanel({ refreshKey, onRunScan, onRunBatch, scanActive, batchActive, hasApiKey }: Props) {
+export function PipelinePanel({
+  refreshKey, onRunScan, onRunBatch, onRunMergeTracker, onRunCheckLiveness, onRunAnalyzePatterns, onRunFollowupCadence,
+  scanActive, batchActive, mergeTrackerActive, checkLivenessActive, patternsActive, followupActive, hasApiKey,
+}: Props) {
   const [state, setState] = useState<LoadState>({ kind: 'loading' })
 
   const fetchData = () => {
@@ -63,6 +74,48 @@ export function PipelinePanel({ refreshKey, onRunScan, onRunBatch, scanActive, b
           data-testid="pipeline-batch"
         >
           {batchActive ? 'Running batch…' : 'Run Batch'}
+        </button>
+      </div>
+      <div className="pipeline-panel__actions pipeline-panel__actions--tools">
+        <button
+          type="button"
+          className="pipeline-panel__action pipeline-panel__action--tool"
+          onClick={onRunMergeTracker}
+          disabled={mergeTrackerActive}
+          data-testid="pipeline-merge-tracker"
+          title="Merge batch/tracker additions into applications.md"
+        >
+          {mergeTrackerActive ? 'Merging…' : 'Merge Tracker'}
+        </button>
+        <button
+          type="button"
+          className="pipeline-panel__action pipeline-panel__action--tool"
+          onClick={onRunCheckLiveness}
+          disabled={checkLivenessActive}
+          data-testid="pipeline-check-liveness"
+          title="Check if pipeline URLs are still live job postings"
+        >
+          {checkLivenessActive ? 'Checking…' : 'Check Liveness'}
+        </button>
+        <button
+          type="button"
+          className="pipeline-panel__action pipeline-panel__action--tool"
+          onClick={onRunAnalyzePatterns}
+          disabled={patternsActive}
+          data-testid="pipeline-patterns"
+          title="Analyze rejection patterns (output in ops log)"
+        >
+          {patternsActive ? 'Analyzing…' : 'Patterns'}
+        </button>
+        <button
+          type="button"
+          className="pipeline-panel__action pipeline-panel__action--tool"
+          onClick={onRunFollowupCadence}
+          disabled={followupActive}
+          data-testid="pipeline-followup"
+          title="Show follow-up schedule for active applications (output in ops log)"
+        >
+          {followupActive ? 'Calculating…' : 'Follow-up Cadence'}
         </button>
       </div>
       <div className="h-9 flex items-center px-4 border-b border-ctp-overlay bg-ctp-surface sticky top-0">

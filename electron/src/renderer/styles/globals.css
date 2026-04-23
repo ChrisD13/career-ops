@@ -485,6 +485,20 @@
   font-weight: 600;
 }
 .pipeline-panel__action:disabled { opacity: 0.5; cursor: not-allowed; }
+.pipeline-panel__actions--tools {
+  background: rgb(var(--ctp-base));
+  border-top: none;
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+  flex-wrap: wrap;
+}
+.pipeline-panel__action--tool {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  background: transparent;
+  color: rgb(var(--ctp-subtext1));
+  border-color: rgb(var(--ctp-overlay));
+}
 
 /* --- Phase 2: App root layout --- */
 .app-root {

@@ -48,7 +48,7 @@ export interface EvaluationErrorPayload {
 
 export interface OpOutputPayload {
   runId: string
-  kind: 'scan' | 'batch' | 'pdf' | 'scrape'
+  kind: 'scan' | 'batch' | 'pdf' | 'scrape' | 'merge-tracker' | 'check-liveness' | 'patterns' | 'followup' | 'latex'
   stream: 'stdout' | 'stderr'
   line: string
   ts: number
@@ -56,7 +56,7 @@ export interface OpOutputPayload {
 
 export interface OpDonePayload {
   runId: string
-  kind: 'scan' | 'batch' | 'pdf' | 'scrape'
+  kind: 'scan' | 'batch' | 'pdf' | 'scrape' | 'merge-tracker' | 'check-liveness' | 'patterns' | 'followup' | 'latex'
   code: number | null
   signal: string | null
 }
@@ -167,6 +167,13 @@ export interface ElectronAPI {
   runBatch: () => Promise<{ runId: string; error?: string }>
   onOperationOutput: (cb: (payload: OpOutputPayload) => void) => () => void
   onOperationDone: (cb: (payload: OpDonePayload) => void) => () => void
+
+  // Pipeline tools
+  runMergeTracker: () => Promise<{ runId: string }>
+  runCheckLiveness: () => Promise<{ runId: string }>
+  runAnalyzePatterns: () => Promise<{ runId: string }>
+  runFollowupCadence: () => Promise<{ runId: string }>
+  runGenerateLatex: () => Promise<{ runId: string }>
 
   // Phase 3 — VC Portfolio Discovery
   runVcScrape: () => Promise<{ runId: string; error?: string }>

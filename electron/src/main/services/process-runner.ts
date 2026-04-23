@@ -2,7 +2,7 @@ import { spawn, type ChildProcess } from 'child_process'
 import type { BrowserWindow } from 'electron'
 import * as readline from 'readline'
 
-export type OpKind = 'scan' | 'batch' | 'pdf' | 'scrape'
+export type OpKind = 'scan' | 'batch' | 'pdf' | 'scrape' | 'merge-tracker' | 'check-liveness' | 'patterns' | 'followup' | 'latex'
 
 interface OpRun {
   kind: OpKind

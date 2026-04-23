@@ -52,6 +52,26 @@ export function App() {
     () => ops.ops.some((o) => o.kind === 'scrape' && o.endedAt === null),
     [ops.ops],
   )
+  const mergeTrackerActive = useMemo(
+    () => ops.ops.some((o) => o.kind === 'merge-tracker' && o.endedAt === null),
+    [ops.ops],
+  )
+  const checkLivenessActive = useMemo(
+    () => ops.ops.some((o) => o.kind === 'check-liveness' && o.endedAt === null),
+    [ops.ops],
+  )
+  const patternsActive = useMemo(
+    () => ops.ops.some((o) => o.kind === 'patterns' && o.endedAt === null),
+    [ops.ops],
+  )
+  const followupActive = useMemo(
+    () => ops.ops.some((o) => o.kind === 'followup' && o.endedAt === null),
+    [ops.ops],
+  )
+  const latexActive = useMemo(
+    () => ops.ops.some((o) => o.kind === 'latex' && o.endedAt === null),
+    [ops.ops],
+  )
 
   const handleOpenReport = useCallback((path: string) => {
     setOpenReportPath(path)
@@ -70,6 +90,26 @@ export function App() {
     if (result.error === 'no-api-key') {
       setSettingsOpen(true)
     }
+  }, [])
+
+  const handleRunMergeTracker = useCallback(async () => {
+    await window.api.runMergeTracker()
+  }, [])
+
+  const handleRunCheckLiveness = useCallback(async () => {
+    await window.api.runCheckLiveness()
+  }, [])
+
+  const handleRunAnalyzePatterns = useCallback(async () => {
+    await window.api.runAnalyzePatterns()
+  }, [])
+
+  const handleRunFollowupCadence = useCallback(async () => {
+    await window.api.runFollowupCadence()
+  }, [])
+
+  const handleRunGenerateLatex = useCallback(async () => {
+    await window.api.runGenerateLatex()
   }, [])
 
   const handleRunScrape = useCallback(async () => {
@@ -105,8 +145,16 @@ export function App() {
             refreshKey={refreshKey}
             onRunScan={handleRunScan}
             onRunBatch={handleRunBatch}
+            onRunMergeTracker={handleRunMergeTracker}
+            onRunCheckLiveness={handleRunCheckLiveness}
+            onRunAnalyzePatterns={handleRunAnalyzePatterns}
+            onRunFollowupCadence={handleRunFollowupCadence}
             scanActive={scanActive}
             batchActive={batchActive}
+            mergeTrackerActive={mergeTrackerActive}
+            checkLivenessActive={checkLivenessActive}
+            patternsActive={patternsActive}
+            followupActive={followupActive}
             hasApiKey={apiKey.hasKey}
           />
         )
@@ -130,7 +178,7 @@ export function App() {
           />
         )
       case 'cv':
-        return <CvPanel />
+        return <CvPanel onGenerateLatex={handleRunGenerateLatex} latexActive={latexActive} />
       case 'discover':
         return (
           <DiscoverPanel

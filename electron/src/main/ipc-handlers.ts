@@ -153,6 +153,32 @@ export function registerIpcHandlers(deps: HandlerDeps): void {
     return { runId }
   })
 
+  // ---------- Pipeline tools ----------
+  ipcMain.handle('runMergeTracker', async () => {
+    const runId = startOp({ kind: 'merge-tracker', command: 'node', args: ['merge-tracker.mjs'], cwd: projectRoot, win })
+    return { runId }
+  })
+
+  ipcMain.handle('runCheckLiveness', async () => {
+    const runId = startOp({ kind: 'check-liveness', command: 'node', args: ['check-liveness.mjs'], cwd: projectRoot, win })
+    return { runId }
+  })
+
+  ipcMain.handle('runAnalyzePatterns', async () => {
+    const runId = startOp({ kind: 'patterns', command: 'node', args: ['analyze-patterns.mjs', '--summary'], cwd: projectRoot, win })
+    return { runId }
+  })
+
+  ipcMain.handle('runFollowupCadence', async () => {
+    const runId = startOp({ kind: 'followup', command: 'node', args: ['followup-cadence.mjs', '--summary'], cwd: projectRoot, win })
+    return { runId }
+  })
+
+  ipcMain.handle('runGenerateLatex', async () => {
+    const runId = startOp({ kind: 'latex', command: 'node', args: ['generate-latex.mjs'], cwd: projectRoot, win })
+    return { runId }
+  })
+
   // ---------- Phase 3: VC Portfolio Discovery ----------
   ipcMain.handle('runVcScrape', async () => {
     const runId = triggerScrape(projectRoot, win)

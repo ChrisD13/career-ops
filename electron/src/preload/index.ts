@@ -46,6 +46,13 @@ const api: ElectronAPI = {
   onOperationOutput: (cb) => subscribe<OpOutputPayload>('op:output', cb),
   onOperationDone: (cb) => subscribe<OpDonePayload>('op:done', cb),
 
+  // Pipeline tools
+  runMergeTracker: () => ipcRenderer.invoke('runMergeTracker'),
+  runCheckLiveness: () => ipcRenderer.invoke('runCheckLiveness'),
+  runAnalyzePatterns: () => ipcRenderer.invoke('runAnalyzePatterns'),
+  runFollowupCadence: () => ipcRenderer.invoke('runFollowupCadence'),
+  runGenerateLatex: () => ipcRenderer.invoke('runGenerateLatex'),
+
   // Phase 3 — VC Portfolio Discovery
   runVcScrape: () => ipcRenderer.invoke('runVcScrape'),
   readVcCompanies: () => ipcRenderer.invoke('readVcCompanies'),

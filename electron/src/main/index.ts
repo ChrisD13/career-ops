@@ -1,10 +1,24 @@
 import { app, BrowserWindow, session } from 'electron'
 import { join, resolve } from 'path'
+import { existsSync } from 'fs'
+import { spawn } from 'child_process'
 import { is } from '@electron-toolkit/utils'
 import { registerIpcHandlers } from './ipc-handlers'
 import { startFileWatcher } from './watcher'
 import { MtimeCache } from './services/mtime-cache'
 import { initScheduler, stopScheduler } from './services/scheduler'
+
+async function ensureRootDeps(projectRoot: string): Promise<void> {
+  const required = ['robots-parser', 'write-file-atomic', 'node-cron']
+  const missing = required.filter(dep => !existsSync(join(projectRoot, 'node_modules', dep)))
+  if (missing.length === 0) return
+  console.log('[main] installing missing root deps:', missing.join(', '))
+  await new Promise<void>((resolve) => {
+    const proc = spawn('npm', ['install'], { cwd: projectRoot, stdio: 'inherit' })
+    proc.on('close', () => resolve())
+    proc.on('error', (err) => { console.warn('[main] npm install failed:', err.message); resolve() })
+  })
+}
 
 function resolveProjectRoot(): string {
   if (!app.isPackaged) {
@@ -57,6 +71,11 @@ app.whenReady().then(async () => {
   console.log('[main] project root:', projectRoot)
 
   installCspHeader()
+
+  // Ensure scraper deps are installed (dev only — packaged builds bundle node_modules)
+  if (!app.isPackaged) {
+    await ensureRootDeps(projectRoot)
+  }
 
   // Shared state across windows + services
   const pendingGuiWrites = new Set<string>()

@@ -12,7 +12,12 @@ type ToastState =
   | { variant: 'error'; message: string; at: number; runId?: string }
   | null
 
-export function CvPanel() {
+interface Props {
+  onGenerateLatex: () => Promise<void>
+  latexActive: boolean
+}
+
+export function CvPanel({ onGenerateLatex, latexActive }: Props) {
   const [markdown, setMarkdown] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [toast, setToast] = useState<ToastState>(null)
@@ -78,6 +83,15 @@ export function CvPanel() {
           disabled={toast?.variant === 'pending'}
         >
           {toast?.variant === 'pending' ? 'Regenerating…' : 'Regenerate PDF'}
+        </button>
+        <button
+          type="button"
+          className="cv-panel__regenerate"
+          onClick={onGenerateLatex}
+          disabled={latexActive}
+          title="Export CV as LaTeX (.tex) for Overleaf"
+        >
+          {latexActive ? 'Exporting…' : 'Export LaTeX'}
         </button>
       </header>
       <div className="cv-panel__body">
