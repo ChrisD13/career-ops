@@ -32,6 +32,8 @@
 None — discussion stayed within phase scope.
 </user_constraints>
 
+> **Discretion resolution — fixture injection method:** CONTEXT.md Locked Decisions mention `page.setContent()`, but CONTEXT.md Claude's Discretion explicitly delegates the choice of `page.setContent()` vs `page.route()` to research. Research chose `context.route()`. Reason: all 10 adapters internally call `page.goto(firm.portfolio_url, ...)` — `setContent()` cannot intercept that call and would leave the adapter navigating the live site. `context.route()` intercepts `page.goto()` transparently; adapter code runs unchanged. Empirically verified. The Locked Decision's intent ("exercises full adapter parsing path, not mocked") is satisfied more completely by `context.route()`.
+
 <phase_requirements>
 ## Phase Requirements
 
@@ -114,7 +116,8 @@ node validate-adapters.mjs
   └── browser.close()
 
 scrape-vcs.mjs (existing, enhanced)
-  └── on error: normalizeReason(err) → canonical code
+  ├── robots_block path: hardcoded reason 'robots_block' (no error thrown)
+  └── on thrown error: normalizeReason(err) → canonical code
         └── writeHealth(path, [{name, status, reason: canonicalCode, count}])
 
 ScraperHealthPanel.tsx (existing, enhanced)
@@ -210,20 +213,31 @@ export function normalizeReason(err) {
 }
 ```
 
-**Integration in scrape-vcs.mjs:**
+**Integration in scrape-vcs.mjs — three callsites:**
 ```javascript
-// Replace: healthUpdates.push({ name: firm.name, status: 'Error', reason: err.message, count: 0 });
-// With:
 import { writeHealth, normalizeReason } from './scrapers/health.mjs';
-// ...
-healthUpdates.push({ name: firm.name, status: 'Error', reason: normalizeReason(err), count: 0 });
-// For 0-company case (currently no reason code — add after adapter call):
+
+// Callsite 1: robots.txt disallow (no thrown error — hardcode the reason directly)
+// Current: healthUpdates.push({ name: firm.name, status: 'Error', reason: 'robots.txt disallow', count: 0 });
+// Change to:
+healthUpdates.push({ name: firm.name, status: 'Error', reason: 'robots_block', count: 0 });
+
+// Callsite 2: 0-company result (new behavior — currently pushes OK with count: 0)
+// Current: healthUpdates.push({ name: firm.name, status: 'OK', count: discovered.length });
+// Change to:
 if (discovered.length === 0) {
   healthUpdates.push({ name: firm.name, status: 'Error', reason: normalizeReason(null), count: 0 });
 } else {
   healthUpdates.push({ name: firm.name, status: 'OK', count: discovered.length });
 }
+
+// Callsite 3: thrown error (replace raw err.message with normalized code)
+// Current: healthUpdates.push({ name: firm.name, status: 'Error', reason: err.message, count: 0 });
+// Change to:
+healthUpdates.push({ name: firm.name, status: 'Error', reason: normalizeReason(err), count: 0 });
 ```
+
+**Note:** The robots callsite (Callsite 1) does NOT use `normalizeReason()` — it's a boolean condition from `checkAllowed()`, not a thrown error. Pass `'robots_block'` directly.
 
 ### Pattern 3: validate-adapters.mjs with --capture Flag
 **What:** Run all adapters against live sites; optionally save fresh fixture HTML
@@ -257,6 +271,7 @@ for (const firm of firms) {
 
     if (capture && companies.length > 0) {
       // Navigate fresh to capture HTML after successful scrape
+      // Note: adapter closes its page in finally{}, so we open a separate page here
       const page = await context.newPage();
       await page.goto(firm.portfolio_url, { waitUntil: 'networkidle', timeout: 45000 });
       const html = await page.content();
@@ -310,6 +325,18 @@ test('benchmark adapter is a no-op (no public portfolio page)', async () => {
 | HTML file write | Custom buffering | `node:fs` `writeFileSync` | Simple, synchronous, no race conditions during capture |
 
 **Key insight:** Playwright's route interception is designed exactly for this pattern — intercepting real network calls in tests without modifying application code.
+
+## Behavior Changes This Phase Introduces
+
+> These are deliberate semantic changes to existing production behavior, not assumptions. Planner must create explicit tasks for each.
+
+| # | Current Behavior | New Behavior | Files Changed | Impact |
+|---|-----------------|--------------|---------------|--------|
+| BC-1 | `scrape-vcs.mjs` records `{status: 'OK', count: 0}` when adapter returns empty array — treated as success | `{status: 'Error', reason: 'selector_miss', count: 0}` — treated as failure, visible in health panel | `scrape-vcs.mjs` | Health panel now shows Error for empty-result adapters; baseline_count logic in `writeHealth()` (only updates on OK) is unaffected |
+| BC-2 | `scrape-vcs.mjs` records `{reason: err.message}` — raw stack trace or message in `vc-health.json` | `{reason: normalizeReason(err)}` — one of four canonical codes | `scrape-vcs.mjs`, `scrapers/health.mjs` | Health panel shows human-readable reason; downstream consumers of `vc-health.json` reading `reason` will see new values |
+| BC-3 | `scrape-vcs.mjs` records `{reason: 'robots.txt disallow'}` — custom string | `{reason: 'robots_block'}` — canonical code | `scrape-vcs.mjs` | Same as BC-2; note this callsite bypasses `normalizeReason()` and hardcodes `'robots_block'` directly |
+
+**Planner note on BC-1:** Temporarily zero companies can be a transient maintenance page response (returns 200 OK with no company cards). This is the correct behavior per CONTEXT.md ("0 companies = Error") but the team should be aware that the first scrape run after this change may show more Error states than expected for sites that were previously silently returning 0.
 
 ## Adapter Brittleness Audit
 
@@ -438,9 +465,8 @@ Naming function: `firm.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9
 | A2 | Fixture file naming uses kebab-case firm name (`founders-fund.html`, `general-catalyst.html`, `index-ventures.html`) | Code Examples | Low — naming is Claude's discretion; adjust at planning |
 | A3 | `validate-adapters.mjs` outputs to stdout only (no summary JSON) | Pattern 3 | Low — stdout sufficient for manual runs; JSON optional per CONTEXT.md discretion |
 | A4 | Benchmark fixture is a minimal HTML stub (not a captured real page) since benchmark never navigates | Pattern 4 | Medium — if planner wants consistency across all 10 firms; stub is correct given no-op contract |
-| A5 | `scrape-vcs.mjs` passes 0-company case as `Error` with `selector_miss` reason | Pattern 2 | Medium — current code passes `{ status: 'OK', count: 0 }` on empty result; changing to Error changes existing behavior |
 
-**Note on A5:** Currently in `scrape-vcs.mjs`, if an adapter returns 0 companies with no exception, `healthUpdates.push({ name: firm.name, status: 'OK', count: discovered.length })` with `count: 0`. CONTEXT.md says "0 companies returned = Error." This requires changing the status classification in `scrape-vcs.mjs` for the 0-company case. Planner should create a specific task for this callsite change.
+**If this table is empty:** All claims in this research were verified or cited — no user confirmation needed. (A1-A4 are low-risk implementation details, not user-facing decisions.)
 
 ## Open Questions
 
