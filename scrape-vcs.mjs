@@ -22,7 +22,7 @@ import { checkAllowed, randomDelay, USER_AGENT } from './scrapers/robots.mjs';
 import { detectFundingSignal } from './scrapers/funding-detector.mjs';
 import { detectRoleMatches, extractRoleKeywords } from './scrapers/role-matcher.mjs';
 import { writeCompaniesTsv, readExistingCompanies, mergeCompanies } from './scrapers/tsv-writer.mjs';
-import { writeHealth } from './scrapers/health.mjs';
+import { writeHealth, normalizeReason } from './scrapers/health.mjs';
 import adapters from './scrapers/adapters/index.mjs';
 
 const CONFIG_PATH = 'config/vc-firms.yml';
@@ -81,7 +81,7 @@ async function main() {
         const { allowed } = await checkAllowed(firm.portfolio_url);
         if (!allowed) {
           console.log(`[${firm.name}] robots.txt disallows — skipping`);
-          healthUpdates.push({ name: firm.name, status: 'Error', reason: 'robots.txt disallow', count: 0 });
+          healthUpdates.push({ name: firm.name, status: 'Error', reason: 'robots_block', count: 0 });
           await randomDelay();
           continue;
         }
@@ -112,10 +112,14 @@ async function main() {
         await randomDelay();
       }
 
-      healthUpdates.push({ name: firm.name, status: 'OK', count: discovered.length });
+      if (discovered.length === 0) {
+        healthUpdates.push({ name: firm.name, status: 'Error', reason: normalizeReason(null), count: 0 });
+      } else {
+        healthUpdates.push({ name: firm.name, status: 'OK', count: discovered.length });
+      }
     } catch (err) {
       console.error(`[${firm.name}] error: ${err.message}`);
-      healthUpdates.push({ name: firm.name, status: 'Error', reason: err.message, count: 0 });
+      healthUpdates.push({ name: firm.name, status: 'Error', reason: normalizeReason(err), count: 0 });
     }
     await randomDelay();
   }
