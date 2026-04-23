@@ -318,8 +318,8 @@ async function main() {
 
   // 1. Read portals.yml
   if (!existsSync(PORTALS_PATH)) {
-    console.error('Error: portals.yml not found. Run onboarding first.');
-    process.exit(1);
+    console.log('portals.yml not found — run onboarding to configure companies.');
+    process.exit(0);
   }
 
   const config = parseYaml(readFileSync(PORTALS_PATH, 'utf-8'));
