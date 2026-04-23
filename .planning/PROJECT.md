@@ -8,6 +8,16 @@ An AI-powered job search system that surfaces high-signal startup opportunities 
 
 Discover and evaluate the right startup opportunities before they reach job boards — from a single desktop app, without opening a terminal.
 
+## Current Milestone: v1.1 — Live Validation + New Panels
+
+**Goal:** Validate the VC scraper against live firm pages, add auto-update infrastructure, and ship two new Electron panels (response-rate analytics, interview prep with Claude).
+
+**Target features:**
+- VC adapter validation — run real scrapes against all 10 firms, fix drifted selectors, add regression harness
+- Electron auto-update — `electron-updater` wired to GitHub Releases with in-app install prompt
+- Response-rate analytics dashboard — new panel showing score-to-outcome correlation and funnel stats
+- Interview prep panel — per-company Claude-generated prep reports, stored in `interview-prep/`, surfaced in GUI
+
 ## Current State (v1.0 — Shipped 2026-04-23)
 
 - Electron app ships: tracker, reports, pipeline, evaluate, CV, operations drawer, Discover panel
@@ -33,13 +43,21 @@ Discover and evaluate the right startup opportunities before they reach job boar
 - ✓ Write safety + Anthropic integration (ELEC-06–08, API-01–05) — v1.0, Phase 2 (code complete, UAT deferred)
 - ✓ VC portfolio discovery (VC-01–06) — v1.0, Phase 3 (code complete, UAT deferred)
 
-### Active (Next Milestone)
+### Active (v1.1)
 
-- [ ] Complete Phase 2 + Phase 3 human UAT (40-step UI walkthrough + 8-item Discover panel checklist)
-- [ ] VC adapter validation — run real scrapes against live firm pages; tune selectors where DOM has drifted
-- [ ] Electron auto-update via `electron-updater` — manual GitHub Releases for v1.0; automated in v1.1+
-- [ ] Interview prep panel in GUI
-- [ ] Response-rate analytics dashboard
+- [ ] ADPT-01: All 10 VC firm scrapers produce valid output against live pages
+- [ ] ADPT-02: Per-firm scrape errors visible in Discover panel health view
+- [ ] ADPT-03: Regression harness catches selector drift before it reaches users
+- [ ] UPD-01: App checks for new GitHub Releases on startup (background, non-blocking)
+- [ ] UPD-02: User sees update prompt with release notes when a newer version is available
+- [ ] UPD-03: User can install update with one click or defer to later
+- [ ] ANAL-01: Response-rate analytics panel shows score-to-outcome correlation
+- [ ] ANAL-02: Funnel stats visible (applied → responded → interview → offer)
+- [ ] ANAL-03: Panel auto-refreshes when applications.md changes
+- [ ] PREP-01: User can generate a Claude-powered interview prep report from any tracker row
+- [ ] PREP-02: Prep report streams in-app and is saved to interview-prep/ directory
+- [ ] PREP-03: User can browse and view existing prep reports from the panel
+- [ ] PREP-04: Prep generation uses prompt caching for CV and profile context
 
 ### Out of Scope
 
@@ -77,5 +95,22 @@ Discover and evaluate the right startup opportunities before they reach job boar
 - **Local-only**: No cloud services, no remote database; everything runs on the user's machine
 - **Scraping**: VC portfolio pages are public HTML — no login or API keys needed; pages change, so scraper must be maintainable
 
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd-transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd-complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
 ---
-*Last updated: 2026-04-23 after v1.0 milestone*
+*Last updated: 2026-04-23 — v1.1 milestone started*
