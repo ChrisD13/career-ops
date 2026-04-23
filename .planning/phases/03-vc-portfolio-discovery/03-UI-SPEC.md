@@ -76,7 +76,7 @@ Inherits the Phase 1 token scale. All multiples of 4. No new tokens.
 | Token | Value | Phase 3 usage |
 |-------|-------|---------------|
 | xs | 4px | Badge internal padding (Funded / Role match / Promoted), health status dot gap from label |
-| sm | 8px | Filter toggle button horizontal padding, table cell row-internal gap between icon + text, modal field label-to-input gap, banner icon-to-text gap |
+| sm | 8px | Filter toggle button horizontal padding, table cell row-internal gap between icon + text, modal field label-to-input gap, banner icon-to-text gap, Promote button horizontal padding |
 | md | 16px | Discover panel title gap to Add Firm button, modal field vertical stack gap, health panel accordion body padding, table column internal padding |
 | lg | 24px | Discover panel header horizontal padding, modal outer padding, health panel header padding, Add Firm modal body padding |
 | xl | 32px | — (unused, inherited) |
@@ -214,7 +214,7 @@ New primary panel. Dedicated full-viewport view for VC portfolio browsing.
    - Initial load skeleton: grey shimmer rows (6 rows) — reuses Phase 1 empty-state component if a simple fallback is preferred (rendered centered inside the table body region)
 
 6. **Promote button + Promoted ✓ state** (D-08):
-   - Idle: 24px-tall button, horizontal padding 10px, text Label 11px/600 `ctp-blue`, border 1px `ctp-blue`, transparent bg, border-radius 4px. Label: `"Promote"`. Icon: lucide `Send` size 12, left.
+   - Idle: 24px-tall button, horizontal padding 8px (maps to `sm` spacing token, preserves 4px grid alignment), text Label 11px/600 `ctp-blue`, border 1px `ctp-blue`, transparent bg, border-radius 4px. Label: `"Promote"`. Icon: lucide `Send` size 12, left.
    - Hover: bg `ctp-blue/10`, text `ctp-blue`
    - In-flight (IPC write running): bg `ctp-blue`, text `ctp-base`, label `"Promoting…"`, lucide `Loader2` `animate-spin` size 12 in `ctp-base`, button disabled
    - Success: button is **replaced** by a Promoted ✓ static badge — bg `ctp-green`, text `ctp-base`, Label 11px uppercase, copy `"Promoted ✓"`, icon lucide `Check` size 12 left. Badge is not a button; no further clicks possible on that row.
@@ -251,11 +251,11 @@ Triggered by the `"Add Firm"` button in the Discover panel header.
    - Placeholder: `"AI engineer, ML, machine learning"` in `ctp-subtext`
    - Helper below input (Body 13px `ctp-subtext`): `"Comma-separated keywords improve role-match filtering."`
 5. **Actions row** — 32px top margin, flex row justify-end, 8px gap between buttons:
-   - Secondary: `"Cancel"` — 32px height, padding 12px horizontal, bg transparent, text `ctp-subtext` hover `ctp-text`, border 1px `ctp-overlay`, border-radius 4px. Dismisses the modal without saving.
+   - Secondary: `"Discard"` — 32px height, padding 12px horizontal, bg transparent, text `ctp-subtext` hover `ctp-text`, border 1px `ctp-overlay`, border-radius 4px. Discards the in-progress firm entry without saving and dismisses the modal.
    - Primary: `"Save Firm"` — 32px height, padding 12px horizontal, bg `ctp-blue`, text `ctp-base`, border-radius 4px, font-weight 600
      - Disabled until both required fields are non-empty
      - In-flight (HEAD validation + YAML write running): label changes to `"Saving…"`, lucide `Loader2` spinner `animate-spin` size 14 left, button disabled
-     - HEAD fail (D-16 — reachability override flow): inline warning strip appears **above** the Actions row (36px height, bg `ctp-yellow/15`, text `ctp-yellow` Body 13px, icon `AlertTriangle` size 14 left). Copy per Copywriting Contract. The primary button label changes to `"Save anyway"`; a second click skips the HEAD check and persists. The warning can also be dismissed via Cancel.
+     - HEAD fail (D-16 — reachability override flow): inline warning strip appears **above** the Actions row (36px height, bg `ctp-yellow/15`, text `ctp-yellow` Body 13px, icon `AlertTriangle` size 14 left). Copy per Copywriting Contract. The primary button label changes to `"Save anyway"`; a second click skips the HEAD check and persists. The warning can also be dismissed via the `"Discard"` button.
      - Success: modal closes; company table stays on the current view; a transient Label-toned toast in the bottom-right of the viewport (reuses Phase 2 `PdfToast` visual chrome — green border-left) confirms `"Firm saved. Next scrape will include {firm name}."` for 4 seconds.
 
 ### Settings slide-over — VC Scraper section (D-12)
@@ -312,10 +312,10 @@ Components to build or extend in Phase 3:
 | `CompanyRow` | **new** | Single virtualized row — Company cell renders company name + mono URL host preview stacked; Firm / Funding / Match / Actions cells horizontal |
 | `FundingSignalBadge` | **new** | Green Label 11px/600 uppercase pill with `"Funded"` copy + hover tooltip showing detected funding date; renders `—` em-dash in `ctp-subtext` when absent |
 | `RoleMatchBadge` | **new** | Green Label 11px/600 uppercase pill with `"Match"` copy + hover tooltip listing matched keywords; renders `—` em-dash in `ctp-subtext` when absent |
-| `PromoteButton` | **new** | Three-state inline action: Idle (blue outlined), In-flight (blue filled + spinner + `Promoting…`), Success (replaced by `PromotedBadge`) |
+| `PromoteButton` | **new** | Three-state inline action: Idle (blue outlined, 8px horizontal padding), In-flight (blue filled + spinner + `Promoting…`), Success (replaced by `PromotedBadge`) |
 | `PromotedBadge` | **new** | Static green `Promoted ✓` pill that replaces the PromoteButton once the IPC write succeeds |
 | `AddFirmButton` | **new** | Primary header button: blue filled, 32px tall, `Plus` icon + `"Add Firm"` label |
-| `AddFirmModal` | **new** | Focus-trapped centered modal: 480px wide, 3 fields (Firm name, Portfolio URL, Role keywords) + Cancel / Save Firm actions; HEAD-validate with override flow |
+| `AddFirmModal` | **new** | Focus-trapped centered modal: 480px wide, 3 fields (Firm name, Portfolio URL, Role keywords) + Discard / Save Firm actions; HEAD-validate with override flow |
 | `InlineErrorBanner` | **reuse** | From Phase 2 — for Promote lock-timeout under a row |
 | `PdfToast` | **reuse** | From Phase 2 — reused chrome for the "Firm saved" transient confirmation after Add Firm submit |
 | `EmptyState` | **reuse** | From Phase 1 — for Discover panel empty state (no companies yet) and for the "No firms reachable" health case |
@@ -332,7 +332,7 @@ Components to build or extend in Phase 3:
 | Element | Copy |
 |---------|------|
 | **Primary CTA (Phase 3)** | `"Promote"` — the per-row action inside the company table. Primary phase verb + object (the object is implicit: "the company to pipeline"). Secondary CTA is `"Add Firm"` for the header modal trigger. |
-| Secondary CTAs | `"Add Firm"`, `"Save Firm"`, `"Cancel"`, `"Run scan now"`, `"Dismiss banner"`, `"View firms"` |
+| Secondary CTAs | `"Add Firm"`, `"Save Firm"`, `"Discard"`, `"Run scan now"`, `"Dismiss banner"`, `"View firms"` |
 | Discover panel — empty state heading (no companies yet) | `"No companies discovered yet"` |
 | Discover panel — empty state body (no companies yet) | `"Run the VC scraper to populate this list. Open Settings → VC Scraper → Run scan now."` |
 | Discover panel — empty state heading (Matched filter, zero matches) | `"Nothing matches yet"` |
@@ -369,6 +369,7 @@ Components to build or extend in Phase 3:
 | Add Firm modal — Role keywords helper | `"Comma-separated keywords improve role-match filtering."` |
 | Add Firm modal — Save button (idle) | `"Save Firm"` |
 | Add Firm modal — Save button (in-flight) | `"Saving…"` |
+| Add Firm modal — Discard button | `"Discard"` — dismisses the modal and abandons the in-progress firm entry without saving |
 | Add Firm modal — HEAD failure warning | `"Could not reach {url}. The page may be behind a redirect or temporarily down. Save anyway?"` |
 | Add Firm modal — Save button (after HEAD failure) | `"Save anyway"` |
 | Add Firm modal — success toast | `"Firm saved. Next scrape will include {firm name}."` (4-second auto-dismiss) |
@@ -380,14 +381,14 @@ Components to build or extend in Phase 3:
 | Settings — Run scan now helper | `"Runs all firms in series with respectful delays. See the log drawer for progress."` |
 | Operations drawer — Scrape tab label | `"Scrape"` |
 | Operations drawer — collapsed badge (scrape running) | `"Logs · 1 running"` (inherits Phase 2 pattern verbatim) |
-| **Destructive actions** | **None in Phase 3.** Promote is additive (appends a URL; never removes one). Add Firm is additive. Run scan now is idempotent (scraper writes to a temp file and atomically replaces `data/vc-companies.tsv`, matching the Phase 2 write-safety pattern). Changing scrape interval only affects the next scheduled run. There is no removal flow in Phase 3 — firm removal is deferred to v3+ (edit `config/vc-firms.yml` directly). No confirmation modals needed. |
+| **Destructive actions** | **None in Phase 3.** Promote is additive (appends a URL; never removes one). Add Firm is additive. Run scan now is idempotent (scraper writes to a temp file and atomically replaces `data/vc-companies.tsv`, matching the Phase 2 write-safety pattern). Changing scrape interval only affects the next scheduled run. There is no removal flow in Phase 3 — firm removal is deferred to v3+ (edit `config/vc-firms.yml` directly). No confirmation modals needed. The `"Discard"` button in the Add Firm modal abandons unsaved in-progress input; it does not touch any persisted data, so it is not a destructive action. |
 
 **Copy style rules (inherited from Phase 2 — restated for completeness):**
 - No emoji in button labels or error copy. Only visual accents are lucide icons.
 - Errors describe the problem + next step in one sentence. No blame, no jargon.
 - Ellipsis (`…`) is the single U+2026 character for in-flight labels — consistent with the `Promoting…` / `Evaluating…` / `Saving…` vocabulary across phases.
 - No exclamation marks.
-- **No generic button labels.** All buttons name their specific action (verb + object): `"Promote"` (row), `"Add Firm"` (header), `"Save Firm"` (modal primary), `"Run scan now"` (Settings secondary). Never bare `"Add"` / `"Save"` / `"Run"`.
+- **No generic button labels.** All buttons name their specific action (verb + object): `"Promote"` (row), `"Add Firm"` (header), `"Save Firm"` (modal primary), `"Discard"` (modal secondary — the user is discarding the in-progress firm entry), `"Run scan now"` (Settings secondary). Never bare `"Add"` / `"Save"` / `"Run"` / `"Cancel"`.
 - **No status-pill colors for VC domain badges.** Funded and Match both use green (the success/OK accent). Never peach, mauve, or sky — those belong exclusively to the Phase 1 application-status vocabulary.
 
 ---
@@ -403,7 +404,7 @@ Components to build or extend in Phase 3:
 | Promote a company | Click `Promote` button on a company row | Button enters in-flight state (`Promoting…` + spinner); IPC appends `[{company}]({careers_url})` to `data/pipeline.md` via `proper-lockfile` + `write-file-atomic`; on success, button is replaced by the Promoted ✓ badge (row persists this state via `data/vc-companies.tsv` `promoted` column); Pipeline panel's live file watcher eventually shows the new entry |
 | Handle Promote lock timeout | (After 5 s) lock cannot be acquired | `InlineErrorBanner` slides in below the row (44px red-tinted strip); button reverts to idle so the user can retry. Copy per Copywriting Contract. |
 | Open Add Firm modal | Click `Add Firm` header button | Modal fades in; focus trap activates; focus moves to the Firm name input |
-| Close Add Firm modal | Click `Cancel`, click outside, press Escape, or click the X close button | Modal fades out; focus returns to the Add Firm header button |
+| Close Add Firm modal | Click `Discard`, click outside, press Escape, or click the X close button | Modal fades out; focus returns to the Add Firm header button; any in-progress field values are abandoned (never persisted) |
 | Submit new firm | Click `Save Firm` with valid required fields | Primary button enters `Saving…` state; main process runs HEAD request on the portfolio URL; on success, persists to `config/vc-firms.yml` via `proper-lockfile` + `write-file-atomic`, closes modal, shows 4-second success toast |
 | Handle HEAD failure | HEAD returns non-2xx/3xx or network error | Warning strip appears above the Actions row in the modal; primary button label changes to `"Save anyway"`; second click bypasses the HEAD check and persists |
 | Dismiss drop alert banner | Click X on banner | Banner collapses for the session; reappears next time the panel is opened if the drop still holds |
@@ -428,6 +429,7 @@ Extends Phases 1 and 2. All prior rules apply; Phase 3 additions below.
 - **Drop alert banner:** `role="status"` with `aria-live="polite"` (warn tier) or `role="alert"` with `aria-live="assertive"` (critical tier, > 40% drop).
 - **Add Firm modal focus trap:** On open, focus moves to the Firm name input. Tab cycles within the modal. Escape dismisses. Focus returns to the Add Firm button on close.
 - **Add Firm modal ARIA:** `role="dialog"` with `aria-modal="true"` and `aria-labelledby` pointing to the `"Add VC Firm"` title.
+- **Add Firm Discard button ARIA:** `aria-label="Discard new firm and close dialog"` — the screen-reader announcement names the specific action, matching the "no generic labels" copy rule.
 - **Add Firm field validation:** Invalid fields get `aria-invalid="true"` and `aria-describedby` pointing to the inline error element (announced to screen readers without interrupting).
 - **Tooltip copy (Funded / Match hover):** implemented via `title` attribute (native HTML tooltip, platform accessibility inherited — matches the Phase 1 Status dropdown tooltip pattern). No custom hover-only affordance.
 - **Color is never the sole differentiator:**
