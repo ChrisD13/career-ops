@@ -69,7 +69,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
   - [x] 03-01-PLAN.md — Standalone scraper CLI: scrape-vcs.mjs + 10 per-firm Playwright adapters + scraper libraries (robots, tsv-writer, health, role-matcher, funding-detector) + config/vc-firms.yml defaults (VC-01, VC-02, VC-03)
   - [x] 03-02-PLAN.md — Electron main process: 8 IPC channels (runVcScrape, readVcCompanies, readVcHealth, promoteToPipeline, listVcFirms, addVcFirm, getVcScrapeInterval, setVcScrapeInterval) + node-cron scheduler + vc-firms/vc-companies/vc-health/promote/url-probe services + preload bridge + watcher extension (VC-04, VC-05, VC-06 main-side)
-  - [ ] 03-03-PLAN.md — Renderer Discover panel: 6th sidebar entry (Compass), virtualized 5-column CompanyTable + CompanyRow, VcDropAlertBanner, ScraperHealthPanel accordion, AddFirmModal with HEAD-probe + Save-anyway override, Settings VcScraperSection with cron schedule + Run scan now, App.tsx wiring (VC-04, VC-05, VC-06 UI)
+  - [x] 03-03-PLAN.md — Renderer Discover panel: 6th sidebar entry (Compass), virtualized 5-column CompanyTable + CompanyRow, VcDropAlertBanner, ScraperHealthPanel accordion, AddFirmModal with HEAD-probe + Save-anyway override, Settings VcScraperSection with cron schedule + Run scan now, App.tsx wiring (VC-04, VC-05, VC-06 UI)
 **UI hint**: yes
 
 ## Progress
