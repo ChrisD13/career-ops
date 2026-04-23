@@ -1,0 +1,37 @@
+# VC Portfolio Firms Configuration
+# Used by scrape-vcs.mjs to discover portfolio companies across top VCs.
+# Copy to config/vc-firms.yml and extend via the Add Firm modal in the Discover panel,
+# or edit manually here. Do NOT edit this example — edit config/vc-firms.yml.
+
+firms:
+  - name: a16z
+    portfolio_url: https://a16z.com/portfolio/
+    keywords: []
+  - name: Sequoia
+    portfolio_url: https://www.sequoiacap.com/our-companies/
+    keywords: []
+  - name: Benchmark
+    portfolio_url: ""
+    keywords: []
+    enabled: false  # benchmark.com has no public portfolio page — user must supply a mirror URL
+  - name: Accel
+    portfolio_url: https://www.accel.com/companies
+    keywords: []
+  - name: General Catalyst
+    portfolio_url: https://www.generalcatalyst.com/portfolio
+    keywords: []
+  - name: Coatue
+    portfolio_url: https://www.coatue.com/portfolio
+    keywords: []
+  - name: Founders Fund
+    portfolio_url: https://foundersfund.com/portfolio/
+    keywords: []
+  - name: Khosla
+    portfolio_url: https://www.khoslaventures.com/portfolio/
+    keywords: []
+  - name: Index
+    portfolio_url: https://www.indexventures.com/companies/
+    keywords: []
+  - name: Lightspeed
+    portfolio_url: https://lsvp.com/portfolio/
+    keywords: []
