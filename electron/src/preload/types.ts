@@ -168,7 +168,7 @@ export interface ElectronAPI {
   onOperationDone: (cb: (payload: OpDonePayload) => void) => () => void
 
   // Phase 3 — VC Portfolio Discovery
-  runVcScrape: () => Promise<{ runId: string }>
+  runVcScrape: () => Promise<{ runId: string; error?: string }>
   readVcCompanies: () => Promise<VcCompany[]>
   readVcHealth: () => Promise<{ firms: VcFirmHealth[] }>
   promoteToPipeline: (payload: { firm: string; company: string; careersUrl: string }) => Promise<PromoteResult>

@@ -4,6 +4,7 @@ import { ApiKeyField } from './ApiKeyField'
 import { VerifyButton } from './VerifyButton'
 import { ModelSelect } from './ModelSelect'
 import { ApiKeyBanner } from './ApiKeyBanner'
+import { VcScraperSection } from './VcScraperSection'
 
 interface Props {
   open: boolean
@@ -64,6 +65,7 @@ export function SettingsSlideOver({ open, onClose }: Props) {
             <VerifyButton onVerify={() => verify(lastSavedKey ?? '')} />
           )}
           <ModelSelect />
+          <VcScraperSection />
         </div>
       </div>
     </div>

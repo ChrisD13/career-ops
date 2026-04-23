@@ -1,8 +1,8 @@
-import { Table, FileText, Inbox, Zap, User, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Table, FileText, Inbox, Zap, User, Compass, ChevronLeft, ChevronRight } from 'lucide-react'
 import { NavItem } from './NavItem'
 import { GearIcon } from './GearIcon'
 
-export type PanelId = 'tracker' | 'pipeline' | 'reports' | 'evaluate' | 'cv'
+export type PanelId = 'tracker' | 'pipeline' | 'reports' | 'evaluate' | 'cv' | 'discover'
 
 interface Props {
   activePanel: PanelId
@@ -18,6 +18,7 @@ const ITEMS: Array<{ id: PanelId; label: string; icon: typeof Table }> = [
   { id: 'reports', label: 'Reports', icon: FileText },
   { id: 'evaluate', label: 'Evaluate', icon: Zap },
   { id: 'cv', label: 'CV', icon: User },
+  { id: 'discover', label: 'Discover', icon: Compass },
 ]
 
 export function Sidebar({ activePanel, onSelect, collapsed, onToggleCollapse, onOpenSettings }: Props) {
