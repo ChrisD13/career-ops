@@ -4,6 +4,7 @@ import { is } from '@electron-toolkit/utils'
 import { registerIpcHandlers } from './ipc-handlers'
 import { startFileWatcher } from './watcher'
 import { MtimeCache } from './services/mtime-cache'
+import { initScheduler, stopScheduler } from './services/scheduler'
 
 function resolveProjectRoot(): string {
   if (!app.isPackaged) {
@@ -66,9 +67,11 @@ app.whenReady().then(async () => {
 
   registerIpcHandlers({ projectRoot, pendingGuiWrites, mtimeCache, win: mainWindow })
   const stopWatcher = startFileWatcher(projectRoot, mainWindow, pendingGuiWrites)
+  await initScheduler(projectRoot, mainWindow)
 
   mainWindow.on('closed', () => {
     stopWatcher()
+    stopScheduler()
   })
 
   app.on('activate', () => {
@@ -83,6 +86,7 @@ app.whenReady().then(async () => {
 
   // Persist mtime sidecar on app shutdown (best-effort)
   app.on('before-quit', () => {
+    stopScheduler()
     void mtimeCache.persist().catch(() => { /* non-fatal */ })
   })
 })
