@@ -8,6 +8,7 @@ import { ReportsPanel } from './components/ReportsPanel'
 import { PipelinePanel } from './components/PipelinePanel'
 import { EvaluatePanel } from './components/EvaluatePanel'
 import { CvPanel } from './components/CvPanel'
+import { DiscoverPanel } from './components/DiscoverPanel'
 import { SettingsSlideOver } from './components/SettingsSlideOver'
 import { OperationsLogDrawer } from './components/OperationsLogDrawer'
 import { useApiKeyState } from './hooks/useApiKeyState'
@@ -47,6 +48,10 @@ export function App() {
     () => ops.ops.some((o) => o.kind === 'batch' && o.endedAt === null),
     [ops.ops],
   )
+  const scrapeActive = useMemo(
+    () => ops.ops.some((o) => o.kind === 'scrape' && o.endedAt === null),
+    [ops.ops],
+  )
 
   const handleOpenReport = useCallback((path: string) => {
     setOpenReportPath(path)
@@ -64,6 +69,15 @@ export function App() {
     const result = await window.api.runBatch()
     if (result.error === 'no-api-key') {
       setSettingsOpen(true)
+    }
+  }, [])
+
+  const handleRunScrape = useCallback(async () => {
+    const result = await window.api.runVcScrape()
+    if (result.error) {
+      // benign — scrape already in progress, or backend busy. Log via console; UI's
+      // OperationsLogDrawer will surface stdout/stderr on the active run anyway.
+      console.warn('[discover] runVcScrape:', result.error)
     }
   }, [])
 
@@ -117,6 +131,14 @@ export function App() {
         )
       case 'cv':
         return <CvPanel />
+      case 'discover':
+        return (
+          <DiscoverPanel
+            refreshKey={refreshKey}
+            scrapeActive={scrapeActive}
+            onRunScrape={handleRunScrape}
+          />
+        )
     }
   }
 

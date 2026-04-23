@@ -2,6 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron'
 import type {
   ElectronAPI, EvaluationDonePayload, EvaluationErrorPayload,
   OpOutputPayload, OpDonePayload,
+  AddFirmPayload,
 } from './types'
 
 function subscribe<T>(channel: string, callback: (payload: T) => void): () => void {
@@ -44,6 +45,16 @@ const api: ElectronAPI = {
   runBatch: () => ipcRenderer.invoke('runBatch'),
   onOperationOutput: (cb) => subscribe<OpOutputPayload>('op:output', cb),
   onOperationDone: (cb) => subscribe<OpDonePayload>('op:done', cb),
+
+  // Phase 3 — VC Portfolio Discovery
+  runVcScrape: () => ipcRenderer.invoke('runVcScrape'),
+  readVcCompanies: () => ipcRenderer.invoke('readVcCompanies'),
+  readVcHealth: () => ipcRenderer.invoke('readVcHealth'),
+  promoteToPipeline: (payload) => ipcRenderer.invoke('promoteToPipeline', payload),
+  listVcFirms: () => ipcRenderer.invoke('listVcFirms'),
+  addVcFirm: (payload: AddFirmPayload) => ipcRenderer.invoke('addVcFirm', payload),
+  getVcScrapeInterval: () => ipcRenderer.invoke('getVcScrapeInterval'),
+  setVcScrapeInterval: (interval) => ipcRenderer.invoke('setVcScrapeInterval', interval),
 }
 
 contextBridge.exposeInMainWorld('api', api)

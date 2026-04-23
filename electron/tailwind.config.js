@@ -16,6 +16,7 @@ module.exports = {
         'ctp-peach':   'rgb(var(--ctp-peach) / <alpha-value>)',
         'ctp-mauve':   'rgb(var(--ctp-mauve) / <alpha-value>)',
         'ctp-sky':     'rgb(var(--ctp-sky) / <alpha-value>)',
+        'ctp-teal':    'rgb(var(--ctp-teal) / <alpha-value>)',
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],

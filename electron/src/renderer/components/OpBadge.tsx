@@ -1,10 +1,10 @@
 interface Props {
-  kind: 'scan' | 'batch' | 'pdf'
+  kind: 'scan' | 'batch' | 'pdf' | 'scrape'
   active: boolean
   code?: number | null
 }
 
-const LABELS: Record<string, string> = { scan: 'Scan', batch: 'Batch', pdf: 'PDF' }
+const LABELS: Record<string, string> = { scan: 'Scan', batch: 'Batch', pdf: 'PDF', scrape: 'VC Scrape' }
 
 export function OpBadge({ kind, active, code }: Props) {
   const state = active ? 'active' : code === 0 ? 'ok' : code !== null && code !== undefined ? 'fail' : 'idle'

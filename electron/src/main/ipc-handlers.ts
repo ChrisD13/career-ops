@@ -11,6 +11,12 @@ import { keyStore } from './services/key-store'
 import { preferences } from './services/preferences'
 import { streamEvaluation, verifyApiKey, cancelActiveEvaluation } from './services/evaluation-service'
 import { startOp } from './services/process-runner'
+import { readCompanies } from './services/vc-companies'
+import { readHealth } from './services/vc-health'
+import { listFirms, addFirm } from './services/vc-firms'
+import { promoteToPipeline } from './services/promote'
+import { probeUrl } from './services/url-probe'
+import { triggerScrape, reconfigureScheduler } from './services/scheduler'
 
 const ReportPathSchema = z.string().regex(/^reports\/[^/]+\.md$/)
 const UpdateStatusSchema = z.object({
@@ -20,6 +26,18 @@ const UpdateStatusSchema = z.object({
 const UrlSchema = z.string().url()
 const ApiKeySchema = z.string().regex(/^sk-ant-/, 'Must be an Anthropic API key starting with sk-ant-')
 const ModelSchema = z.enum(['claude-sonnet-4-6', 'claude-haiku-4-5'])
+const PromoteSchema = z.object({
+  firm: z.string().min(1).max(100),
+  company: z.string().min(1).max(200),
+  careersUrl: z.string().max(2048).optional().default(''),
+})
+const VcFirmSchema = z.object({
+  name: z.string().min(1).max(100).regex(/^[A-Za-z0-9 .&\-']+$/, 'invalid firm name characters'),
+  portfolio_url: z.string().url(),
+  keywords: z.array(z.string().max(100)).max(50).optional().default([]),
+  bypassProbe: z.boolean().optional().default(false),
+})
+const CronSchema = z.string().min(9).max(100)
 
 export interface HandlerDeps {
   projectRoot: string
@@ -133,5 +151,76 @@ export function registerIpcHandlers(deps: HandlerDeps): void {
       envOverrides: { ANTHROPIC_API_KEY: apiKey },
     })
     return { runId }
+  })
+
+  // ---------- Phase 3: VC Portfolio Discovery ----------
+  ipcMain.handle('runVcScrape', async () => {
+    const runId = triggerScrape(projectRoot, win)
+    if (!runId) return { runId: '', error: 'scrape already in progress' }
+    return { runId }
+  })
+
+  ipcMain.handle('readVcCompanies', async () => readCompanies(projectRoot))
+
+  ipcMain.handle('readVcHealth', async () => readHealth(projectRoot))
+
+  ipcMain.handle('promoteToPipeline', async (_e, raw: unknown) => {
+    try {
+      const { firm, company, careersUrl } = PromoteSchema.parse(raw)
+      await promoteToPipeline(projectRoot, firm, company, careersUrl, pendingGuiWrites)
+      return { success: true }
+    } catch (err: any) {
+      return { success: false, error: err?.message ?? 'promote failed' }
+    }
+  })
+
+  ipcMain.handle('listVcFirms', async () => listFirms(projectRoot))
+
+  ipcMain.handle('addVcFirm', async (_e, raw: unknown) => {
+    let parsed: z.infer<typeof VcFirmSchema>
+    try {
+      parsed = VcFirmSchema.parse(raw)
+    } catch (err: any) {
+      return { success: false, error: err?.message ?? 'invalid firm payload' }
+    }
+
+    // HEAD probe unless user bypassed it ("Save anyway")
+    if (!parsed.bypassProbe) {
+      const probe = await probeUrl(parsed.portfolio_url)
+      if (!probe.ok) {
+        return {
+          success: false,
+          kind: 'probe' as const,
+          probeStatus: probe.status,
+          error: probe.error ?? `URL unreachable (${probe.status ?? 'no response'})`,
+        }
+      }
+    }
+
+    try {
+      await addFirm(
+        projectRoot,
+        {
+          name: parsed.name,
+          portfolio_url: parsed.portfolio_url,
+          keywords: parsed.keywords,
+        },
+        pendingGuiWrites,
+      )
+      return {
+        success: true,
+        warning: parsed.bypassProbe ? 'Saved without URL verification' : undefined,
+      }
+    } catch (err: any) {
+      return { success: false, kind: 'save' as const, error: err?.message ?? 'save failed' }
+    }
+  })
+
+  ipcMain.handle('getVcScrapeInterval', async () => ({ interval: await preferences.getVcScrapeInterval() }))
+
+  ipcMain.handle('setVcScrapeInterval', async (_e, raw: unknown) => {
+    const expr = CronSchema.parse(raw)
+    await preferences.setVcScrapeInterval(expr)   // throws if cron.validate fails
+    await reconfigureScheduler(projectRoot, win)
   })
 }
