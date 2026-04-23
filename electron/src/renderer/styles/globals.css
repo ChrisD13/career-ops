@@ -291,3 +291,65 @@
 .settings-verify__message { font-size: 0.85rem; }
 .settings-verify__message--ok { color: rgb(var(--ctp-green)); }
 .settings-verify__message--error { color: rgb(var(--ctp-red)); }
+
+/* --- Phase 2: CV panel + PdfToast --- */
+
+.cv-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+  background: rgb(var(--ctp-base));
+}
+.cv-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  background: rgb(var(--ctp-surface));
+  border-bottom: 1px solid rgb(var(--ctp-overlay));
+}
+.cv-panel__title { margin: 0; color: rgb(var(--ctp-text)); font-size: 1rem; font-weight: 600; }
+.cv-panel__regenerate {
+  padding: 0.35rem 0.8rem;
+  background: rgb(var(--ctp-mauve));
+  color: rgb(var(--ctp-base));
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cv-panel__regenerate:disabled { opacity: 0.5; cursor: wait; }
+.cv-panel__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.5rem;
+  color: rgb(var(--ctp-text));
+  line-height: 1.55;
+}
+.cv-panel__body h1,
+.cv-panel__body h2,
+.cv-panel__body h3 { color: rgb(var(--ctp-mauve)); margin-top: 1.25rem; }
+.cv-panel__body code { background: rgb(var(--ctp-surface)); padding: 0.125rem 0.25rem; border-radius: 3px; }
+.cv-panel__body table { border-collapse: collapse; margin: 0.75rem 0; }
+.cv-panel__body th,
+.cv-panel__body td { border: 1px solid rgb(var(--ctp-overlay)); padding: 0.25rem 0.5rem; }
+
+.pdf-toast {
+  position: fixed;
+  bottom: 3.5rem;
+  right: 1.5rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 40;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.pdf-toast--pending { background: rgb(var(--ctp-surface)); color: rgb(var(--ctp-text)); }
+.pdf-toast--success { background: rgb(var(--ctp-green)); color: rgb(var(--ctp-base)); }
+.pdf-toast--error { background: rgb(var(--ctp-red)); color: rgb(var(--ctp-base)); }
