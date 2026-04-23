@@ -1,7 +1,7 @@
 // HEAD probe for Add Firm — verifies a portfolio URL is reachable before saving.
 // SSRF guard: only http(s), no private-IP literals in host, 5s timeout.
 
-const PRIVATE_HOST_RE = /^(localhost|127\.|0\.0\.0\.0|10\.|192\.168\.|169\.254\.|::1|fc[0-9a-f]{2}:|fd[0-9a-f]{2}:)/i
+const PRIVATE_HOST_RE = /^(localhost|127\.|0\.0\.0\.0|10\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.|169\.254\.|::1|fc[0-9a-f]{2}:|fd[0-9a-f]{2}:)/i
 
 export interface ProbeResult {
   ok: boolean
