@@ -1,11 +1,17 @@
-import { useEffect, useState, useCallback } from 'react'
-import { Sidebar, PanelId } from './components/Sidebar'
+import { useMemo, useState, useCallback, useEffect } from 'react'
+import { Sidebar, type PanelId } from './components/Sidebar'
 import { FileChangeBanner } from './components/FileChangeBanner'
 import { TrackerPanel } from './components/TrackerPanel'
 import { SplitPaneLayout } from './components/SplitPaneLayout'
 import { ReportViewer } from './components/ReportViewer'
 import { ReportsPanel } from './components/ReportsPanel'
 import { PipelinePanel } from './components/PipelinePanel'
+import { EvaluatePanel } from './components/EvaluatePanel'
+import { CvPanel } from './components/CvPanel'
+import { SettingsSlideOver } from './components/SettingsSlideOver'
+import { OperationsLogDrawer } from './components/OperationsLogDrawer'
+import { useApiKeyState } from './hooks/useApiKeyState'
+import { useOperationsLog } from './hooks/useOperationsLog'
 
 function basename(p: string): string {
   const idx = p.lastIndexOf('/')
@@ -15,9 +21,13 @@ function basename(p: string): string {
 export function App() {
   const [activePanel, setActivePanel] = useState<PanelId>('tracker')
   const [collapsed, setCollapsed] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const [filesChanged, setFilesChanged] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
   const [openReportPath, setOpenReportPath] = useState<string | null>(null)
+
+  const apiKey = useApiKeyState()
+  const ops = useOperationsLog()
 
   useEffect(() => {
     const unsub = window.api.onFilesChanged(() => setFilesChanged(true))
@@ -29,6 +39,15 @@ export function App() {
     setRefreshKey(k => k + 1)
   }, [])
 
+  const scanActive = useMemo(
+    () => ops.ops.some((o) => o.kind === 'scan' && o.endedAt === null),
+    [ops.ops],
+  )
+  const batchActive = useMemo(
+    () => ops.ops.some((o) => o.kind === 'batch' && o.endedAt === null),
+    [ops.ops],
+  )
+
   const handleOpenReport = useCallback((path: string) => {
     setOpenReportPath(path)
   }, [])
@@ -37,33 +56,98 @@ export function App() {
     setOpenReportPath(null)
   }, [])
 
-  const trackerView = openReportPath
-    ? (
-      <SplitPaneLayout
-        left={<TrackerPanel refreshKey={refreshKey} onOpenReport={handleOpenReport} />}
-        right={<ReportViewer path={openReportPath} refreshKey={refreshKey} />}
-        rightTitle={basename(openReportPath)}
-        onClose={handleCloseReport}
-      />
-    )
-    : <TrackerPanel refreshKey={refreshKey} onOpenReport={handleOpenReport} />
+  const handleRunScan = useCallback(async () => {
+    await window.api.runScan()
+  }, [])
+
+  const handleRunBatch = useCallback(async () => {
+    const result = await window.api.runBatch()
+    if (result.error === 'no-api-key') {
+      setSettingsOpen(true)
+    }
+  }, [])
+
+  const handleSettingsClose = useCallback(() => {
+    setSettingsOpen(false)
+    void apiKey.refresh()
+  }, [apiKey])
+
+  const renderPanel = () => {
+    switch (activePanel) {
+      case 'tracker':
+        return openReportPath ? (
+          <SplitPaneLayout
+            left={<TrackerPanel refreshKey={refreshKey} onOpenReport={handleOpenReport} />}
+            right={<ReportViewer path={openReportPath} refreshKey={refreshKey} />}
+            rightTitle={basename(openReportPath)}
+            onClose={handleCloseReport}
+          />
+        ) : (
+          <TrackerPanel refreshKey={refreshKey} onOpenReport={handleOpenReport} />
+        )
+      case 'pipeline':
+        return (
+          <PipelinePanel
+            refreshKey={refreshKey}
+            onRunScan={handleRunScan}
+            onRunBatch={handleRunBatch}
+            scanActive={scanActive}
+            batchActive={batchActive}
+            hasApiKey={apiKey.hasKey}
+          />
+        )
+      case 'reports':
+        return openReportPath ? (
+          <SplitPaneLayout
+            left={<ReportsPanel refreshKey={refreshKey} />}
+            right={<ReportViewer path={openReportPath} refreshKey={refreshKey} />}
+            rightTitle={basename(openReportPath)}
+            onClose={handleCloseReport}
+          />
+        ) : (
+          <ReportsPanel refreshKey={refreshKey} />
+        )
+      case 'evaluate':
+        return (
+          <EvaluatePanel
+            hasKey={apiKey.hasKey}
+            backendWarning={apiKey.backendWarning}
+            onOpenSettings={() => setSettingsOpen(true)}
+          />
+        )
+      case 'cv':
+        return <CvPanel />
+    }
+  }
 
   return (
-    <div className="flex h-full w-full bg-ctp-base text-ctp-text">
-      <Sidebar
-        activePanel={activePanel}
-        onSelect={setActivePanel}
-        collapsed={collapsed}
-        onToggleCollapse={() => setCollapsed(c => !c)}
+    <div className="flex h-screen w-full flex-col bg-ctp-base text-ctp-text">
+      <div className="flex flex-1 min-h-0">
+        <Sidebar
+          activePanel={activePanel}
+          onSelect={setActivePanel}
+          collapsed={collapsed}
+          onToggleCollapse={() => setCollapsed(c => !c)}
+          onOpenSettings={() => setSettingsOpen(true)}
+        />
+        <main className="flex-1 flex flex-col min-w-0">
+          <FileChangeBanner visible={filesChanged} onRefresh={handleRefresh} />
+          <div className="flex-1 min-h-0 overflow-hidden">
+            {renderPanel()}
+          </div>
+        </main>
+      </div>
+      <OperationsLogDrawer
+        ops={ops.ops}
+        lines={ops.lines}
+        hasActive={ops.hasActive}
+        lastCleanExitAt={ops.lastCleanExitAt}
+        onClear={ops.clear}
       />
-      <main className="flex-1 flex flex-col min-w-0">
-        <FileChangeBanner visible={filesChanged} onRefresh={handleRefresh} />
-        <div className="flex-1 min-h-0 overflow-hidden">
-          {activePanel === 'tracker' && trackerView}
-          {activePanel === 'reports' && <ReportsPanel refreshKey={refreshKey} />}
-          {activePanel === 'pipeline' && <PipelinePanel refreshKey={refreshKey} />}
-        </div>
-      </main>
+      <SettingsSlideOver
+        open={settingsOpen}
+        onClose={handleSettingsClose}
+      />
     </div>
   )
 }

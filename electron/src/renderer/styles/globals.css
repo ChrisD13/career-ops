@@ -459,3 +459,46 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.55; }
 }
+
+/* --- Phase 2: PipelinePanel actions --- */
+.pipeline-panel__actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  background: rgb(var(--ctp-surface));
+  border-bottom: 1px solid rgb(var(--ctp-overlay));
+}
+.pipeline-panel__action {
+  padding: 0.35rem 0.8rem;
+  background: rgb(var(--ctp-overlay));
+  color: rgb(var(--ctp-text));
+  border: 1px solid rgb(var(--ctp-overlay));
+  border-radius: 4px;
+  cursor: pointer;
+}
+.pipeline-panel__action--primary {
+  background: rgb(var(--ctp-mauve));
+  color: rgb(var(--ctp-base));
+  border-color: rgb(var(--ctp-mauve));
+  font-weight: 600;
+}
+.pipeline-panel__action:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* --- Phase 2: App root layout --- */
+.app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: rgb(var(--ctp-base));
+}
+.app-main {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+.app-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
