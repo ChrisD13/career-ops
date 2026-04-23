@@ -24,11 +24,11 @@ Surface the right startup opportunities from leading VC portfolios before they a
 
 ### Active
 
-- [ ] VC portfolio scraper — periodically scrape portfolio pages from 10 firms (a16z, Sequoia, Benchmark, Accel, General Catalyst, Coatue, Founders Fund, Khosla, Index, Lightspeed) and store discovered companies
-- [ ] Company filtering pipeline — surface companies with funding announced in last 12 months AND active job listings matching target roles from `config/profile.yml`
-- [x] Electron desktop app — read-only shell complete (Phase 01): tracker, reports, pipeline panels; react-window virtualization; react-markdown renderer; chokidar watcher; ELEC-01–05 all verified. Write safety + Claude API integration in Phase 02.
-- [ ] Claude prompt caching — cache CV, profile, and shared mode context using `cache_control` to cut repeated evaluation cost ~90%
-- [ ] Smarter file reads — track file modification timestamps so unchanged context (cv.md, _profile.md, _shared.md) is not re-read on repeated evaluations
+- [x] VC portfolio scraper — periodically scrape portfolio pages from 10 firms (a16z, Sequoia, Benchmark, Accel, General Catalyst, Coatue, Founders Fund, Khosla, Index, Lightspeed) and store discovered companies. Validated in Phase 03.
+- [x] Company filtering pipeline — surface companies with funding announced in last 12 months AND active job listings matching target roles from `config/profile.yml`. Validated in Phase 03.
+- [x] Electron desktop app — read-only shell complete (Phase 01): tracker, reports, pipeline panels; react-window virtualization; react-markdown renderer; chokidar watcher; ELEC-01–05 all verified. Write safety + Claude API integration in Phase 02. VC Discover panel in Phase 03.
+- [x] Claude prompt caching — cache CV, profile, and shared mode context using `cache_control` to cut repeated evaluation cost ~90%. Validated in Phase 02.
+- [x] Smarter file reads — track file modification timestamps so unchanged context (cv.md, _profile.md, _shared.md) is not re-read on repeated evaluations. Validated in Phase 02.
 
 ### Out of Scope
 
