@@ -524,21 +524,19 @@ export function AnalyticsPanel({ refreshKey }: Props) {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should the "% of Applied" column show `—` or `0%` when Applied=0?**
    - What we know: UI-SPEC says Applied itself is always `100%`. CONTEXT is silent on the denominator-zero edge case.
-   - What's unclear: Design preference for `—` vs `0%` for downstream rows.
-   - Recommendation: Default to `0%` (per A2 above). If user reacts negatively, change to `—`. The EmptyState hides the pure-zero case anyway.
+   - RESOLVED: Default to `0%`. The EmptyState hides the pure-zero case anyway. Resolved 2026-04-24.
 
 2. **Should `totalRows === 0` trigger the EmptyState, or should "no scored rows" also trigger it?**
    - What we know: CONTEXT says "show empty state immediately when no data available". UI-SPEC empty-state copy is "No evaluated applications yet".
-   - What's unclear: If the tracker has 5 rows all with null scores, should the panel show the empty state or show a funnel with 4 buckets all reading n=0?
-   - Recommendation: Trigger EmptyState on `totalRows === 0`. If rows exist but all have null scores, render the panel — bucket section will show all 4 buckets with n=0 (per UI-SPEC "Always render all 4 bucket rows regardless of n=0") and funnel will show whatever status-based counts the rows produce. This handles the "user has Applied rows but no evaluation report" case.
+   - RESOLVED: Trigger EmptyState on `totalRows === 0` only. Rows with null scores render the panel with n=0 buckets per UI-SPEC. Resolved 2026-04-24.
 
 3. **"Last updated" timestamp?** [Discretionary per CONTEXT]
    - What we know: Claude's discretion.
-   - Recommendation: Skip it for Phase 6 — the panel auto-refreshes on file change, so the data is always fresh. Adding a timestamp creates a second source of truth about freshness. Defer unless user asks for it.
+   - RESOLVED: Skip timestamp for Phase 6. Panel auto-refreshes on file change — adding a timestamp creates a second source of truth about freshness. Resolved 2026-04-24.
 
 ---
 
