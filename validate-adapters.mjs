@@ -88,7 +88,48 @@ async function main() {
             // proved the page is renderable above — we just need a stable HTML snapshot.
             await page.goto(firm.portfolio_url, { waitUntil: 'domcontentloaded', timeout: 60000 });
             await page.waitForTimeout(5000);
-            const html = await page.content();
+
+            // a16z-specific: Alpine.js binds aria-label via `:aria-label="item.company.name"`.
+            // page.content() serializes the DIRECTIVE SOURCE alongside resolved static attributes,
+            // because Alpine's x-for <template> innerHTML is included in the serialized HTML and
+            // contains the raw `:aria-label="..."` directives. On offline replay, Alpine would
+            // re-evaluate these directives against a missing `item` scope and error out, leaving
+            // aria-label empty. Fix: (1) bake resolved aria-label from the live DOM into static
+            // attributes and remove the directive from live elements; (2) post-process the
+            // serialized HTML to strip any remaining `:aria-label="..."` attribute occurrences
+            // (including those in template innerHTML that DOM manipulation cannot reach without
+            // destroying Alpine's x-for rendered clones).
+            let html = await page.content();
+
+            if (firm.name === 'a16z') {
+              const baked = await page.evaluate(() => {
+                // Read resolved aria-label from each live Alpine-hydrated card button.
+                // `ariaLabel` IDL reflects the current attribute value after Alpine binding.
+                const nodes = document.querySelectorAll('button.group\\/card, [x-on\\:click*="triggerModal"]');
+                let count = 0;
+                for (const el of nodes) {
+                  const resolved = (el.ariaLabel || el.getAttribute('aria-label') || '').trim();
+                  if (resolved && !resolved.includes('item.company')) {
+                    el.setAttribute('aria-label', resolved);
+                    count++;
+                  }
+                  // Neutralize Alpine directive sources that would re-fire on offline replay.
+                  if (el.hasAttribute(':aria-label')) el.removeAttribute(':aria-label');
+                  if (el.hasAttribute('x-bind:aria-label')) el.removeAttribute('x-bind:aria-label');
+                }
+                return count;
+              });
+              // Re-fetch after DOM bake so static aria-label attributes are in the HTML.
+              html = await page.content();
+              // Post-process: strip any remaining `:aria-label="..."` attribute strings from the
+              // serialized HTML. Alpine's x-for <template> innerHTML is included in the output
+              // even after DOM manipulation; these occurrences cannot be neutralized via DOM APIs
+              // without destroying the rendered clones (Alpine tracks them via the template node).
+              const before = (html.match(/:aria-label=/g) || []).length;
+              html = html.replace(/\s*:aria-label="[^"]*"/g, '');
+              const after = (html.match(/:aria-label=/g) || []).length;
+              console.log(`  a16z: baked ${baked} aria-label attributes, stripped ${before - after} :aria-label directives from serialized HTML`);
+            }
             mkdirSync(FIXTURE_DIR, { recursive: true });
             writeFileSync(`${FIXTURE_DIR}/${filename}`, html);
             console.log(`  Fixture saved: ${FIXTURE_DIR}/${filename} (${html.length} bytes)`);
