@@ -63,8 +63,8 @@ Plans:
   3. Panel data updates automatically when the user (or any process) writes to applications.md, without requiring a manual refresh
 **Plans:** 2 plans
 Plans:
-- [ ] 06-01-PLAN.md — Phase 6 foundation: add ScoreBucket/FunnelStage/AnalyticsData types to preload/types.ts + create pure computeAnalytics.ts aggregation (ANAL-01, ANAL-02)
-- [ ] 06-02-PLAN.md — AnalyticsPanel.tsx (bar chart + funnel table + isRefresh-flagged auto-refresh) + Sidebar nav wiring + App.tsx routing (ANAL-01, ANAL-02, ANAL-03)
+- [x] 06-01-PLAN.md — Phase 6 foundation: add ScoreBucket/FunnelStage/AnalyticsData types to preload/types.ts + create pure computeAnalytics.ts aggregation (ANAL-01, ANAL-02)
+- [x] 06-02-PLAN.md — AnalyticsPanel.tsx (bar chart + funnel table + isRefresh-flagged auto-refresh) + Sidebar nav wiring + App.tsx routing (ANAL-01, ANAL-02, ANAL-03)
 **UI hint**: yes
 
 ## Progress
