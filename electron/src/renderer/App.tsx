@@ -1,6 +1,7 @@
 import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Sidebar, type PanelId } from './components/Sidebar'
 import { FileChangeBanner } from './components/FileChangeBanner'
+import { UpdateBanner } from './components/UpdateBanner'
 import { TrackerPanel } from './components/TrackerPanel'
 import { SplitPaneLayout } from './components/SplitPaneLayout'
 import { ReportViewer } from './components/ReportViewer'
@@ -201,6 +202,7 @@ export function App() {
           onOpenSettings={() => setSettingsOpen(true)}
         />
         <main className="flex-1 flex flex-col min-w-0">
+          <UpdateBanner />
           <FileChangeBanner visible={filesChanged} onRefresh={handleRefresh} />
           <div className="flex-1 min-h-0 overflow-hidden">
             {renderPanel()}
