@@ -83,7 +83,11 @@ async function main() {
           const filename = FIXTURE_FILENAMES[firm.name] ?? `${firm.name.toLowerCase().replace(/\s+/g, '-')}.html`;
           const page = await ctx.newPage();
           try {
-            await page.goto(firm.portfolio_url, { waitUntil: 'networkidle', timeout: 45000 });
+            // Use domcontentloaded + short settle: some portfolio pages (e.g. General Catalyst)
+            // keep long-poll beacons open so networkidle never fires. The adapter already
+            // proved the page is renderable above — we just need a stable HTML snapshot.
+            await page.goto(firm.portfolio_url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.waitForTimeout(5000);
             const html = await page.content();
             mkdirSync(FIXTURE_DIR, { recursive: true });
             writeFileSync(`${FIXTURE_DIR}/${filename}`, html);
