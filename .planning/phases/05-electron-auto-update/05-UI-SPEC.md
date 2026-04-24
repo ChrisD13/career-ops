@@ -1,7 +1,8 @@
 ---
 phase: 5
 slug: electron-auto-update
-status: draft
+status: approved
+reviewed_at: 2026-04-24
 shadcn_initialized: false
 preset: none
 created: 2026-04-23
@@ -144,9 +145,9 @@ bg-ctp-green/15 text-ctp-green text-body
 
 Left content block: `flex items-start gap-2`
 
-Icon: `Download` from lucide-react, size 14, `aria-hidden="true"`, `mt-0.5` for optical alignment with first text line.
+Icon: `Download` from lucide-react, size 14, `aria-hidden="true"`, `mt-1` for optical alignment with first text line.
 
-Text block (inside left content): `flex flex-col gap-0.5`
+Text block (inside left content): `flex flex-col gap-1`
 
 Version line: `font-semibold` (applied to the `<span>` wrapping the version text)
 
@@ -156,14 +157,14 @@ Button container: `flex gap-2 shrink-0`
 
 "Install Now" button:
 ```
-px-2 py-0.5 border border-ctp-green/60 rounded text-body font-semibold
+px-2 py-1 border border-ctp-green/60 rounded text-body font-semibold
 hover:bg-ctp-green/20
 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ctp-blue focus-visible:ring-inset
 ```
 
 "Later" button:
 ```
-px-2 py-0.5 border border-ctp-green/30 rounded text-body text-ctp-green/70
+px-2 py-1 border border-ctp-green/30 rounded text-body text-ctp-green/70
 hover:bg-ctp-green/10
 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ctp-blue focus-visible:ring-inset
 ```
