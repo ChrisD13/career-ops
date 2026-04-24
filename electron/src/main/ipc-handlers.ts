@@ -39,7 +39,7 @@ const VcFirmSchema = z.object({
   bypassProbe: z.boolean().optional().default(false),
 })
 const CronSchema = z.string().min(9).max(100)
-const VersionSchema = z.string().regex(/^\d+\.\d+\.\d+/)
+const VersionSchema = z.string().regex(/^\d+\.\d+\.\d+$/)
 
 export interface HandlerDeps {
   projectRoot: string
