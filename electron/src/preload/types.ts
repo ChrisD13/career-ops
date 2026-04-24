@@ -140,6 +140,24 @@ export interface UpdaterStatus {
   releaseNotes?: string | null
 }
 
+// Phase 6 — Analytics
+export interface ScoreBucket {
+  label: string        // "4.5–5.0" | "4.0–4.4" | "3.0–3.9" | "<3.0"
+  responseRate: number // 0–100 (percentage, rounded integer)
+  count: number        // total applications in bucket with non-null score
+}
+
+export interface FunnelStage {
+  stage: 'Applied' | 'Responded' | 'Interview' | 'Offer'
+  count: number
+  pctOfApplied: number // 0–100 (percentage, rounded integer); Applied itself is always 100
+}
+
+export interface AnalyticsData {
+  buckets: ScoreBucket[] // always length 4
+  funnel: FunnelStage[]  // always length 4
+}
+
 export interface ElectronAPI {
   // Phase 1 — unchanged
   readTracker: () => Promise<TrackerRow[]>
