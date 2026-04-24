@@ -38,24 +38,12 @@ let browser;
 before(async () => { browser = await chromium.launch({ headless: true }); });
 after(async () => { await browser.close(); });
 
-// a16z positive test is skipped: Plan 02's captured fixture preserves Alpine's
-// `:aria-label="item.company.name"` directive source (not the resolved static
-// aria-label attribute). When the fixture is replayed, Alpine re-evaluates against
-// a missing `item` scope and emits `item is not defined` page errors; the adapter
-// then reads empty aria-labels and returns 0 companies. Root cause is in Plan 02's
-// capture path, not this harness. See 04-03-SUMMARY.md "Deferred Issues" for the
-// orchestrator-facing fix (bake resolved attributes into the HTML before page.content()).
-const FIXTURE_DEFECT_SKIP = {
-  a16z: 'Plan 02 fixture-capture defect: Alpine :aria-label binding not resolved to static attribute during capture — Alpine errors "item is not defined" on replay.',
-};
-
 for (const adapter of ADAPTERS) {
   const fixturePath = join(fixturesDir, adapter.fixture);
   const fixtureHtml = readFileSync(fixturePath, 'utf-8');
 
   test(
     `${adapter.name} adapter parses portfolio companies from captured fixture`,
-    { skip: FIXTURE_DEFECT_SKIP[adapter.name] ?? false },
     async () => {
       const ctx = await browser.newContext();
       try {
