@@ -37,7 +37,7 @@ Plans:
 - [x] 04-01-PLAN.md — Canonical reason codes: normalizeReason() + 3 scrape-vcs callsites + inline reason text in ScraperHealthPanel (ADPT-02)
 - [x] 04-02-PLAN.md — validate-adapters.mjs + selector drift fixes + 10 captured HTML fixtures (ADPT-01)
 - [x] 04-03-PLAN.md — Offline Playwright regression harness at tests/adapters.test.mjs via context.route() (ADPT-03)
-- [ ] 04-04-PLAN.md — Gap closure: bake resolved Alpine aria-label into a16z fixture capture, re-capture, unskip positive test (ADPT-03)
+- [x] 04-04-PLAN.md — Gap closure: bake resolved Alpine aria-label into a16z fixture capture, re-capture, unskip positive test (ADPT-03)
 
 ### Phase 5: Electron Auto-Update
 **Goal**: The app silently checks GitHub Releases on startup and lets the user install a new version with one click
