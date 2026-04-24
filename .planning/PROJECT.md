@@ -8,22 +8,16 @@ An AI-powered job search system that surfaces high-signal startup opportunities 
 
 Discover and evaluate the right startup opportunities before they reach job boards — from a single desktop app, without opening a terminal.
 
-## Current Milestone: v1.1 — Live Validation + New Panels
+## Current State (v1.1 — Shipped 2026-04-24)
 
-**Goal:** Validate the VC scraper against live firm pages, add auto-update infrastructure, and ship a response-rate analytics panel — keeping scope focused on job discovery and application automation.
-
-**Target features:**
-- VC adapter validation — run real scrapes against all 10 firms, fix drifted selectors, add regression harness
-- Electron auto-update — `electron-updater` wired to GitHub Releases with in-app install prompt
-- Response-rate analytics dashboard — new panel showing score-to-outcome correlation and funnel stats
-
-## Current State (v1.0 — Shipped 2026-04-23)
-
-- Electron app ships: tracker, reports, pipeline, evaluate, CV, operations drawer, Discover panel
-- VC scraper: `scrape-vcs.mjs` + 10 per-firm Playwright adapters + funding/role-match filter
+- Electron app ships: tracker, reports, pipeline, evaluate, CV, operations drawer, Discover panel, **Analytics panel**
+- VC scraper: 10 per-firm Playwright adapters, regression harness (34/34 tests), `validate-adapters.mjs` for live validation
 - Anthropic integration: streaming evaluation, prompt caching (cache_control), mtime context dedup, safeStorage API key
+- Auto-update: `electron-updater` wired to GitHub Releases, UpdateBanner with one-click install + per-version dismiss
+- Response-rate analytics: score-to-outcome correlation panel, application funnel, auto-refreshing on file change
 - Write safety: `proper-lockfile` + `write-file-atomic` across all GUI write paths
-- All 19 v2 requirements covered at the code level; human UAT for Phases 2+3 deferred
+- Human UAT deferred: 14 items across Phases 2–5 (require packaged AppImage or live services)
+- **User setup required before first release:** fill `owner` + `repo` in `electron/package.json` build.publish
 
 ## Requirements
 
@@ -42,34 +36,38 @@ Discover and evaluate the right startup opportunities before they reach job boar
 - ✓ Write safety + Anthropic integration (ELEC-06–08, API-01–05) — v1.0, Phase 2 (code complete, UAT deferred)
 - ✓ VC portfolio discovery (VC-01–06) — v1.0, Phase 3 (code complete, UAT deferred)
 
-### Active (v1.1)
+### Validated (v1.1)
 
-- ✓ ADPT-01: All 10 VC firm scrapers produce valid output against live pages — Validated in Phase 4
-- ✓ ADPT-02: Per-firm scrape errors visible in Discover panel health view — Validated in Phase 4
-- ✓ ADPT-03: Regression harness catches selector drift before it reaches users — Validated in Phase 4
-- [ ] UPD-01: App checks for new GitHub Releases on startup (background, non-blocking)
-- [ ] UPD-02: User sees update prompt with release notes when a newer version is available
-- [ ] UPD-03: User can install update with one click or defer to later
-- [ ] ANAL-01: Response-rate analytics panel shows score-to-outcome correlation
-- [ ] ANAL-02: Funnel stats visible (applied → responded → interview → offer)
-- [ ] ANAL-03: Panel auto-refreshes when applications.md changes
+- ✓ ADPT-01: All 10 VC firm scrapers produce valid output against live pages — v1.1, Phase 4
+- ✓ ADPT-02: Per-firm scrape errors visible in Discover panel health view — v1.1, Phase 4
+- ✓ ADPT-03: Regression harness catches selector drift before runtime — v1.1, Phase 4
+- ✓ UPD-01: App checks GitHub Releases on startup (non-blocking) — v1.1, Phase 5 (runtime UAT deferred)
+- ✓ UPD-02: User sees update prompt with release notes — v1.1, Phase 5 (runtime UAT deferred)
+- ✓ UPD-03: One-click install or dismiss with per-version reminder — v1.1, Phase 5 (runtime UAT deferred)
+- ✓ ANAL-01: Score-to-outcome analytics panel — v1.1, Phase 6
+- ✓ ANAL-02: Application funnel stats — v1.1, Phase 6
+- ✓ ANAL-03: Panel auto-refreshes on file change — v1.1, Phase 6
+
+### Active (next milestone candidates)
+
+- Human UAT backlog — 14 deferred items across Phases 2, 3, 4, 5 (require packaged build or live services)
+- First packaged release — fill GitHub coordinates, run `npm run dist`, publish v0.1.0 release
+- Backlog items (see .planning/ROADMAP.md Backlog section if any)
 
 ### Out of Scope
 
 - Automatic application submission — user always reviews before Submit; ethical constraint from v1
 - Mobile app — desktop-only (Electron)
 - Cloud sync or remote state — all data stays local
-- Replacing existing mode files or language translations — Electron consumes them, doesn't replace them
-- Crunchbase API for funding signals — heuristics (RSS, press, Google News) in v1.0; API optional in v2
 - SQLite or any database — file-backed state preserved
-- Interview prep panel — project scope is discovery and application automation only; no prep/coaching features
+- Interview prep panel — project scope is discovery and application automation only
 
 ## Context
 
-- Chris used v1 to evaluate 740+ offers and land a Head of Applied AI role — v2 is a capability and UX evolution, not a rethink
-- Electron app calls Claude API directly — API key management, prompt caching, and streaming are first-class; existing `claude -p` batch path remains for headless use
-- VC scraping targets public portfolio pages (not APIs) — scraping logic handles DOM variability; graceful degrade with `no cards found` log
-- 342 files changed, 46,149 lines added across 19 days of development
+- Chris used v1 to evaluate 740+ offers and land a Head of Applied AI role — v2 is a capability and UX evolution
+- Electron app calls Claude API directly — API key management, prompt caching, and streaming are first-class
+- VC scraping targets public portfolio pages (not APIs) — DOM variability handled; regression harness catches drift
+- v1.1: 77 files changed, ~99K insertions across 20 days (2026-04-04 → 2026-04-24)
 
 ## Key Decisions
 
@@ -80,8 +78,13 @@ Discover and evaluate the right startup opportunities before they reach job boar
 | Filter by recent funding + active listings | Objective signals; avoids subjective AI-focus guessing | ✓ Good — RSS + Google News heuristics sufficient for MVP |
 | Preserve file-backed state (no DB migration) | Electron reads same Markdown/YAML/TSV files; zero data migration risk | ✓ Good — lockAndWrite + write-file-atomic proved safe in stress tests |
 | Keep existing batch/CLI path alongside Electron | Headless batch processing remains valid for large runs; GUI for day-to-day use | ✓ Good — process-runner abstraction works for scan/batch/pdf/scrape uniformly |
-| Worktree-based parallel execution | Allows parallel plan execution without merge conflicts | ⚠ Revisit — agents sometimes committed to parent branch instead of worktree branch; sequential dispatch helps but doesn't fully eliminate |
-| per-runId onExit lock release in scheduler | More reliable than polling activeOpsCount() across unrelated ops | ✓ Good — WR-01 fix from code review; cleaner than global poll |
+| Worktree-based parallel execution | Allows parallel plan execution without merge conflicts | ⚠ Revisit — agents sometimes committed to parent branch; stash+merge workaround needed |
+| per-runId onExit lock release in scheduler | More reliable than polling activeOpsCount() across unrelated ops | ✓ Good — cleaner than global poll |
+| electron-updater + GitHub Releases (not custom server) | Public repos, no token needed for checking; standard electron-builder flow | ✓ Good — zero infra cost; draft releases invisible to runtime (expected) |
+| package.json#build for publish config (not electron-builder.yml) | Avoids merge conflicts with existing build config | ✓ Good — single source of truth for build + publish |
+| Analytics computed in renderer from readTracker (no new IPC) | Zero main-process changes; pure functional aggregation; easy to test | ✓ Good — computeAnalytics() is fully stateless and verifiable |
+| CSS-only Tailwind bar charts (no chart library) | No new dependency; consistent with project's minimal-deps philosophy | ✓ Good — Catppuccin color tokens provide semantic score coloring |
+| Cumulative funnel semantics (forward-progress counting) | Applied ≥ Responded is guaranteed; avoids misleading drops | ✓ Good — correctly handles applications that skip stages |
 
 ## Constraints
 
@@ -95,18 +98,8 @@ Discover and evaluate the right startup opportunities before they reach job boar
 
 This document evolves at phase transitions and milestone boundaries.
 
-**After each phase transition** (via `/gsd-transition`):
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
-
-**After each milestone** (via `/gsd-complete-milestone`):
-1. Full review of all sections
-2. Core Value check — still the right priority?
-3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
+**After each phase transition**: Move validated requirements, log decisions, check core value drift.
+**After each milestone**: Full review of all sections, audit Out of Scope, update Context.
 
 ---
-*Last updated: 2026-04-24 — Phase 4 (VC Adapter Validation) complete; all ADPT requirements satisfied*
+*Last updated: 2026-04-24 after v1.1 milestone — Live Validation + Analytics shipped*

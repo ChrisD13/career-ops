@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Live Validation + Analytics
-status: milestone_complete
-stopped_at: v1.1 roadmap created — run `/gsd-plan-phase 4` to begin
-last_updated: "2026-04-24T18:24:28.485Z"
-last_activity: 2026-04-24 -- Phase 06 execution started
+status: archived
+stopped_at: v1.1 shipped — run /gsd-new-milestone to plan v1.2
+last_updated: "2026-04-24T00:00:00Z"
+last_activity: 2026-04-24 -- v1.1 milestone archived
 progress:
   total_phases: 3
   completed_phases: 3
   total_plans: 9
-  completed_plans: 7
+  completed_plans: 9
   percent: 100
 ---
 
@@ -18,34 +18,32 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-23)
+See: .planning/PROJECT.md (updated 2026-04-24)
 
 **Core value:** Surface the right startup opportunities from leading VC portfolios before they appear on job boards, and manage the entire pipeline from discovery through offer — without opening a terminal.
-**Current focus:** Phase 06 — Response-Rate Analytics Dashboard
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 06
-Plan: Not started
-Status: Milestone complete
+Phase: — (milestone complete)
+Plan: —
+Status: v1.1 archived
 Last activity: 2026-04-24
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████████] 100%
 
 ## Accumulated Context
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting v1.1 work:
+All decisions logged in PROJECT.md Key Decisions table.
 
-- Electron + Anthropic API directly (not `claude -p` wrapping) — enables streaming, prompt caching, cache-hit visibility
-- Filesystem remains system of record — no database; Electron is third client alongside Go TUI and batch path
-- VC scraper as standalone `scrape-vcs.mjs` — child_process.fork from Electron, runnable via CLI/cron
-- TSV-addition pattern is mandatory for GUI tracker writes — never direct writes to `applications.md`
-- Prompt cache hierarchy: `_shared.md` → `oferta.md` → `cv.md` + `article-digest.md` → `config/profile.yml` + `_profile.md` (stable → volatile), JD in user turn
-- Shared types live in preload/types.ts — single source of truth imported by both main parsers and renderer
-- Worktree-based parallel execution has edge cases (agents committing to parent branch) — prefer sequential dispatch for v1.1
+Key v1.1 additions:
+- electron-updater wired to GitHub Releases — `package.json#build.publish` (not electron-builder.yml)
+- IPC channels: `updater:status` / `updater:install` / `updater:dismiss` (per-version dismiss via userData)
+- Analytics computed in renderer from `readTracker` — zero new IPC, zero new npm deps
+- Cumulative funnel semantics: Applied ≥ Responded ≥ Interview ≥ Offer
+- CSS-only Tailwind bars with Catppuccin semantic colors — no chart library
 
 ### Pending Todos
 
@@ -53,22 +51,25 @@ None.
 
 ### Blockers/Concerns
 
-None at milestone start.
+None.
 
 ## Deferred Items
 
-Items carried forward from v1.0:
+Items deferred at v1.1 close (acknowledged 2026-04-24):
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| UAT | Phase 02 + Phase 03 human UAT | deferred to post-v1.1 | v1.0 close |
+| UAT | Phase 02 + Phase 03 human UAT | deferred — requires packaged build | v1.0 close |
+| UAT | Phase 04 human UAT (1 item) | deferred — requires live Electron + scrape error | v1.1 close |
+| UAT | Phase 05 human UAT (5 items) | deferred — requires packaged AppImage + GitHub Release | v1.1 close |
+| Setup | Fill GitHub owner/repo in electron/package.json | user action before first `npm run dist` | v1.1 close |
 | GUI | Inline report editing (read-only) | v2.0+ | Init |
 | Funding | Crunchbase API integration | out of scope | Init |
 
+Known deferred items at close: 6 (see Deferred Items above)
+
 ## Session Continuity
 
-Last session: 2026-04-23
-Stopped at: v1.1 roadmap created — run `/gsd-plan-phase 4` to begin
+Last session: 2026-04-24
+Stopped at: v1.1 shipped — run /gsd-new-milestone to plan v1.2
 Resume file: None
-
-**Planned Phase:** 06 () — 0 plans — 2026-04-24T18:24:11.456Z
