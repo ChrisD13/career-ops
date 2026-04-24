@@ -49,9 +49,9 @@ Plans:
   3. User can click once to download and install the update, or dismiss and have the prompt return on next launch
 **Plans:** 3 plans
 Plans:
-- [ ] 05-01-PLAN.md — electron-updater dep + GitHub publish config + UpdaterStatus type + preload IPC bridge (UPD-01, UPD-02, UPD-03)
-- [ ] 05-02-PLAN.md — services/updater.ts + ipc-handlers updater:install/dismiss + index.ts setTimeout wiring (UPD-01, UPD-03)
-- [ ] 05-03-PLAN.md — UpdateBanner component + App.tsx mount (UPD-02, UPD-03)
+- [x] 05-01-PLAN.md — electron-updater dep + GitHub publish config + UpdaterStatus type + preload IPC bridge (UPD-01, UPD-02, UPD-03)
+- [x] 05-02-PLAN.md — services/updater.ts + ipc-handlers updater:install/dismiss + index.ts setTimeout wiring (UPD-01, UPD-03)
+- [x] 05-03-PLAN.md — UpdateBanner component + App.tsx mount (UPD-02, UPD-03)
 
 ### Phase 6: Response-Rate Analytics Dashboard
 **Goal**: Users can see score-to-outcome correlation and funnel stats for their application history in a dedicated Electron panel
