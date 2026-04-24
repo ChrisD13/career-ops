@@ -44,9 +44,9 @@ Discover and evaluate the right startup opportunities before they reach job boar
 
 ### Active (v1.1)
 
-- [ ] ADPT-01: All 10 VC firm scrapers produce valid output against live pages
-- [ ] ADPT-02: Per-firm scrape errors visible in Discover panel health view
-- [ ] ADPT-03: Regression harness catches selector drift before it reaches users
+- ✓ ADPT-01: All 10 VC firm scrapers produce valid output against live pages — Validated in Phase 4
+- ✓ ADPT-02: Per-firm scrape errors visible in Discover panel health view — Validated in Phase 4
+- ✓ ADPT-03: Regression harness catches selector drift before it reaches users — Validated in Phase 4
 - [ ] UPD-01: App checks for new GitHub Releases on startup (background, non-blocking)
 - [ ] UPD-02: User sees update prompt with release notes when a newer version is available
 - [ ] UPD-03: User can install update with one click or defer to later
@@ -109,4 +109,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-23 — v1.1 milestone started*
+*Last updated: 2026-04-24 — Phase 4 (VC Adapter Validation) complete; all ADPT requirements satisfied*
