@@ -79,16 +79,16 @@ Design system: Catppuccin Mocha. All tokens declared in globals.css as CSS custo
 | Neutral border | ctp-overlay | #45475a | Dividers, borders |
 | Text primary | ctp-text | #cdd6f4 | Content labels, values |
 | Text secondary | ctp-subtext | #a6adc8 | Secondary labels, n=X counts |
-| Accent — nav active | ctp-mauve | #cba6f7 | Active "Analytics" nav item highlight only |
+| Accent — nav active | ctp-blue | #89b4fa | Active nav item highlight (left border + text) — confirmed from NavItem.tsx |
 | Semantic — high score | ctp-green | #a6e3a1 | Score bucket bar: 4.5–5.0 |
 | Semantic — good score | ctp-teal | #94e2d5 | Score bucket bar: 4.0–4.4 |
 | Semantic — mid score | ctp-yellow | #f9e2af | Score bucket bar: 3.0–3.9 |
 | Semantic — low score | ctp-red | #f38ba8 | Score bucket bar: <3.0 |
-| Funnel — applied/responded | ctp-sky | #89dceb | Funnel badge for Applied, Responded |
-| Funnel — interview/offer | ctp-peach | #fab387 | Funnel badge for Interview, Offer |
+| Funnel — applied/responded | ctp-sky | #89dceb | Funnel badge for Applied, Responded (via StatusBadge) |
+| Funnel — interview/offer | ctp-peach | #fab387 | Funnel badge for Interview, Offer (via StatusBadge) |
 | Destructive | ctp-red | #f38ba8 | Not used in this phase |
 
-Accent reserved for: active nav highlight (ctp-mauve), score bucket bars (semantic gradient green→teal→yellow→red), funnel stage badges (reusing StatusBadge palette sky/peach). Colors are data-semantic, not decorative.
+Accent reserved for: active nav item (ctp-blue — border-l + text color, per NavItem.tsx), score bucket bars (semantic gradient green→teal→yellow→red), funnel stage badges (reusing StatusBadge palette sky/peach). Colors are data-semantic, not decorative.
 
 ### Score Bucket Color Mapping (locked — executor must not re-decide)
 
@@ -133,17 +133,39 @@ AnalyticsPanel
 │           └── data rows × 4: Applied | Responded | Interview | Offer
 ```
 
-### File-change auto-refresh pattern (reuse verbatim from TrackerPanel)
+### File-change auto-refresh pattern (intentional divergence from TrackerPanel)
+
+The component subscribes to file changes the same way as TrackerPanel, but diverges in one place:
+TrackerPanel resets to `{ kind: 'loading' }` on every fetchData call, causing a visible loading flash
+on file-change refreshes. AnalyticsPanel must NOT reset to loading on refresh — only on initial mount.
+
+Implementation pattern:
 
 ```typescript
-// On mount:
-window.api.onFilesChanged(() => { void fetchData() })
-// fetchData: window.api.readTracker() → compute aggregates in renderer
+const [hasLoaded, setHasLoaded] = useState(false)
+
+const fetchData = useCallback(async (isRefresh = false) => {
+  if (!isRefresh) setState({ kind: 'loading' })   // loading only on initial mount
+  try {
+    const rows = await window.api.readTracker()
+    const analytics = computeAnalytics(rows)       // pure function, no IPC
+    setState({ kind: 'ready', analytics })
+    setHasLoaded(true)
+  } catch (err) {
+    setState({ kind: 'error', message: String(err) })
+  }
+}, [])
+
+// file-change refresh — pass isRefresh=true to suppress loading flash
+useEffect(() => {
+  const unsub = window.api.onFilesChanged(() => { void fetchData(true) })
+  return () => unsub()
+}, [fetchData])
 ```
 
-No new IPC handle needed. Computation is pure client-side from TrackerRow[] data.
+No new IPC handle needed. Computation (`computeAnalytics`) is pure client-side from TrackerRow[] data.
 
-### TypeScript type (add to `electron/src/preload/types.ts`)
+### TypeScript types (add to `electron/src/preload/types.ts`)
 
 ```typescript
 export interface ScoreBucket {
@@ -169,7 +191,8 @@ export interface AnalyticsData {
 File: `electron/src/renderer/components/Sidebar.tsx`
 
 - Add `'analytics'` to `PanelId` union type
-- Add nav item: `{ id: 'analytics', label: 'Analytics', icon: BarChart2 }` (import `BarChart2` from lucide-react)
+- Import `BarChart` from lucide-react (per CONTEXT.md Decisions: "BarChart icon from lucide-react")
+- Add nav item: `{ id: 'analytics', label: 'Analytics', icon: BarChart }`
 - Insert after `'discover'` in ITEMS array
 
 ### App.tsx routing
@@ -197,7 +220,7 @@ Add `<AnalyticsPanel />` render case for `activePanel === 'analytics'`.
 | Destructive confirmation | N/A — no destructive actions in this phase |
 | Funnel "% of Applied" for Applied row | 100% (always — Applied is the denominator) |
 
-Source: CONTEXT.md (empty state copy), TrackerPanel.tsx (loading/error copy pattern).
+Source: CONTEXT.md (empty state heading), TrackerPanel.tsx (loading/error copy pattern).
 
 ---
 
@@ -207,8 +230,9 @@ Source: CONTEXT.md (empty state copy), TrackerPanel.tsx (loading/error copy patt
 
 Trigger: `file-changed` event from chokidar watcher (existing event, no new wiring).
 Behavior: re-invoke `window.api.readTracker()`, recompute analytics in renderer, update state.
-No loading spinner on refresh — update data in-place without resetting to loading state (avoids flicker).
-Only show loading state on initial mount.
+On file-change refresh: update data in-place, do NOT reset to loading state (avoids flash).
+On initial mount only: show loading state until first data arrives.
+See Component Inventory for the `isRefresh` flag pattern.
 
 ### Empty buckets
 
@@ -240,7 +264,7 @@ Vertically scrollable within the `.app-panel` container using `overflow-y-auto` 
 | third-party | none | not applicable |
 
 No new npm dependencies needed. All requirements satisfied with:
-- lucide-react (already installed): `BarChart2` icon
+- lucide-react (already installed): `BarChart` icon
 - Tailwind CSS (already installed): all bar chart styling
 - React (already installed): component state + effects
 
