@@ -45,7 +45,9 @@ export function UpdateBanner() {
         <button
           type="button"
           onClick={() => {
-            void window.api.updaterDismiss(status.version!)
+            if (status.version) {
+              void window.api.updaterDismiss(status.version)
+            }
             setStatus(null)
           }}
           className="px-2 py-1 border border-ctp-green/30 rounded text-body text-ctp-green/70 hover:bg-ctp-green/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ctp-blue focus-visible:ring-inset"
