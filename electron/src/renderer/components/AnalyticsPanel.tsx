@@ -92,7 +92,7 @@ export function AnalyticsPanel({ refreshKey }: Props) {
           <div role="table" aria-label="Score to response rate">
             {analytics.buckets.map((bucket, idx) => {
               const colorClass =
-                bucket.count === 0 ? 'bg-ctp-overlay' : BUCKET_COLORS[idx]
+                bucket.count === 0 ? 'bg-ctp-overlay' : (BUCKET_COLORS[idx] ?? 'bg-ctp-overlay')
               return (
                 <div
                   key={bucket.label}
