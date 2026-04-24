@@ -7,6 +7,7 @@ import { registerIpcHandlers } from './ipc-handlers'
 import { startFileWatcher } from './watcher'
 import { MtimeCache } from './services/mtime-cache'
 import { initScheduler, stopScheduler } from './services/scheduler'
+import { initUpdater } from './services/updater'
 
 async function ensureRootDeps(projectRoot: string): Promise<void> {
   const required = ['robots-parser', 'write-file-atomic', 'node-cron']
@@ -87,6 +88,9 @@ app.whenReady().then(async () => {
   registerIpcHandlers({ projectRoot, pendingGuiWrites, mtimeCache, win: mainWindow })
   const stopWatcher = startFileWatcher(projectRoot, mainWindow, pendingGuiWrites)
   await initScheduler(projectRoot, mainWindow)
+  // Phase 5 — auto-update: check after 5s so startup UX is not blocked
+  // Called once here; NOT inside app.on('activate') — same idempotent-unsafe constraint as registerIpcHandlers
+  setTimeout(() => { initUpdater(mainWindow) }, 5000)
 
   mainWindow.on('closed', () => {
     stopWatcher()

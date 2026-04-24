@@ -17,6 +17,7 @@ import { listFirms, addFirm } from './services/vc-firms'
 import { promoteToPipeline } from './services/promote'
 import { probeUrl } from './services/url-probe'
 import { triggerScrape, reconfigureScheduler } from './services/scheduler'
+import { installUpdate, setDismissedVersion } from './services/updater'
 
 const ReportPathSchema = z.string().regex(/^reports\/[^/]+\.md$/)
 const UpdateStatusSchema = z.object({
@@ -38,6 +39,7 @@ const VcFirmSchema = z.object({
   bypassProbe: z.boolean().optional().default(false),
 })
 const CronSchema = z.string().min(9).max(100)
+const VersionSchema = z.string().regex(/^\d+\.\d+\.\d+/)
 
 export interface HandlerDeps {
   projectRoot: string
@@ -248,5 +250,15 @@ export function registerIpcHandlers(deps: HandlerDeps): void {
     const expr = CronSchema.parse(raw)
     await preferences.setVcScrapeInterval(expr)   // throws if cron.validate fails
     await reconfigureScheduler(projectRoot, win)
+  })
+
+  // Phase 5 — auto-update
+  ipcMain.handle('updater:install', async () => {
+    installUpdate()
+  })
+
+  ipcMain.handle('updater:dismiss', async (_e, raw: unknown) => {
+    const version = VersionSchema.parse(raw)
+    await setDismissedVersion(version)
   })
 }
