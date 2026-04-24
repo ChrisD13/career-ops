@@ -39,7 +39,7 @@ const VcFirmSchema = z.object({
   bypassProbe: z.boolean().optional().default(false),
 })
 const CronSchema = z.string().min(9).max(100)
-const VersionSchema = z.string().regex(/^\d+\.\d+\.\d+$/)
+const VersionSchema = z.string().regex(/^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?$/)
 
 export interface HandlerDeps {
   projectRoot: string
@@ -258,7 +258,12 @@ export function registerIpcHandlers(deps: HandlerDeps): void {
   })
 
   ipcMain.handle('updater:dismiss', async (_e, raw: unknown) => {
-    const version = VersionSchema.parse(raw)
-    await setDismissedVersion(version)
+    try {
+      const version = VersionSchema.parse(raw)
+      await setDismissedVersion(version)
+    } catch (err: any) {
+      console.warn('[updater] dismiss failed:', err?.message)
+      // non-fatal — dismiss is best-effort
+    }
   })
 }
