@@ -566,7 +566,7 @@ ipcMain.handle('updater:dismiss', async (_e, raw: unknown) => {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **`owner` and `repo` values for publish config**
    - What we know: Config requires `provider: github` + `owner` + `repo`
@@ -580,13 +580,12 @@ ipcMain.handle('updater:dismiss', async (_e, raw: unknown) => {
 
 3. **CONTEXT specifies `electron-builder.yml`; repo already has `package.json#build` — which wins?**
    - What we know: CONTEXT.md locks `electron-builder.yml: provider: github with owner/repo`. The existing `electron/package.json#build` already contains `appId`, `linux.target`, `files`, and `directories`. electron-builder merges both files if both exist, with unpredictable precedence.
-   - What's unclear: Whether the user intended to migrate all build config to `electron-builder.yml` (and remove from `package.json`) or to extend the existing `package.json#build`.
-   - Recommendation: Extend `package.json#build` only (no new YAML file) — this is the minimal-change path with no merge risk. If user wants `electron-builder.yml`, all existing `build` config must move there and be removed from `package.json`. **User must confirm which approach before plan execution.**
+   - RESOLVED: Extend `package.json#build` in place. Do not create `electron-builder.yml`. User confirmed 2026-04-24 — minimal-change path with no merge risk.
 
 4. **IPC channel set differs from CONTEXT — confirm deviation**
    - What we know: CONTEXT locks channels `updater:check`, `updater:status`, `updater:install`. Research proposes `updater:status` (push), `updater:install` (handle), and `updater:dismiss` (handle, new) — dropping `updater:check` and adding `updater:dismiss`.
    - Rationale for deviation: `updater:check` is unnecessary — the check fires automatically on startup via `setTimeout`. `updater:dismiss` is required for the "Later" behavior that persists the dismissed version; without it, the dismissed version cannot be stored from the renderer.
-   - Recommendation: Adopt the research channel set (`updater:status`, `updater:install`, `updater:dismiss`). If the user wants a manual re-check trigger in future, `updater:check` can be added without breaking changes. **Planner should note the deviation from CONTEXT in the plan.**
+   - RESOLVED: Adopt the research channel set — `updater:status`, `updater:install`, `updater:dismiss`. Drop `updater:check`. User confirmed 2026-04-24.
 
 ---
 
