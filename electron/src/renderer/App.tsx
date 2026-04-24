@@ -10,6 +10,7 @@ import { PipelinePanel } from './components/PipelinePanel'
 import { EvaluatePanel } from './components/EvaluatePanel'
 import { CvPanel } from './components/CvPanel'
 import { DiscoverPanel } from './components/DiscoverPanel'
+import { AnalyticsPanel } from './components/AnalyticsPanel'
 import { SettingsSlideOver } from './components/SettingsSlideOver'
 import { OperationsLogDrawer } from './components/OperationsLogDrawer'
 import { useApiKeyState } from './hooks/useApiKeyState'
@@ -188,6 +189,8 @@ export function App() {
             onRunScrape={handleRunScrape}
           />
         )
+      case 'analytics':
+        return <AnalyticsPanel refreshKey={refreshKey} />
     }
   }
 
