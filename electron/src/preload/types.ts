@@ -133,6 +133,13 @@ export interface AddFirmPayload {
   bypassProbe?: boolean   // set true when user clicks "Save anyway" after failed probe
 }
 
+// Phase 5 — auto-update
+export interface UpdaterStatus {
+  phase: 'downloading' | 'downloaded'
+  version?: string
+  releaseNotes?: string | null
+}
+
 export interface ElectronAPI {
   // Phase 1 — unchanged
   readTracker: () => Promise<TrackerRow[]>
@@ -184,6 +191,11 @@ export interface ElectronAPI {
   addVcFirm: (payload: AddFirmPayload) => Promise<AddFirmResult>
   getVcScrapeInterval: () => Promise<{ interval: string }>
   setVcScrapeInterval: (interval: string) => Promise<void>
+
+  // Phase 5 — auto-update
+  onUpdaterStatus: (cb: (status: UpdaterStatus) => void) => () => void
+  updaterInstall: () => Promise<void>
+  updaterDismiss: (version: string) => Promise<void>
 }
 
 declare global {

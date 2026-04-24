@@ -16,6 +16,7 @@
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
     "chokidar": "^5.0.0",
+    "electron-updater": "^6.8.3",
     "js-yaml": "^4.1.1",
     "node-cron": "^4.2.1",
     "lucide-react": "^0.511.0",
@@ -51,6 +52,14 @@
   "build": {
     "appId": "io.jobengine.desktop",
     "productName": "JobEngine",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "YOUR_GITHUB_ORG",
+        "repo": "YOUR_REPO_NAME",
+        "releaseType": "release"
+      }
+    ],
     "directories": {
       "output": "dist"
     },

@@ -3,6 +3,7 @@ import type {
   ElectronAPI, EvaluationDonePayload, EvaluationErrorPayload,
   OpOutputPayload, OpDonePayload,
   AddFirmPayload,
+  UpdaterStatus,
 } from './types'
 
 function subscribe<T>(channel: string, callback: (payload: T) => void): () => void {
@@ -62,6 +63,13 @@ const api: ElectronAPI = {
   addVcFirm: (payload: AddFirmPayload) => ipcRenderer.invoke('addVcFirm', payload),
   getVcScrapeInterval: () => ipcRenderer.invoke('getVcScrapeInterval'),
   setVcScrapeInterval: (interval) => ipcRenderer.invoke('setVcScrapeInterval', interval),
+
+  // Phase 5 — auto-update
+  // DEVIATION FROM CONTEXT per RESEARCH.md Q4: dropping 'updater:check' (auto-fires via setTimeout on startup;
+  // no manual re-check trigger needed); adding 'updater:dismiss' (required for "Later" to persist dismissed version).
+  onUpdaterStatus: (cb) => subscribe<UpdaterStatus>('updater:status', cb),
+  updaterInstall: () => ipcRenderer.invoke('updater:install'),
+  updaterDismiss: (version: string) => ipcRenderer.invoke('updater:dismiss', version),
 }
 
 contextBridge.exposeInMainWorld('api', api)
