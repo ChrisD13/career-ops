@@ -61,7 +61,10 @@ Plans:
   1. User can open an Analytics panel showing response rates grouped by score bucket (e.g., 4.5–5.0, 4.0–4.4, etc.)
   2. User can see a funnel showing counts at each stage: applied → responded → interview → offer
   3. Panel data updates automatically when the user (or any process) writes to applications.md, without requiring a manual refresh
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 06-01-PLAN.md — Phase 6 foundation: add ScoreBucket/FunnelStage/AnalyticsData types to preload/types.ts + create pure computeAnalytics.ts aggregation (ANAL-01, ANAL-02)
+- [ ] 06-02-PLAN.md — AnalyticsPanel.tsx (bar chart + funnel table + isRefresh-flagged auto-refresh) + Sidebar nav wiring + App.tsx routing (ANAL-01, ANAL-02, ANAL-03)
 **UI hint**: yes
 
 ## Progress
@@ -73,4 +76,4 @@ Plans:
 | 3. VC Portfolio Discovery | v1.0 | 3/3 | Complete | 2026-04-23 |
 | 4. VC Adapter Validation | v1.1 | 4/4 | Complete | 2026-04-24 |
 | 5. Electron Auto-Update | v1.1 | 0/3 | Not started | - |
-| 6. Response-Rate Analytics Dashboard | v1.1 | 0/3 | Not started | - |
+| 6. Response-Rate Analytics Dashboard | v1.1 | 0/2 | Not started | - |
