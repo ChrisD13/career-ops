@@ -67,6 +67,6 @@ Plans:
 | 1. Electron Shell + Read-Only Views | v1.0 | 5/5 | Complete | 2026-04-22 |
 | 2. Write Safety + Anthropic Integration | v1.0 | 6/6 | Complete | 2026-04-22 |
 | 3. VC Portfolio Discovery | v1.0 | 3/3 | Complete | 2026-04-23 |
-| 4. VC Adapter Validation | v1.1 | 0/3 | Not started | - |
+| 4. VC Adapter Validation | v1.1 | 4/4 | Complete | 2026-04-24 |
 | 5. Electron Auto-Update | v1.1 | 0/2 | Not started | - |
 | 6. Response-Rate Analytics Dashboard | v1.1 | 0/3 | Not started | - |
