@@ -47,7 +47,11 @@ Plans:
   1. App starts without blocking UI while checking for updates in the background
   2. When a newer GitHub Release exists, user sees an in-app banner or dialog with the version number and release notes
   3. User can click once to download and install the update, or dismiss and have the prompt return on next launch
-**Plans**: TBD
+**Plans:** 3 plans
+Plans:
+- [ ] 05-01-PLAN.md — electron-updater dep + GitHub publish config + UpdaterStatus type + preload IPC bridge (UPD-01, UPD-02, UPD-03)
+- [ ] 05-02-PLAN.md — services/updater.ts + ipc-handlers updater:install/dismiss + index.ts setTimeout wiring (UPD-01, UPD-03)
+- [ ] 05-03-PLAN.md — UpdateBanner component + App.tsx mount (UPD-02, UPD-03)
 
 ### Phase 6: Response-Rate Analytics Dashboard
 **Goal**: Users can see score-to-outcome correlation and funnel stats for their application history in a dedicated Electron panel
@@ -68,5 +72,5 @@ Plans:
 | 2. Write Safety + Anthropic Integration | v1.0 | 6/6 | Complete | 2026-04-22 |
 | 3. VC Portfolio Discovery | v1.0 | 3/3 | Complete | 2026-04-23 |
 | 4. VC Adapter Validation | v1.1 | 4/4 | Complete | 2026-04-24 |
-| 5. Electron Auto-Update | v1.1 | 0/2 | Not started | - |
+| 5. Electron Auto-Update | v1.1 | 0/3 | Not started | - |
 | 6. Response-Rate Analytics Dashboard | v1.1 | 0/3 | Not started | - |
