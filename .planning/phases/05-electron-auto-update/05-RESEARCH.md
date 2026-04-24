@@ -349,7 +349,7 @@ export function UpdateBanner() {
 
 **Critical:** `releaseType` must be `"release"`, not the default `"draft"`. Draft releases are invisible to the unauthenticated runtime update check on public repos.
 
-**Build config location:** The existing config lives in `electron/package.json#build`. Extend it there — do NOT create a separate `electron-builder.yml`, which would conflict with the existing package.json config.
+**Build config location (CONTEXT DEVIATION — see Open Question #3):** CONTEXT.md specifies `electron-builder.yml` as the config file. However, the repo already has build config in `electron/package.json#build`. Creating a separate `electron-builder.yml` alongside an existing `package.json#build` will conflict — electron-builder merges both, with unpredictable precedence. Research recommendation: extend `package.json#build` in place. This is a deviation from the locked decision; the planner must surface it for user confirmation.
 
 ### Anti-Patterns to Avoid
 
@@ -562,6 +562,7 @@ ipcMain.handle('updater:dismiss', async (_e, raw: unknown) => {
 | A1 | The GitHub repo for JobEngine is public — no `GH_TOKEN` needed at runtime for update checks | Standard Stack | If private, users need `GH_TOKEN` set at runtime; update check fails silently without it |
 | A2 | `owner` and `repo` values for the publish config are known at plan/build time | Standard Stack / Code Examples | If not yet determined, the publish config will have placeholder values and CI release step cannot run |
 | A3 | Linux (AppImage) is the only target platform for this release | Architecture | If macOS or Windows targets are added, code signing requirements apply (macOS: required; Windows: recommended) |
+| A4 | Extending `package.json#build` (not creating `electron-builder.yml`) is the correct approach | Pattern 5 | If user wanted a separate YAML, all existing build config must move there and be removed from package.json — see Open Question #3 |
 
 ---
 
@@ -575,7 +576,27 @@ ipcMain.handle('updater:dismiss', async (_e, raw: unknown) => {
 2. **`autoInstallOnAppQuit` recommendation confirmed**
    - What we know: Research recommends `false` (user has deliberate control); CONTEXT says "Later" = dismiss banner, "Install Now" = only path to install
    - What's unclear: CONTEXT doesn't explicitly state `autoInstallOnAppQuit` preference
-   - Recommendation: Set `false` — align with CONTEXT's deliberate-control framing. If user wants quit-time auto-install, it's a one-line config change.
+   - Recommendation: Set `false` — aligns with CONTEXT's deliberate-control framing. If user wants quit-time auto-install, it's a one-line config change.
+
+3. **CONTEXT specifies `electron-builder.yml`; repo already has `package.json#build` — which wins?**
+   - What we know: CONTEXT.md locks `electron-builder.yml: provider: github with owner/repo`. The existing `electron/package.json#build` already contains `appId`, `linux.target`, `files`, and `directories`. electron-builder merges both files if both exist, with unpredictable precedence.
+   - What's unclear: Whether the user intended to migrate all build config to `electron-builder.yml` (and remove from `package.json`) or to extend the existing `package.json#build`.
+   - Recommendation: Extend `package.json#build` only (no new YAML file) — this is the minimal-change path with no merge risk. If user wants `electron-builder.yml`, all existing `build` config must move there and be removed from `package.json`. **User must confirm which approach before plan execution.**
+
+4. **IPC channel set differs from CONTEXT — confirm deviation**
+   - What we know: CONTEXT locks channels `updater:check`, `updater:status`, `updater:install`. Research proposes `updater:status` (push), `updater:install` (handle), and `updater:dismiss` (handle, new) — dropping `updater:check` and adding `updater:dismiss`.
+   - Rationale for deviation: `updater:check` is unnecessary — the check fires automatically on startup via `setTimeout`. `updater:dismiss` is required for the "Later" behavior that persists the dismissed version; without it, the dismissed version cannot be stored from the renderer.
+   - Recommendation: Adopt the research channel set (`updater:status`, `updater:install`, `updater:dismiss`). If the user wants a manual re-check trigger in future, `updater:check` can be added without breaking changes. **Planner should note the deviation from CONTEXT in the plan.**
+
+---
+
+## Verification Preconditions
+
+> These are prerequisites the planner must include as tasks, not just pitfalls to avoid.
+
+1. **Publish a real GitHub Release before end-to-end verification.** The app currently has no GitHub Release at any version. To verify the update check works: publish `v0.1.0` as a public GitHub Release (not draft) with `latest-linux.yml` included. Then bump `version` to `v0.1.1` in `electron/package.json` and build. Install the `v0.1.0` AppImage; launch it; verify the banner appears.
+
+2. **`GH_TOKEN` required at build/publish time, not at runtime.** To publish the AppImage and `latest-linux.yml` to GitHub Releases, set `GH_TOKEN` in the CI environment (or locally during the first manual release). The token is not needed at runtime for update checks on public repos.
 
 ---
 
@@ -589,7 +610,7 @@ ipcMain.handle('updater:dismiss', async (_e, raw: unknown) => {
 | GitHub repo + release | Runtime update source | [ASSUMED] ✓ | — | No fallback — required for UPD-01 |
 
 **Missing dependencies with no fallback:**
-- `electron-updater` must be installed (`npm install electron-updater` in `electron/`). It's not in devDependencies — it must be in `dependencies` (used at runtime in the packaged app).
+- `electron-updater` must be installed (`npm install electron-updater` in `electron/`). It must be in `dependencies` (not `devDependencies`) — it runs at runtime inside the packaged app.
 
 **Missing dependencies with fallback:**
 - None.
