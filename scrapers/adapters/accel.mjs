@@ -10,11 +10,17 @@ export default async function scrape(context, { log, firm }) {
       await page.waitForTimeout(1000);
     }
     const companies = await page.$$eval(
-      'a[href*="/companies/"], article.company, .company-tile',
+      '.company-card_component, a[href*="/companies/"], article.company, .company-tile',
       (nodes) => {
         const seen = new Set();
         return nodes.map(n => ({
-          name: (n.querySelector('h3, h2, .name')?.textContent ?? n.textContent ?? '').trim(),
+          // Post-redesign: name lives in <h3 accel-content="company-name" class="sr-only">
+          // Fallbacks: older h3/h2/.name heading or raw text content.
+          name: (
+            n.querySelector('[accel-content="company-name"], h3.sr-only, h3, h2, .name')?.textContent
+            ?? n.textContent
+            ?? ''
+          ).trim(),
           website: n.querySelector('a[href^="http"]:not([href*="accel.com"])')?.href ?? '',
           careers_url: '',
         })).filter(c => { if (!c.name || seen.has(c.name)) return false; seen.add(c.name); return true; });
