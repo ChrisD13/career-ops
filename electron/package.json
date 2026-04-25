@@ -18,8 +18,8 @@
     "chokidar": "^5.0.0",
     "electron-updater": "^6.8.3",
     "js-yaml": "^4.1.1",
-    "node-cron": "^4.2.1",
     "lucide-react": "^0.511.0",
+    "node-cron": "^4.2.1",
     "proper-lockfile": "^4.1.2",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -32,8 +32,8 @@
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
-    "@types/node-cron": "^3.0.11",
     "@types/node": "^22.10.1",
+    "@types/node-cron": "^3.0.11",
     "@types/proper-lockfile": "^4.1.4",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
@@ -41,7 +41,7 @@
     "@types/write-file-atomic": "^4.0.3",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
-    "electron": "41.2.2",
+    "electron": "^41.2.2",
     "electron-builder": "^26.8.1",
     "electron-vite": "^5.0.0",
     "postcss": "^8.4.49",
@@ -55,8 +55,8 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "YOUR_GITHUB_ORG",
-        "repo": "YOUR_REPO_NAME",
+        "owner": "ChrisD13",
+        "repo": "career-ops",
         "releaseType": "release"
       }
     ],
