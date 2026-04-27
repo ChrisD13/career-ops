@@ -74,4 +74,4 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 | 5. Electron Auto-Update | v1.1 | 3/3 | Complete | 2026-04-24 |
 | 6. Response-Rate Analytics Dashboard | v1.1 | 2/2 | Complete | 2026-04-24 |
 | 7. Desktop Shortcut Auto-Creation | v1.2 | 1/1 | Complete | 2026-04-27 |
-| 8. CV Upload & PDF Extraction | v1.2 | 0/2 | Planned | - |
+| 8. CV Upload & PDF Extraction | v1.2 | 2/2 | Complete | 2026-04-27 |
