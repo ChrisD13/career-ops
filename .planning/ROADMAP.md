@@ -45,7 +45,8 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
   1. After first launch of the packaged build, `~/.local/share/applications/jobengine.desktop` exists and JobEngine appears in the user's system launcher / app menu
   2. On every subsequent launch (packaged or dev), if the `.desktop` file already exists the app starts silently and never modifies it — manual edits by the user are preserved
   3. Shortcut creation is silent: no UI prompt, no error popup, and no behavior change when running the unpackaged dev build
-**Plans**: TBD
+**Plans**: 1
+  - [ ] 07-01-PLAN.md — Create services/desktop-shortcut.ts (ensureDesktopShortcut) and wire into electron/src/main/index.ts
 
 ### Phase 8: CV Upload & PDF Extraction
 **Goal**: User keeps `cv.md` fresh from inside the Electron app — pick a file, see what will be saved, confirm, done — without ever opening a terminal or text editor
@@ -70,5 +71,5 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 | 4. VC Adapter Validation | v1.1 | 4/4 | Complete | 2026-04-24 |
 | 5. Electron Auto-Update | v1.1 | 3/3 | Complete | 2026-04-24 |
 | 6. Response-Rate Analytics Dashboard | v1.1 | 2/2 | Complete | 2026-04-24 |
-| 7. Desktop Shortcut Auto-Creation | v1.2 | 0/? | Not started | - |
+| 7. Desktop Shortcut Auto-Creation | v1.2 | 0/1 | Not started | - |
 | 8. CV Upload & PDF Extraction | v1.2 | 0/? | Not started | - |
