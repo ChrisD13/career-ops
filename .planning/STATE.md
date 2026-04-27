@@ -1,36 +1,35 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.2
-milestone_name: Setup & CV Management
-status: executing
-stopped_at: v1.2 roadmap drafted — run `/gsd-plan-phase 7` next
-last_updated: "2026-04-27T18:52:00.774Z"
-last_activity: 2026-04-27 -- Phase 08 execution started
+milestone: v1.3
+milestone_name: TBD — run /gsd-new-milestone to plan
+status: planning
+stopped_at: v1.2 shipped — run /gsd-new-milestone to start v1.3
+last_updated: "2026-04-27T22:00:00.000Z"
+last_activity: 2026-04-27 -- v1.2 milestone complete and archived
 progress:
-  total_phases: 2
-  completed_phases: 1
-  total_plans: 3
-  completed_plans: 1
-  percent: 33
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-24)
+See: .planning/PROJECT.md (updated 2026-04-27)
 
-**Core value:** Surface the right startup opportunities from leading VC portfolios before they appear on job boards, and manage the entire pipeline from discovery through offer — without opening a terminal.
-**Current focus:** Phase 08 — CV Upload & PDF Extraction
+**Core value:** Discover and evaluate the right startup opportunities before they reach job boards — from a single desktop app, without opening a terminal.
+**Current focus:** Planning v1.3 — run `/gsd-new-milestone` to define next milestone
 
 ## Current Position
 
-Phase: 08 (CV Upload & PDF Extraction) — EXECUTING
-Plan: 1 of 2
-Status: Executing Phase 08
-Last activity: 2026-04-27 -- Phase 08 execution started
+Phase: None — milestone complete
+Status: v1.2 shipped and archived
+Last activity: 2026-04-27 — v1.2 milestone complete (2 phases, 3 plans, 30 commits)
 
-Progress: [          ] 0% (0/2 phases complete)
+Progress: [██████████] 100% (8/8 phases complete across v1.0–v1.2)
 
 ## Accumulated Context
 
@@ -38,17 +37,18 @@ Progress: [          ] 0% (0/2 phases complete)
 
 All decisions logged in PROJECT.md Key Decisions table.
 
-v1.2 planning notes:
-
-- Phase split (7 vs 8) chosen because the two feature areas verify under different conditions: Phase 7 (desktop shortcut) requires a packaged build to verify end-to-end; Phase 8 (CV upload) verifies in dev mode. Combining would force an awkward verification story.
-- PDF text extraction library choice (pdf-parse / pdfjs-dist / Playwright) deferred to plan phase — research at plan time
-- `cv.md` writes reuse the Phase 2 `lockAndWrite` + `write-file-atomic` pattern — no new write infrastructure required
-- `.desktop` file write also uses `write-file-atomic` for codebase consistency, even though the file is small and rarely written
+v1.2 close notes:
+- Phase split (7 vs 8) was correct — Phase 7 verifies at code level, Phase 8 requires live Electron for UI flow
+- unpdf@1.6.0 chosen: tree-shakeable, no native bindings — clean install
+- seed-if-missing guard before lockAndWrite is now the standard pattern for any file that may not exist on fresh installs
+- ROADMAP phase checkbox must be updated at phase completion — stale `- [ ]` caused unnecessary re-execution attempt at autonomous milestone discovery
 
 ### Pending Todos
 
-- Run `/gsd-plan-phase 7` to decompose Phase 7 (Desktop Shortcut Auto-Creation) into plans
-- Run `/gsd-plan-phase 8` to decompose Phase 8 (CV Upload & PDF Extraction) into plans
+- Run `/gsd-new-milestone` to define v1.3 scope
+- First packaged release: fill `owner`/`repo` in `electron/package.json` build.publish, build AppImage, publish v0.1.0
+- Human UAT backlog: 25 items across Phases 2–8 (batch-verify against first packaged build)
+- DESK-01 E2E: verify `.desktop` creation + icon copy + launcher registration on first AppImage run
 
 ### Blockers/Concerns
 
@@ -56,25 +56,27 @@ None.
 
 ## Deferred Items
 
-Items deferred at v1.1 close (acknowledged 2026-04-24, still open in v1.2):
+Items acknowledged and deferred at v1.2 milestone close (2026-04-27):
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
 | UAT | Phase 02 + Phase 03 human UAT | deferred — requires packaged build | v1.0 close |
 | UAT | Phase 04 human UAT (1 item) | deferred — requires live Electron + scrape error | v1.1 close |
 | UAT | Phase 05 human UAT (5 items) | deferred — requires packaged AppImage + GitHub Release | v1.1 close |
+| UAT | Phase 07 human UAT (5 items: DESK-01 E2E, icon copy, launcher, idempotency, recovery) | deferred — requires packaged AppImage | v1.2 close |
+| UAT | Phase 08 human UAT (6 items: file dialog, .md flow, .pdf flow, full replace, cancel, oversized file) | deferred — requires live Electron app | v1.2 close |
 | Setup | Fill GitHub owner/repo in electron/package.json | user action before first `npm run dist` | v1.1 close |
+| Code | Remove dead MAX_FILE_BYTES import in ipc-handlers.ts | minor cleanup | v1.2 close |
+| Code | Fix stale 'created/updated' log in desktop-shortcut.ts | cosmetic | v1.2 close |
 | GUI | Inline report editing (read-only) | v2.0+ | Init |
 | Funding | Crunchbase API integration | out of scope | Init |
 
-Known deferred items at v1.2 start: 6 (carried from v1.1 close)
+Known deferred items at v1.2 close: 10 items (25 UAT + 2 code + 2 infra + 2 product)
 
-Per user preference (memory): defer all human UAT until project is feature-complete; do not surface UAT prompts during active development.
+Per user preference: defer all human UAT until project is feature-complete; do not surface UAT prompts during active development.
 
 ## Session Continuity
 
 Last session: 2026-04-27
-Stopped at: v1.2 roadmap drafted — run `/gsd-plan-phase 7` next
+Stopped at: v1.2 milestone complete — all phases shipped, archived, tagged
 Resume file: None
-
-**Planned Phase:** 08 () — 0 plans — 2026-04-27T18:51:46.452Z

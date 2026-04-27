@@ -90,17 +90,61 @@
 - Model mix: Opus (executor/planner/researcher), Sonnet (verifier/reviewer/checker/UI)
 - Notable: Autonomous mode handled 3 full phases — discuss+plan+execute per phase — plus audit and milestone close in one session; approximately 1.5M tokens consumed across all agents
 
+## Milestone: v1.2 — Setup & CV Management
+
+**Shipped:** 2026-04-27
+**Phases:** 2 | **Plans:** 3 | **Duration:** 1 day
+
+### What Was Built
+
+1. Desktop shortcut service — `ensureDesktopShortcut()` auto-creates `~/.local/share/applications/jobengine.desktop` on first packaged AppImage run; `existsSync` gate preserves user edits (Phase 7)
+2. PDF extraction via `unpdf@1.6.0` — `extractPdfText()` with stat-before-read 10 MB guard; no native bindings (Phase 8)
+3. CV update IPC surface — `openCvFilePicker`, `updateCv` (lockAndWrite + seed-if-missing), `getCvMtime` + typed preload bridges (Phase 8)
+4. CV upload UI — `CvUploadModal` (editable PDF review pane), `CvConfirmModal` (mtime-aware confirm), `CvPanel` discriminated-union upload flow with post-write `load()` refresh (Phase 8)
+
+### What Worked
+
+- **UI-SPEC before planning**: The design contract (bg-ctp-mauve reserved to Replace button only) prevented color inconsistency — verification grep confirmed count=1 with zero debugging needed
+- **lockAndWrite reuse from Phase 2**: No new write infrastructure required; `updateCv` just needed the seed-if-missing guard added before the call
+- **unpdf selection over pdf-parse**: Tree-shakeable, pure JS, no native bindings — clean install with `--legacy-peer-deps` on first try, no binary rebuild issues
+- **Discriminated union UploadStage**: Clean state machine with no invalid state combinations; made the upload flow robust and easy to verify
+- **Autonomous milestone lifecycle**: `/gsd-autonomous` drove discuss→plan→execute→audit→complete in one session with zero manual intervention on code
+
+### What Was Inefficient
+
+- **ROADMAP checkbox left unchecked**: Phase 8 completed but its `- [ ]` checkbox was not updated to `- [x]` in ROADMAP.md — caught at autonomous milestone discovery step, required manual fix
+- **MAX_FILE_BYTES dead import**: `ipc-handlers.ts` imported `MAX_FILE_BYTES` but never used it in the handler body (size guard fires inside `extractPdfText` internally). Should have been caught at plan stage
+- **07-01-SUMMARY.md missing `requirements-completed` frontmatter**: Used `provides` section instead of the standard `requirements-completed` field — caused DESK-01/DESK-02 to show as "partial" in the 3-source cross-reference even though DESK-02 is fully satisfied
+
+### Patterns Established
+
+- **seed-if-missing guard before lockAndWrite**: `if (!existsSync(path)) await fs.writeFile(path, '', 'utf-8')` — required when the target file may not exist on fresh installs; `lockAndWrite` always reads before write and throws on ENOENT
+- **getCvMtime() at confirm-modal-open (not at file-pick)**: Two call sites in CvPanel — one in the `.md` branch, one in `handleReviewContinue` for `.pdf` — ensures mtime is current if user deliberates in the review modal
+- **requirements-completed frontmatter in SUMMARY.md**: Use this standard field (not `provides`) so the 3-source audit cross-reference can automatically determine satisfaction status
+
+### Key Lessons
+
+1. **Update ROADMAP phase checkboxes immediately at phase completion**: The autonomous workflow can't distinguish a stale unchecked box from a genuinely incomplete phase — a stale `- [ ]` causes an unnecessary re-execution attempt
+2. **UI-SPEC design contracts generate real value**: For phases with themed UI, a pre-planning color/style contract prevents design drift without requiring review iterations. The bg-ctp-mauve contract was worth 5 minutes to write
+3. **Plan a "first release" phase explicitly**: v1.2 closes all code-completable requirements, but 25 human UAT items remain — they should be verified in a structured "v0.1.0 release" phase against a real packaged build, not deferred indefinitely
+
+### Cost Observations
+
+- Model mix: Quality profile (sonnet executor, sonnet verifier/reviewer/integration-checker)
+- Sessions: 1 autonomous session for both phases + audit + milestone close
+- Notable: Milestone completed in 1 day; 3 plans, 30 commits — small scope, tight execution
+
 ## Cross-Milestone Trends
 
-| Metric | v1.0 | v1.1 |
-|--------|------|------|
-| Phases | 3 | 3 |
-| Plans | 14 | 9 |
-| Duration (days) | 19 | 20 |
-| Files changed | 342 | 77 |
-| Lines added | 46,149 | ~99K (incl. fixture HTML) |
-| Human UAT deferred | 14 items | 14 items (new) |
-| Code review issues (critical) | 0 | 0 |
-| Code review issues (warning) | 5 | 3 |
-| Verification: passed on first run | 2/3 phases | 1/3 phases |
-| Autonomous execution | Partial | Full (3 phases end-to-end) |
+| Metric | v1.0 | v1.1 | v1.2 |
+|--------|------|------|------|
+| Phases | 3 | 3 | 2 |
+| Plans | 14 | 9 | 3 |
+| Duration (days) | 19 | 20 | 1 |
+| Files changed | 342 | 77 | ~10 |
+| Lines added | 46,149 | ~99K (incl. fixture HTML) | ~425 |
+| Human UAT deferred | 14 items | 14 items (new) | 11 items (new) |
+| Code review issues (critical) | 0 | 0 | 0 |
+| Code review issues (warning) | 5 | 3 | 1 |
+| Verification: passed on first run | 2/3 phases | 1/3 phases | 1/2 phases |
+| Autonomous execution | Partial | Full (3 phases) | Full (2 phases + lifecycle) |
