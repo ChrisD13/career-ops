@@ -28,5 +28,10 @@
 
 | REQ-ID | Phase |
 |--------|-------|
-| DESK-01, DESK-02 | TBD |
-| CV-01, CV-02, CV-03, CV-04, CV-05 | TBD |
+| DESK-01 | Phase 7 |
+| DESK-02 | Phase 7 |
+| CV-01 | Phase 8 |
+| CV-02 | Phase 8 |
+| CV-03 | Phase 8 |
+| CV-04 | Phase 8 |
+| CV-05 | Phase 8 |

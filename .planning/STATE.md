@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Setup & CV Management
-status: defining_requirements
-stopped_at: v1.2 milestone started — defining requirements
+status: planning
+stopped_at: v1.2 roadmap drafted — Phases 7–8 defined, ready for /gsd-plan-phase 7
 last_updated: "2026-04-27T00:00:00Z"
-last_activity: 2026-04-27 -- Milestone v1.2 started
+last_activity: 2026-04-27 -- Roadmap created for v1.2 (Phases 7–8)
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 9
-  completed_plans: 9
-  percent: 100
+  total_phases: 2
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-24)
 
 **Core value:** Surface the right startup opportunities from leading VC portfolios before they appear on job boards, and manage the entire pipeline from discovery through offer — without opening a terminal.
-**Current focus:** Planning next milestone
+**Current focus:** v1.2 — Setup & CV Management (Phases 7–8)
 
 ## Current Position
 
-Phase: — (milestone complete)
+Phase: 7 — Desktop Shortcut Auto-Creation (not started)
 Plan: —
-Status: v1.1 archived
-Last activity: 2026-04-24
+Status: Roadmap drafted; awaiting plan generation
+Last activity: 2026-04-27
 
-Progress: [██████████] 100%
+Progress: [          ] 0% (0/2 phases complete)
 
 ## Accumulated Context
 
@@ -38,16 +38,16 @@ Progress: [██████████] 100%
 
 All decisions logged in PROJECT.md Key Decisions table.
 
-Key v1.1 additions:
-- electron-updater wired to GitHub Releases — `package.json#build.publish` (not electron-builder.yml)
-- IPC channels: `updater:status` / `updater:install` / `updater:dismiss` (per-version dismiss via userData)
-- Analytics computed in renderer from `readTracker` — zero new IPC, zero new npm deps
-- Cumulative funnel semantics: Applied ≥ Responded ≥ Interview ≥ Offer
-- CSS-only Tailwind bars with Catppuccin semantic colors — no chart library
+v1.2 planning notes:
+- Phase split (7 vs 8) chosen because the two feature areas verify under different conditions: Phase 7 (desktop shortcut) requires a packaged build to verify end-to-end; Phase 8 (CV upload) verifies in dev mode. Combining would force an awkward verification story.
+- PDF text extraction library choice (pdf-parse / pdfjs-dist / Playwright) deferred to plan phase — research at plan time
+- `cv.md` writes reuse the Phase 2 `lockAndWrite` + `write-file-atomic` pattern — no new write infrastructure required
+- `.desktop` file write also uses `write-file-atomic` for codebase consistency, even though the file is small and rarely written
 
 ### Pending Todos
 
-None.
+- Run `/gsd-plan-phase 7` to decompose Phase 7 (Desktop Shortcut Auto-Creation) into plans
+- Run `/gsd-plan-phase 8` to decompose Phase 8 (CV Upload & PDF Extraction) into plans
 
 ### Blockers/Concerns
 
@@ -55,7 +55,7 @@ None.
 
 ## Deferred Items
 
-Items deferred at v1.1 close (acknowledged 2026-04-24):
+Items deferred at v1.1 close (acknowledged 2026-04-24, still open in v1.2):
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
@@ -66,10 +66,12 @@ Items deferred at v1.1 close (acknowledged 2026-04-24):
 | GUI | Inline report editing (read-only) | v2.0+ | Init |
 | Funding | Crunchbase API integration | out of scope | Init |
 
-Known deferred items at close: 6 (see Deferred Items above)
+Known deferred items at v1.2 start: 6 (carried from v1.1 close)
+
+Per user preference (memory): defer all human UAT until project is feature-complete; do not surface UAT prompts during active development.
 
 ## Session Continuity
 
-Last session: 2026-04-24
-Stopped at: v1.1 shipped — run /gsd-new-milestone to plan v1.2
+Last session: 2026-04-27
+Stopped at: v1.2 roadmap drafted — run `/gsd-plan-phase 7` next
 Resume file: None

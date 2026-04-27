@@ -4,6 +4,7 @@
 
 - ✅ **v1.0 JobEngine v2 MVP** — Phases 1–3 (shipped 2026-04-23)
 - ✅ **v1.1 Live Validation + Analytics** — Phases 4–6 (shipped 2026-04-24)
+- 📋 **v1.2 Setup & CV Management** — Phases 7–8 (planning)
 
 ## Phases
 
@@ -29,9 +30,35 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 
 </details>
 
-### 📋 Next Milestone
+### v1.2 Setup & CV Management (Phases 7–8)
 
-No active milestone. Run `/gsd-new-milestone` to plan the next version.
+- [ ] **Phase 7: Desktop Shortcut Auto-Creation** — App registers itself in the Linux launcher on first packaged run, idempotently
+- [ ] **Phase 8: CV Upload & PDF Extraction** — User refreshes `cv.md` from the app via file picker, with PDF-to-Markdown extraction and a review-and-confirm flow
+
+## Phase Details
+
+### Phase 7: Desktop Shortcut Auto-Creation
+**Goal**: Eliminate the launcher friction — after first run of the packaged app, JobEngine appears in the Linux system launcher exactly like a natively installed application
+**Depends on**: Phase 1 (Electron main-process app lifecycle), Phase 2 (`write-file-atomic` write pattern for the `.desktop` file)
+**Requirements**: DESK-01, DESK-02
+**Success Criteria** (what must be TRUE):
+  1. After first launch of the packaged build, `~/.local/share/applications/jobengine.desktop` exists and JobEngine appears in the user's system launcher / app menu
+  2. On every subsequent launch (packaged or dev), if the `.desktop` file already exists the app starts silently and never modifies it — manual edits by the user are preserved
+  3. Shortcut creation is silent: no UI prompt, no error popup, and no behavior change when running the unpackaged dev build
+**Plans**: TBD
+
+### Phase 8: CV Upload & PDF Extraction
+**Goal**: User keeps `cv.md` fresh from inside the Electron app — pick a file, see what will be saved, confirm, done — without ever opening a terminal or text editor
+**Depends on**: Phase 2 (`lockAndWrite` + `write-file-atomic` pattern for `cv.md` overwrites), Phase 7
+**Requirements**: CV-01, CV-02, CV-03, CV-04, CV-05
+**Success Criteria** (what must be TRUE):
+  1. User can open a file picker from inside the app and select either a `.md` or `.pdf` file as the new CV source
+  2. Selecting a `.md` file replaces `cv.md` byte-for-byte after the user confirms — no transformation
+  3. Selecting a `.pdf` file shows the user the extracted Markdown in an editable review pane before any write happens
+  4. Before either `.md` or `.pdf` content is written to `cv.md`, the user sees a confirmation prompt that displays the current `cv.md` last-modified date and gives the option to cancel
+  5. After confirming, `cv.md` is updated atomically and the in-app CV view reflects the new content without a manual reload
+**Plans**: TBD
+**UI hint**: yes
 
 ## Progress
 
@@ -43,3 +70,5 @@ No active milestone. Run `/gsd-new-milestone` to plan the next version.
 | 4. VC Adapter Validation | v1.1 | 4/4 | Complete | 2026-04-24 |
 | 5. Electron Auto-Update | v1.1 | 3/3 | Complete | 2026-04-24 |
 | 6. Response-Rate Analytics Dashboard | v1.1 | 2/2 | Complete | 2026-04-24 |
+| 7. Desktop Shortcut Auto-Creation | v1.2 | 0/? | Not started | - |
+| 8. CV Upload & PDF Extraction | v1.2 | 0/? | Not started | - |
