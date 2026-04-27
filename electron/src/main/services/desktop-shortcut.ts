@@ -41,17 +41,9 @@ export async function ensureDesktopShortcut(): Promise<void> {
   }
 
   const target = shortcutPath()
-  const newEntry = buildDesktopEntry(appImagePath, app.getVersion())
+  if (existsSync(target)) return // DESK-02: idempotent — never overwrite user's file
 
-  if (existsSync(target)) {
-    try {
-      const existing = await fs.readFile(target, 'utf-8')
-      if (existing === newEntry) return    // identical — nothing to do
-      // Exec path or version changed (post-update relaunch) — fall through to rewrite
-    } catch {
-      // unreadable — fall through and rewrite
-    }
-  }
+  const newEntry = buildDesktopEntry(appImagePath, app.getVersion())
 
   try {
     const appDir = process.env.APPDIR
