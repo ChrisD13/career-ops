@@ -581,27 +581,19 @@ getCvMtime: () => ipcRenderer.invoke('getCvMtime'),
 | A3 | A 10 MB file size cap is reasonable for CVs. | Pitfall §5 | If a user has a multi-page CV with embedded scanned images, they could hit the cap legitimately. 10 MB is generous for text-based PDFs (most CVs are <500 KB). If wrong, raise to 25 MB. Trivial to change. |
 | A4 | A 2 MB markdown cap on `updateCv` write is reasonable. | Code Examples §2 | Even War-and-Peace-length CV markdown would fit in 2 MB. If wrong (someone embeds huge base64 images in markdown), raise the cap; it's a one-line zod change. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Does the user accept `pdf-parse@1.1.4` knowing it's ~28 MB, not "lightweight ~100KB"?**
-   - What we know: CONTEXT.md locked `pdf-parse` based on a description that doesn't match reality. v1.1.4 is functional, well-tested, and fixes the historical ENOENT bug. v2.x is a different (heavier) library with the same npm name. `unpdf` (~2 MB, no native deps, modern, April-2026 release) is a strict superset of the stated CONTEXT premises.
-   - What's unclear: Was "lightweight" load-bearing in the user's decision, or was "pdf-parse" the load-bearing token?
-   - Recommendation: Surface this in `/gsd-discuss-phase` follow-up before executing. If "lightweight, zero infrastructure" was the actual constraint, switch to `unpdf` (5-line diff, same IPC contract). If `pdf-parse` was the brand-name choice (e.g., from prior experience), pin `1.1.4` and proceed.
+   - RESOLVED: Switch to `unpdf@1.6.0` (~2MB, no native deps). User confirmed 2026-04-27 — "lightweight, zero infrastructure" was the load-bearing constraint. Use `unpdf`, not `pdf-parse`.
 
 2. **What should `updateCv` do if `cv.md` is missing?**
-   - What we know: CLAUDE.md onboarding creates `cv.md`; the GUI assumes it exists. `lockAndWrite` reads first, so a missing file throws ENOENT.
-   - What's unclear: Should we (a) seed empty file then write, (b) refuse with a helpful message, or (c) ignore the case as out-of-spec?
-   - Recommendation: (a) seed empty. Cheap, mirrors `vc-firms.ts:38-42` pattern, fail-soft. Planner can lock this in plan-phase without blocking.
+   - RESOLVED: Seed empty file then write — mirrors `vc-firms.ts:38-42` pattern. 2026-04-27.
 
 3. **Should the file picker remember the last-used directory?**
-   - What we know: `dialog.showOpenDialog` accepts a `defaultPath` option. Without it, picker opens at OS-default (usually home dir).
-   - What's unclear: Out of scope for v1? Probably yes — keep simple, defer to v1.x improvement.
-   - Recommendation: Skip for v1. Don't store extra state.
+   - RESOLVED: Skip for v1. No extra state to manage. 2026-04-27.
 
-4. **Does the AppImage build need any pdf-parse-specific configuration?**
-   - What we know: `electron.vite.config.ts` uses `externalizeDepsPlugin()` for main, so `pdf-parse` is resolved from `node_modules` at runtime, not bundled. `electron-builder` config has `files: ["out/**/*"]` — by default this means the entire `node_modules` is included in the AppImage's `app.asar`. v1.1.4 has no native binaries, no worker files outside lib/, so it should "just work."
-   - What's unclear: Whether `app.asar` packaging strips files in a way that breaks pdfjs's internal version-based loading (`./pdf.js/${options.version}/build/pdf.js` per the lib internals). Risk is LOW because Electron resolves `app.asar` paths transparently for `require`.
-   - Recommendation: Add a smoke test in the verification phase: run the packaged AppImage, upload a small PDF, confirm extraction works. If it fails, the fix is `asarUnpack: ["**/node_modules/pdf-parse/**"]` in electron-builder config — a one-line addition.
+4. **Does the AppImage build need any unpdf-specific configuration?**
+   - RESOLVED: `unpdf` is pure JavaScript with no native binaries — no `asarUnpack` needed. Add AppImage smoke test (upload PDF, confirm extraction) as a UAT item. 2026-04-27.
 
 ## Environment Availability
 

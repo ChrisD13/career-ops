@@ -14,7 +14,7 @@ User keeps `cv.md` fresh from inside the Electron app — pick a `.md` or `.pdf`
 ## Implementation Decisions
 
 ### PDF Extraction Library
-- Library: `pdf-parse` — lightweight (~100KB), pure Node.js, zero extra infrastructure
+- Library: `unpdf@1.6.0` — ~2MB, pure JavaScript, no native deps (pdf-parse was ~28MB despite description; user confirmed switch 2026-04-27)
 - Output: raw text block (no AI reformatting, no structure inference)
 - Extraction failure UX: inline error in panel — "Could not extract text from PDF. Try a text-based PDF."
 - Extraction runs in main process (IPC handler) — keeps renderer lean, follows project pattern
