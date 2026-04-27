@@ -4,14 +4,14 @@ milestone: v1.2
 milestone_name: Setup & CV Management
 status: executing
 stopped_at: v1.2 roadmap drafted — run `/gsd-plan-phase 7` next
-last_updated: "2026-04-27T16:59:28.785Z"
-last_activity: 2026-04-27 -- Phase 07 execution started
+last_updated: "2026-04-27T18:52:00.774Z"
+last_activity: 2026-04-27 -- Phase 08 execution started
 progress:
   total_phases: 2
-  completed_phases: 0
-  total_plans: 1
-  completed_plans: 0
-  percent: 0
+  completed_phases: 1
+  total_plans: 3
+  completed_plans: 1
+  percent: 33
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-24)
 
 **Core value:** Surface the right startup opportunities from leading VC portfolios before they appear on job boards, and manage the entire pipeline from discovery through offer — without opening a terminal.
-**Current focus:** Phase 07 — Desktop Shortcut Auto-Creation
+**Current focus:** Phase 08 — CV Upload & PDF Extraction
 
 ## Current Position
 
-Phase: 07 (Desktop Shortcut Auto-Creation) — EXECUTING
-Plan: 1 of 1
-Status: Executing Phase 07
-Last activity: 2026-04-27 -- Phase 07 execution started
+Phase: 08 (CV Upload & PDF Extraction) — EXECUTING
+Plan: 1 of 2
+Status: Executing Phase 08
+Last activity: 2026-04-27 -- Phase 08 execution started
 
 Progress: [          ] 0% (0/2 phases complete)
 
@@ -77,4 +77,4 @@ Last session: 2026-04-27
 Stopped at: v1.2 roadmap drafted — run `/gsd-plan-phase 7` next
 Resume file: None
 
-**Planned Phase:** 07 () — 0 plans — 2026-04-27T16:58:41.358Z
+**Planned Phase:** 08 () — 0 plans — 2026-04-27T18:51:46.452Z

@@ -59,8 +59,8 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
   4. Before either `.md` or `.pdf` content is written to `cv.md`, the user sees a confirmation prompt that displays the current `cv.md` last-modified date and gives the option to cancel
   5. After confirming, `cv.md` is updated atomically and the in-app CV view reflects the new content without a manual reload
 **Plans**: 2
-  - [ ] 08-01-PLAN.md — Backend + IPC contracts: install unpdf, pdf-extract service, openCvFilePicker / updateCv / getCvMtime IPC handles + preload bridges
-  - [ ] 08-02-PLAN.md — UI: CvUploadModal (PDF review/edit) + CvConfirmModal (last-modified date + Replace) + CvPanel orchestration (Update CV button, upload state machine, post-write refresh)
+  - [x] 08-01-PLAN.md — Backend + IPC contracts: install unpdf, pdf-extract service, openCvFilePicker / updateCv / getCvMtime IPC handles + preload bridges
+  - [x] 08-02-PLAN.md — UI: CvUploadModal (PDF review/edit) + CvConfirmModal (last-modified date + Replace) + CvPanel orchestration (Update CV button, upload state machine, post-write refresh)
 **UI hint**: yes
 
 ## Progress
