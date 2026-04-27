@@ -58,7 +58,9 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
   3. Selecting a `.pdf` file shows the user the extracted Markdown in an editable review pane before any write happens
   4. Before either `.md` or `.pdf` content is written to `cv.md`, the user sees a confirmation prompt that displays the current `cv.md` last-modified date and gives the option to cancel
   5. After confirming, `cv.md` is updated atomically and the in-app CV view reflects the new content without a manual reload
-**Plans**: TBD
+**Plans**: 2
+  - [ ] 08-01-PLAN.md — Backend + IPC contracts: install unpdf, pdf-extract service, openCvFilePicker / updateCv / getCvMtime IPC handles + preload bridges
+  - [ ] 08-02-PLAN.md — UI: CvUploadModal (PDF review/edit) + CvConfirmModal (last-modified date + Replace) + CvPanel orchestration (Update CV button, upload state machine, post-write refresh)
 **UI hint**: yes
 
 ## Progress
@@ -72,4 +74,4 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 | 5. Electron Auto-Update | v1.1 | 3/3 | Complete | 2026-04-24 |
 | 6. Response-Rate Analytics Dashboard | v1.1 | 2/2 | Complete | 2026-04-24 |
 | 7. Desktop Shortcut Auto-Creation | v1.2 | 1/1 | Complete | 2026-04-27 |
-| 8. CV Upload & PDF Extraction | v1.2 | 0/? | Not started | - |
+| 8. CV Upload & PDF Extraction | v1.2 | 0/2 | Planned | - |
