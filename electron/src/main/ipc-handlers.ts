@@ -1,11 +1,13 @@
-import { ipcMain, type BrowserWindow } from 'electron'
+import { ipcMain, dialog, type BrowserWindow } from 'electron'
 import { z } from 'zod'
 import { promises as fs } from 'fs'
 import * as path from 'path'
+import { existsSync } from 'fs'
 import { parseApplications } from './parsers/applications'
 import { parsePipeline } from './parsers/pipeline'
 import { parseStatuses } from './parsers/statuses'
 import { updateStatus as writeStatus } from './services/status-writer'
+import { lockAndWrite } from './services/write-queue'
 import type { MtimeCache } from './services/mtime-cache'
 import { keyStore } from './services/key-store'
 import { preferences } from './services/preferences'
@@ -18,6 +20,7 @@ import { promoteToPipeline } from './services/promote'
 import { probeUrl } from './services/url-probe'
 import { triggerScrape, reconfigureScheduler } from './services/scheduler'
 import { installUpdate, setDismissedVersion } from './services/updater'
+import { extractPdfText, MAX_FILE_BYTES } from './services/pdf-extract'
 
 const ReportPathSchema = z.string().regex(/^reports\/[^/]+\.md$/)
 const UpdateStatusSchema = z.object({
@@ -40,6 +43,8 @@ const VcFirmSchema = z.object({
 })
 const CronSchema = z.string().min(9).max(100)
 const VersionSchema = z.string().regex(/^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?$/)
+// Phase 8 — Markdown payload size cap (RESEARCH §A4 — 2 MB)
+const UpdateCvSchema = z.string().min(1).max(2_000_000)
 
 export interface HandlerDeps {
   projectRoot: string
@@ -116,6 +121,67 @@ export function registerIpcHandlers(deps: HandlerDeps): void {
 
   // ---------- CV + operations ----------
   ipcMain.handle('readCv', async () => fs.readFile(path.join(projectRoot, 'cv.md'), 'utf-8'))
+  // ---------- Phase 8 — CV upload ----------
+  ipcMain.handle('openCvFilePicker', async () => {
+    const result = await dialog.showOpenDialog(win, {
+      title: 'Select CV file',
+      properties: ['openFile'],
+      filters: [{ name: 'CV', extensions: ['md', 'pdf'] }],
+    })
+    if (result.canceled || result.filePaths.length === 0) {
+      return { cancelled: true }
+    }
+    const filePath = result.filePaths[0]
+    const ext = path.extname(filePath).toLowerCase()
+    try {
+      if (ext === '.md') {
+        const stat = await fs.stat(filePath)
+        if (stat.size > MAX_FILE_BYTES) {
+          return {
+            cancelled: false,
+            error: `File too large (${(stat.size / 1024 / 1024).toFixed(1)} MB; max 10 MB)`,
+          }
+        }
+        const content = await fs.readFile(filePath, 'utf-8')
+        return { cancelled: false, type: 'md' as const, content }
+      }
+      if (ext === '.pdf') {
+        const result = await extractPdfText(filePath)
+        if (!result.ok) {
+          return { cancelled: false, error: result.error }
+        }
+        return { cancelled: false, type: 'pdf' as const, content: result.text }
+      }
+      return { cancelled: false, error: 'Unsupported file type. Choose a .md or .pdf file.' }
+    } catch (err: any) {
+      return { cancelled: false, error: err?.message ?? 'Could not read file. Check it exists and try again.' }
+    }
+  })
+
+  ipcMain.handle('updateCv', async (_e, raw: unknown) => {
+    try {
+      const content = UpdateCvSchema.parse(raw)
+      const cvPath = path.join(projectRoot, 'cv.md')
+      // Pitfall §3: seed empty cv.md if missing, then lockAndWrite
+      if (!existsSync(cvPath)) {
+        await fs.writeFile(cvPath, '', 'utf-8')
+      }
+      await lockAndWrite(cvPath, () => content, pendingGuiWrites)
+      return { success: true }
+    } catch (err: any) {
+      return { success: false, error: err?.message ?? 'Failed to write cv.md' }
+    }
+  })
+
+  ipcMain.handle('getCvMtime', async () => {
+    const cvPath = path.join(projectRoot, 'cv.md')
+    try {
+      const stat = await fs.stat(cvPath)
+      return { mtimeIso: stat.mtime.toISOString() }
+    } catch {
+      return { mtimeIso: null }
+    }
+  })
 
   ipcMain.handle('regeneratePDF', async () => {
     const runId = startOp({

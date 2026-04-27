@@ -41,6 +41,10 @@ const api: ElectronAPI = {
 
   // Phase 2 — CV + operations
   readCv: () => ipcRenderer.invoke('readCv'),
+  // Phase 8 — CV upload bridges
+  openCvFilePicker: () => ipcRenderer.invoke('openCvFilePicker'),
+  updateCv: (content: string) => ipcRenderer.invoke('updateCv', content),
+  getCvMtime: () => ipcRenderer.invoke('getCvMtime'),
   regeneratePDF: () => ipcRenderer.invoke('regeneratePDF'),
   runScan: () => ipcRenderer.invoke('runScan'),
   runBatch: () => ipcRenderer.invoke('runBatch'),
