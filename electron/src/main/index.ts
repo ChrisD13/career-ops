@@ -17,8 +17,13 @@ async function ensureRootDeps(projectRoot: string): Promise<void> {
   console.log('[main] installing missing root deps:', missing.join(', '))
   await new Promise<void>((resolve) => {
     const proc = spawn('npm', ['install'], { cwd: projectRoot, stdio: 'inherit' })
-    proc.on('close', () => resolve())
-    proc.on('error', (err) => { console.warn('[main] npm install failed:', err.message); resolve() })
+    proc.once('close', (code) => {
+      if (code !== 0) {
+        console.warn('[main] npm install exited with code', code, '— some features may be unavailable')
+      }
+      resolve()
+    })
+    proc.once('error', (err) => { console.warn('[main] npm install failed:', err.message); resolve() })
   })
 }
 
