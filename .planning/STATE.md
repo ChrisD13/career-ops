@@ -1,11 +1,11 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Live Validation + Analytics
-status: archived
-stopped_at: v1.1 shipped — run /gsd-new-milestone to plan v1.2
-last_updated: "2026-04-24T00:00:00Z"
-last_activity: 2026-04-24 -- v1.1 milestone archived
+milestone: v1.2
+milestone_name: Setup & CV Management
+status: defining_requirements
+stopped_at: v1.2 milestone started — defining requirements
+last_updated: "2026-04-27T00:00:00Z"
+last_activity: 2026-04-27 -- Milestone v1.2 started
 progress:
   total_phases: 3
   completed_phases: 3

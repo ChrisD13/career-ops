@@ -8,6 +8,14 @@ An AI-powered job search system that surfaces high-signal startup opportunities 
 
 Discover and evaluate the right startup opportunities before they reach job boards — from a single desktop app, without opening a terminal.
 
+## Current Milestone: v1.2 — Setup & CV Management
+
+**Goal:** Eliminate the two biggest post-install friction points — launching the app and keeping CV content fresh.
+
+**Target features:**
+- Desktop shortcut — auto-created on first packaged launch; writes `~/.local/share/applications/jobengine.desktop`
+- CV upload — file picker in the app; accepts `.md` (direct replace) and `.pdf` (text extraction → cv.md)
+
 ## Current State (v1.1 — Shipped 2026-04-24)
 
 - Electron app ships: tracker, reports, pipeline, evaluate, CV, operations drawer, Discover panel, **Analytics panel**
