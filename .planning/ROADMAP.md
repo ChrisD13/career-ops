@@ -32,7 +32,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 
 ### v1.2 Setup & CV Management (Phases 7–8)
 
-- [ ] **Phase 7: Desktop Shortcut Auto-Creation** — App registers itself in the Linux launcher on first packaged run, idempotently
+- [x] **Phase 7: Desktop Shortcut Auto-Creation** — App registers itself in the Linux launcher on first packaged run, idempotently
 - [ ] **Phase 8: CV Upload & PDF Extraction** — User refreshes `cv.md` from the app via file picker, with PDF-to-Markdown extraction and a review-and-confirm flow
 
 ## Phase Details
@@ -71,5 +71,5 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 | 4. VC Adapter Validation | v1.1 | 4/4 | Complete | 2026-04-24 |
 | 5. Electron Auto-Update | v1.1 | 3/3 | Complete | 2026-04-24 |
 | 6. Response-Rate Analytics Dashboard | v1.1 | 2/2 | Complete | 2026-04-24 |
-| 7. Desktop Shortcut Auto-Creation | v1.2 | 0/1 | Not started | - |
+| 7. Desktop Shortcut Auto-Creation | v1.2 | 1/1 | Complete | 2026-04-27 |
 | 8. CV Upload & PDF Extraction | v1.2 | 0/? | Not started | - |
