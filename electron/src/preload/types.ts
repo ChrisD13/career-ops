@@ -133,6 +133,23 @@ export interface AddFirmPayload {
   bypassProbe?: boolean   // set true when user clicks "Save anyway" after failed probe
 }
 
+// Phase 8 — CV upload result shapes
+export interface CvPickerResult {
+  cancelled: boolean
+  type?: 'md' | 'pdf'
+  content?: string
+  error?: string
+}
+
+export interface CvUpdateResult {
+  success: boolean
+  error?: string
+}
+
+export interface CvMtimeResult {
+  mtimeIso: string | null
+}
+
 // Phase 5 — auto-update
 export interface UpdaterStatus {
   phase: 'downloading' | 'downloaded'
@@ -187,6 +204,10 @@ export interface ElectronAPI {
 
   // Phase 2 — CV + operations
   readCv: () => Promise<string>
+  // Phase 8 — CV upload
+  openCvFilePicker: () => Promise<CvPickerResult>
+  updateCv: (content: string) => Promise<CvUpdateResult>
+  getCvMtime: () => Promise<CvMtimeResult>
   regeneratePDF: () => Promise<{ runId: string }>
   runScan: () => Promise<{ runId: string }>
   runBatch: () => Promise<{ runId: string; error?: string }>
