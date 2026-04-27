@@ -41,7 +41,17 @@ export async function ensureDesktopShortcut(): Promise<void> {
   }
 
   const target = shortcutPath()
-  if (existsSync(target)) return
+  const newEntry = buildDesktopEntry(appImagePath, app.getVersion())
+
+  if (existsSync(target)) {
+    try {
+      const existing = await fs.readFile(target, 'utf-8')
+      if (existing === newEntry) return    // identical — nothing to do
+      // Exec path or version changed (post-update relaunch) — fall through to rewrite
+    } catch {
+      // unreadable — fall through and rewrite
+    }
+  }
 
   try {
     const appDir = process.env.APPDIR
@@ -56,10 +66,9 @@ export async function ensureDesktopShortcut(): Promise<void> {
     }
 
     await fs.mkdir(path.dirname(target), { recursive: true })
-    const entry = buildDesktopEntry(appImagePath, app.getVersion())
-    await writeFileAtomic(target, entry, { mode: 0o644 })
+    await writeFileAtomic(target, newEntry, { mode: 0o644 })
 
-    console.log('[desktop-shortcut] created', target)
+    console.log('[desktop-shortcut] created/updated', target)
   } catch (err) {
     console.warn('[desktop-shortcut] failed (non-fatal):', (err as Error).message)
   }
