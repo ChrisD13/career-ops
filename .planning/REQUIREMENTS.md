@@ -3,15 +3,15 @@
 ## Desktop Shortcut
 
 - [ ] **DESK-01** — App creates `~/.local/share/applications/jobengine.desktop` on first launch (packaged build only), enabling the app to appear in the system launcher
-- [ ] **DESK-02** — Shortcut creation is idempotent: skips silently if the `.desktop` file already exists, never overwrites user modifications
+- [x] **DESK-02** — Shortcut creation is idempotent: skips silently if the `.desktop` file already exists, never overwrites user modifications
 
 ## CV Management
 
-- [ ] **CV-01** — User can open a file picker from within the app and select a `.md` or `.pdf` file to replace `cv.md`
-- [ ] **CV-02** — When a `.md` file is selected, its content replaces `cv.md` directly with no conversion
-- [ ] **CV-03** — When a `.pdf` file is selected, its text content is extracted and written to `cv.md` as plain Markdown
-- [ ] **CV-04** — After PDF extraction, user sees the converted Markdown in a review pane and can edit it before saving
-- [ ] **CV-05** — User sees a confirmation prompt before overwrite showing the current `cv.md` last-modified date
+- [x] **CV-01** — User can open a file picker from within the app and select a `.md` or `.pdf` file to replace `cv.md`
+- [x] **CV-02** — When a `.md` file is selected, its content replaces `cv.md` directly with no conversion
+- [x] **CV-03** — When a `.pdf` file is selected, its text content is extracted and written to `cv.md` as plain Markdown
+- [x] **CV-04** — After PDF extraction, user sees the converted Markdown in a review pane and can edit it before saving
+- [x] **CV-05** — User sees a confirmation prompt before overwrite showing the current `cv.md` last-modified date
 
 ## Future Requirements (deferred)
 

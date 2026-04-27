@@ -33,7 +33,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 ### v1.2 Setup & CV Management (Phases 7–8)
 
 - [x] **Phase 7: Desktop Shortcut Auto-Creation** — App registers itself in the Linux launcher on first packaged run, idempotently
-- [ ] **Phase 8: CV Upload & PDF Extraction** — User refreshes `cv.md` from the app via file picker, with PDF-to-Markdown extraction and a review-and-confirm flow
+- [x] **Phase 8: CV Upload & PDF Extraction** — User refreshes `cv.md` from the app via file picker, with PDF-to-Markdown extraction and a review-and-confirm flow
 
 ## Phase Details
 
