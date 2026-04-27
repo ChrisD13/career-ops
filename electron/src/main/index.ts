@@ -8,6 +8,7 @@ import { startFileWatcher } from './watcher'
 import { MtimeCache } from './services/mtime-cache'
 import { initScheduler, stopScheduler } from './services/scheduler'
 import { initUpdater } from './services/updater'
+import { ensureDesktopShortcut } from './services/desktop-shortcut'
 
 async function ensureRootDeps(projectRoot: string): Promise<void> {
   const required = ['robots-parser', 'write-file-atomic', 'node-cron']
@@ -91,6 +92,11 @@ app.whenReady().then(async () => {
   // Phase 5 — auto-update: check after 5s so startup UX is not blocked
   // Called once here; NOT inside app.on('activate') — same idempotent-unsafe constraint as registerIpcHandlers
   setTimeout(() => { initUpdater(mainWindow) }, 5000)
+  // Phase 7 — desktop shortcut: one-shot, fire-and-forget, never blocks startup.
+  // NOT placed inside app.on('activate') — mirrors the comment on initUpdater above:
+  // existsSync gate makes a double-call safe, but matching the pattern keeps macOS
+  // dock-reactivation from triggering needless syscalls.
+  void ensureDesktopShortcut()
 
   mainWindow.on('closed', () => {
     stopWatcher()
