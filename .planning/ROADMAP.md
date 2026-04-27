@@ -46,7 +46,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
   2. On every subsequent launch (packaged or dev), if the `.desktop` file already exists the app starts silently and never modifies it — manual edits by the user are preserved
   3. Shortcut creation is silent: no UI prompt, no error popup, and no behavior change when running the unpackaged dev build
 **Plans**: 1
-  - [ ] 07-01-PLAN.md — Create services/desktop-shortcut.ts (ensureDesktopShortcut) and wire into electron/src/main/index.ts
+  - [x] 07-01-PLAN.md — Create services/desktop-shortcut.ts (ensureDesktopShortcut) and wire into electron/src/main/index.ts
 
 ### Phase 8: CV Upload & PDF Extraction
 **Goal**: User keeps `cv.md` fresh from inside the Electron app — pick a file, see what will be saved, confirm, done — without ever opening a terminal or text editor
