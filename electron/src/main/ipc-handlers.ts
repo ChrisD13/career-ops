@@ -136,10 +136,11 @@ export function registerIpcHandlers(deps: HandlerDeps): void {
     try {
       if (ext === '.md') {
         const stat = await fs.stat(filePath)
-        if (stat.size > MAX_FILE_BYTES) {
+        const MD_MAX_BYTES = 2_000_000
+        if (stat.size > MD_MAX_BYTES) {
           return {
             cancelled: false,
-            error: `File too large (${(stat.size / 1024 / 1024).toFixed(1)} MB; max 10 MB)`,
+            error: `File too large (${(stat.size / 1024 / 1024).toFixed(1)} MB; max 2 MB for .md files)`,
           }
         }
         const content = await fs.readFile(filePath, 'utf-8')
