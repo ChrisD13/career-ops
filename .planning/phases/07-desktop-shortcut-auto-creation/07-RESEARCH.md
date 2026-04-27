@@ -481,22 +481,19 @@ const appDir       = process.env.APPDIR     // /tmp/.mount_xxxxxxxx/  — only v
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **AppImageLauncher coexistence — duplicate launcher entries**
    - What we know: If AppImageLauncher is installed AND the user accepted integration, they will see two JobEngine entries (theirs + ours).
-   - What's unclear: How common AppImageLauncher adoption is among our target users. The fix (filename glob) is brittle.
-   - Recommendation: Ship without the workaround in v1.2. Add an entry to UAT for "manually verify on a system with AppImageLauncher installed." If reports come in, add a heuristic check in v1.3.
+   - RESOLVED: Ship without the workaround in v1.2. Add UAT item for AppImageLauncher systems; add heuristic check in v1.3 if reports come in. 2026-04-27.
 
 2. **Future Wayland session class matching**
-   - What we know: `StartupWMClass=JobEngine` matches how X11 reports the window. Wayland uses `app_id` instead, which Electron sets via `--class=JobEngine` or by the binary name.
-   - What's unclear: Whether the icon-to-window mapping works correctly under GNOME-on-Wayland for the AppImage'd binary (`jobengine-electron`).
-   - Recommendation: Add a Wayland verification step to UAT. If broken, add `--class=JobEngine` to the `Exec=` line in v1.3.
+   - What we know: `StartupWMClass=JobEngine` matches X11. Wayland uses `app_id`; Electron sets it via `--class=JobEngine`.
+   - RESOLVED: Add Wayland verification step to UAT. If broken, add `--class=JobEngine` to the `Exec=` line in v1.3. 2026-04-27.
 
 3. **Whether to bump `update-desktop-database` and `gtk-update-icon-cache`**
    - What we know: Neither is required for visibility; both speed up MIME / icon lookup.
-   - What's unclear: Whether the user-visible delay between "first launch" and "shortcut appears in launcher" is noticeable on slower systems.
-   - Recommendation: Skip both in v1.2. If users report "shortcut takes a session to appear," add best-effort `child_process.spawn` calls in v1.3 with stdio: 'ignore' and no error surfacing.
+   - RESOLVED: Skip both in v1.2. Add best-effort `child_process.spawn` calls in v1.3 if users report launcher appearance delay. 2026-04-27.
 
 ---
 
